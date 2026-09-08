@@ -69,8 +69,20 @@ const toIsoDate = (value?: string): string | null => {
 
 class ApiService {
   private baseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
-  private accessToken = localStorage.getItem(ACCESS_TOKEN_KEY) || '';
-  private refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY) || '';
+  // Read/written straight from localStorage on every access (not cached in a field) so this
+  // instance can never end up authenticated-looking (currentUser set) while silently holding a
+  // stale/empty token in memory - the exact split that was sending requests with no
+  // Authorization header at all despite a valid token existing in storage.
+  private get accessToken(): string { return localStorage.getItem(ACCESS_TOKEN_KEY) || ''; }
+  private set accessToken(value: string) {
+    if (value) localStorage.setItem(ACCESS_TOKEN_KEY, value);
+    else localStorage.removeItem(ACCESS_TOKEN_KEY);
+  }
+  private get refreshToken(): string { return localStorage.getItem(REFRESH_TOKEN_KEY) || ''; }
+  private set refreshToken(value: string) {
+    if (value) localStorage.setItem(REFRESH_TOKEN_KEY, value);
+    else localStorage.removeItem(REFRESH_TOKEN_KEY);
+  }
   private currentUser: ApiUser | null = this.readStoredUser();
   private users = new Map<string, TeamMember>();
   private rawProjects = new Map<string, ApiProject>();
@@ -91,11 +103,12 @@ class ApiService {
   }
 
   private saveSession(auth: AuthResponse) {
+    if (!auth?.accessToken || !auth.user) {
+      throw new Error('پاسخ ورود نامعتبر است (accessToken یا اطلاعات کاربر موجود نیست).');
+    }
     this.accessToken = auth.accessToken;
     this.refreshToken = auth.refreshToken;
     this.currentUser = auth.user;
-    localStorage.setItem(ACCESS_TOKEN_KEY, auth.accessToken);
-    localStorage.setItem(REFRESH_TOKEN_KEY, auth.refreshToken);
     localStorage.setItem(USER_KEY, JSON.stringify(auth.user));
   }
 
@@ -103,8 +116,6 @@ class ApiService {
     this.accessToken = '';
     this.refreshToken = '';
     this.currentUser = null;
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
   }
 
@@ -117,15 +128,26 @@ class ApiService {
     return this.mapUser(auth.user);
   }
 
-  private async refreshSession(): Promise<boolean> {
-    if (!this.refreshToken) return false;
-    try {
-      const auth = await this.request<AuthResponse>('/api/identity/auth/refresh', {
-        method: 'POST', body: JSON.stringify({ refreshToken: this.refreshToken })
-      }, false);
-      this.saveSession(auth);
-      return true;
-    } catch { this.clearSession(); return false; }
+  // Shared by every caller that hits a 401 at the same time, so a burst of parallel requests
+  // (e.g. the dashboard's initial load) triggers exactly one refresh call instead of one per
+  // request. Without this, concurrent refreshes racing against a backend that rotates refresh
+  // tokens (single-use) would have every loser's request reject with the old token and wipe out
+  // the winner's freshly-saved session via clearSession().
+  private refreshInFlight: Promise<boolean> | null = null;
+
+  private refreshSession(): Promise<boolean> {
+    if (this.refreshInFlight) return this.refreshInFlight;
+    if (!this.refreshToken) return Promise.resolve(false);
+    this.refreshInFlight = (async () => {
+      try {
+        const auth = await this.request<AuthResponse>('/api/identity/auth/refresh', {
+          method: 'POST', body: JSON.stringify({ refreshToken: this.refreshToken })
+        }, false);
+        this.saveSession(auth);
+        return true;
+      } catch { this.clearSession(); return false; }
+    })().finally(() => { this.refreshInFlight = null; });
+    return this.refreshInFlight;
   }
 
   private async request<T>(path: string, init: RequestInit = {}, retry = true): Promise<T> {
