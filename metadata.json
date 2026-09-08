@@ -1,0 +1,6 @@
+{
+  "name": "سامانه جامع مدیریت پروژه پست بانک ایران",
+  "description": "سامانه جامع و یکپارچه مدیریت پروژه، سبد اقدامات، کارتابل وظایف و پایش عملکرد پست بانک ایران",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
