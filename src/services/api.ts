@@ -154,6 +154,16 @@ class ApiService {
     const headers = new Headers(init.headers);
     if (init.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
     if (this.accessToken) headers.set('Authorization', `Bearer ${this.accessToken}`);
+    // TEMPORARY DIAGNOSTIC - remove once the missing-Authorization-header issue is confirmed fixed.
+    // eslint-disable-next-line no-console
+    console.log('[api.request DEBUG]', {
+      path,
+      baseUrl: this.baseUrl,
+      hasAccessTokenField: Boolean(this.accessToken),
+      accessTokenFromLocalStorageDirectly: localStorage.getItem(ACCESS_TOKEN_KEY),
+      willSendAuthorizationHeader: headers.has('Authorization'),
+      authorizationHeaderPreview: headers.get('Authorization')?.slice(0, 20) ?? null,
+    });
     const response = await fetch(`${this.baseUrl}${path}`, { ...init, headers });
     if (response.status === 401 && retry && await this.refreshSession()) return this.request<T>(path, init, false);
     if (!response.ok) {
