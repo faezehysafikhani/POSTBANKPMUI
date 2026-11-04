@@ -20,45 +20,60 @@ export interface ApiResult<T> {
 }
 
 const ACCESS_KEY = 'pms_access_token';
-const REFRESH_KEY = 'pms_refresh_token';
+/** An older build kept the refresh token here; the backend now keeps it in an HttpOnly cookie, so this is only ever removed. */
+const LEGACY_REFRESH_KEY = 'pms_refresh_token';
 
+/** Only the short-lived access token lives in the page; the refresh token is the backend's HttpOnly cookie and is never visible here. */
 export const tokenStore = {
   get access(): string | null {
     try { return localStorage.getItem(ACCESS_KEY); } catch { return null; }
   },
-  get refresh(): string | null {
-    try { return localStorage.getItem(REFRESH_KEY); } catch { return null; }
-  },
-  set(access: string, refresh: string) {
+  set(access: string) {
+    lastEndReason = null; // a session was opened: whatever ended the previous one is old news
     try {
       localStorage.setItem(ACCESS_KEY, access);
-      localStorage.setItem(REFRESH_KEY, refresh);
+      localStorage.removeItem(LEGACY_REFRESH_KEY);
     } catch { /* storage unavailable: the session just will not survive a reload */ }
   },
   clear() {
     try {
       localStorage.removeItem(ACCESS_KEY);
-      localStorage.removeItem(REFRESH_KEY);
+      localStorage.removeItem(LEGACY_REFRESH_KEY);
     } catch { /* ignore */ }
   }
 };
 
+/**
+ * What the backend's session endpoints expect from a browser: the refresh token travels as a cookie (X-Nexus-Session) and
+ * the request must carry X-Requested-With, a header a cross-site form cannot send.
+ */
+const SESSION_HEADERS: Record<string, string> = { 'X-Nexus-Session': 'cookie', 'X-Requested-With': 'XMLHttpRequest' };
+const isAuthUrl = (url: string) => url.startsWith('/api/identity/auth/');
+/** The calls that carry no access token of their own: a 401 from them is an answer, not a reason to refresh and retry. */
+const isSessionOpeningUrl = (url: string) =>
+  ['/api/identity/auth/login', '/api/identity/auth/refresh', '/api/identity/auth/logout', '/api/identity/auth/captcha'].some(prefix => url.startsWith(prefix));
+
+/** Why a session ended, as the backend names it (session.idle_expired, session.revoked, ...). */
+export const SESSION_REASON_HEADER = 'X-Nexus-Session-Reason';
+
 let refreshing: Promise<boolean> | null = null;
 
 /** One refresh at a time, however many requests found the token expired together. */
-async function refreshSession(): Promise<boolean> {
-  const refreshToken = tokenStore.refresh;
-  if (!refreshToken) return false;
+export async function refreshSession(): Promise<boolean> {
   refreshing ??= (async () => {
     try {
       const response = await fetch('/api/identity/auth/refresh', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken })
+        headers: { 'Content-Type': 'application/json', ...SESSION_HEADERS },
+        body: '{}'
       });
-      if (!response.ok) return false;
+      if (!response.ok) {
+        lastEndReason = await endReasonOf(response);
+        return false;
+      }
       const data = await response.json();
-      tokenStore.set(data.accessToken, data.refreshToken);
+      if (!data.accessToken) return false;
+      tokenStore.set(data.accessToken);
       return true;
     } catch {
       return false;
@@ -67,6 +82,19 @@ async function refreshSession(): Promise<boolean> {
     }
   })();
   return refreshing;
+}
+
+/** The reason the last refused refresh / request gave for the session being over (null when it gave none). */
+let lastEndReason: string | null = null;
+export const takeSessionEndReason = (): string | null => lastEndReason;
+
+async function endReasonOf(response: Response): Promise<string | null> {
+  const header = response.headers.get(SESSION_REASON_HEADER);
+  if (header) return header;
+  try {
+    const body = await response.clone().json();
+    return typeof body?.title === 'string' && body.title.startsWith('session.') ? body.title : null;
+  } catch { return null; }
 }
 
 async function toError(response: Response): Promise<ApiError> {
@@ -78,6 +106,11 @@ async function toError(response: Response): Promise<ApiError> {
     if (body?.detail) message = String(body.detail);
     else if (body?.error) message = String(body.error);
   } catch { /* not JSON: keep the status text */ }
+  // Too many requests (rate limiting): the backend answers 429 without a body of its own.
+  if (response.status === 429 && code.startsWith('http.')) {
+    code = 'rate_limited';
+    message = 'تعداد درخواست‌ها زیاد است؛ کمی بعد دوباره تلاش کنید.';
+  }
   return { status: response.status, code, message };
 }
 
@@ -91,6 +124,7 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
   const token = tokenStore.access;
   if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (isAuthUrl(url)) Object.assign(headers, SESSION_HEADERS);
 
   let response: Response;
   try {
@@ -99,7 +133,8 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
     return { ok: false, error: { status: 0, code: 'network', message: err?.message || 'The server could not be reached.' } };
   }
 
-  if (response.status === 401 && retry && token && !url.startsWith('/api/identity/auth/')) {
+  if (response.status === 401 && retry && token && !isSessionOpeningUrl(url)) {
+    lastEndReason = await endReasonOf(response);
     if (await refreshSession()) return send<T>(method, url, body, false);
     tokenStore.clear();
     sessionEvents.dispatchEvent(new Event('expired'));
@@ -120,7 +155,12 @@ async function download(url: string, fallbackName: string, retry = true): Promis
   } catch (err: any) {
     return { ok: false, error: { status: 0, code: 'network', message: err?.message || 'The server could not be reached.' } };
   }
-  if (response.status === 401 && retry && token && await refreshSession()) return download(url, fallbackName, false);
+  if (response.status === 401 && retry && token) {
+    lastEndReason = await endReasonOf(response);
+    if (await refreshSession()) return download(url, fallbackName, false);
+    tokenStore.clear();
+    sessionEvents.dispatchEvent(new Event('expired'));
+  }
   if (!response.ok) return { ok: false, error: await toError(response) };
 
   const disposition = response.headers.get('content-disposition') || '';

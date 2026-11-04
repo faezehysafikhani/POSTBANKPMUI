@@ -71,9 +71,19 @@ export interface BackendMember {
 
 export const organization = {
   units: () => api.get<BackendUnit[]>(`/api/organization/units/${query({ activeOnly: true })}`),
-  createUnit: (body: { tenantId: string; name: string; code?: string; parentId: string | null }) => api.post<BackendUnit>('/api/organization/units/', body),
-  updateUnit: (id: string, body: { name: string; code: string; parentId: string | null; managerUserId: string | null; isActive: boolean }) =>
+  /**
+   * A unit under another one is a node of the organization structure (its place in the chart is the structure's, with its
+   * rules and change log); a top-level unit is a plain unit. The two are the same rows, so the list below shows both.
+   */
+  createUnit: (body: { tenantId: string; name: string; parentId: string | null }) =>
+    body.parentId
+      ? api.post<unknown>('/api/org-structure/nodes', { name: body.name, parentNodeId: body.parentId })
+      : api.post<BackendUnit>('/api/organization/units/', { tenantId: body.tenantId, name: body.name }),
+  /** Renames a unit and sets its manager / state. Its place and code are not sent: they are changed in the structure. */
+  updateUnit: (id: string, body: { name: string; managerUserId: string | null; isActive: boolean }) =>
     api.put<BackendUnit>(`/api/organization/units/${id}`, body),
+  /** Moves a unit under another one (the structure checks its rules and records the change). */
+  moveUnit: (id: string, parentId: string) => api.post<unknown>(`/api/org-structure/nodes/${id}/move`, { parentNodeId: parentId }),
   deactivateUnit: (id: string) => api.delete<void>(`/api/organization/units/${id}?includeBranch=true`),
   members: () => api.get<BackendMember[]>('/api/organization/members'),
   setUserUnit: (userId: string, unitId: string | null) => api.put<BackendMember | null>(`/api/organization/users/${userId}/unit`, { unitId })

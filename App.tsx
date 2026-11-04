@@ -40,6 +40,7 @@ import { ReportsDashboardPage } from './pages/ReportsPages';
 import { Header, Footer, Sidebar } from './components/Core';
 import { ApprovalCommentModal, InfoModal } from './components/Modals';
 import { AiChatbot } from './components/AiChatbot';
+import { SessionLimitModal, SessionWatcher } from './components/SessionComponents';
 
 
 const AppContent = () => {
@@ -574,7 +575,22 @@ const AppContent = () => {
             return <div className="content-container" style={{ textAlign: 'center', padding: '3rem' }}>...</div>;
         }
         if (!currentUser) {
-            return <LoginPage onLogin={handleLogin} error={loginError} captcha={auth.captcha} onRefreshCaptcha={() => void auth.refreshCaptcha()} />;
+            return (
+                <>
+                    <LoginPage onLogin={handleLogin} error={loginError} notice={auth.endMessage} captcha={auth.captcha} onRefreshCaptcha={() => void auth.refreshCaptcha()} />
+                    {auth.sessionLimit && (
+                        <SessionLimitModal
+                            limit={auth.sessionLimit}
+                            onChoose={async choice => {
+                                const outcome = await auth.completeSignIn(choice);
+                                if (outcome.ok) { setLoginError(null); setPage('dashboard'); }
+                                return outcome;
+                            }}
+                            onCancel={auth.cancelSessionLimit}
+                        />
+                    )}
+                </>
+            );
         }
         switch (page) {
             case 'main':
@@ -728,6 +744,7 @@ const AppContent = () => {
                 </main>
             </div>
             <Footer />
+            {currentUser && <SessionWatcher />}
             {currentUser && (
                 <AiChatbot 
                     projects={projects}

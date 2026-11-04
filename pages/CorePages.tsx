@@ -10,10 +10,12 @@ import { FloatingSpheresCanvas } from '../components/FloatingSpheresCanvas';
 
 
 // --- LoginPage ---
-export const LoginPage = ({ onLogin, error, captcha, onRefreshCaptcha }: {
+export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }: {
   /** Signs in against the backend; the backend decides whether a CAPTCHA is needed and what any failure says. */
   onLogin: (username: string, password: string, captchaAnswer?: string) => Promise<void>,
   error: string | null,
+  /** Why the previous session ended (from the backend), shown above the form. */
+  notice?: string | null,
   captcha?: { imageDataUrl: string } | null,
   onRefreshCaptcha?: () => void
 }): ReactElement => {
@@ -145,6 +147,13 @@ export const LoginPage = ({ onLogin, error, captcha, onRefreshCaptcha }: {
                   className="login-input"
                 />
               </div>
+            </div>
+          )}
+
+          {notice && !error && (
+            <div className="login-error-banner" id="session-end-notice">
+              <span className="material-symbols-outlined">info</span>
+              <span>{notice}</span>
             </div>
           )}
 

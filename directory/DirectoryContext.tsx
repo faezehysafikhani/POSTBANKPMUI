@@ -177,12 +177,12 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
       tenantId ? organization.createUnit({ tenantId, name, parentId }) : Promise.resolve({ ok: false })),
     renameUnit: (id, name) => {
       const unit = units.find(u => u.id === id);
-      return unit ? run(() => organization.updateUnit(id, { name, code: unit.code, parentId: unit.parentId, managerUserId: unit.managerUserId, isActive: true })) : Promise.resolve(fail());
+      return unit ? run(() => organization.updateUnit(id, { name, managerUserId: unit.managerUserId, isActive: true })) : Promise.resolve(fail());
     },
-    moveUnit: (id, parentId) => {
-      const unit = units.find(u => u.id === id);
-      return unit ? run(() => organization.updateUnit(id, { name: unit.name, code: unit.code, parentId, managerUserId: unit.managerUserId, isActive: true })) : Promise.resolve(fail());
-    },
+    // Moving to the top of the chart needs a company, which only the organization structure screens know: not offered here.
+    moveUnit: (id, parentId) => parentId
+      ? run(() => organization.moveUnit(id, parentId))
+      : Promise.resolve(fail('Moving a unit to the top level is done in the organization structure.')),
     deleteUnit: id => run(() => organization.deactivateUnit(id)),
 
     saveCalendar: calendar => run(() =>

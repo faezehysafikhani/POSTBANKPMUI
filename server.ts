@@ -1518,6 +1518,14 @@ ${JSON.stringify(dbSummary.users || [], null, 2)}
       if (req.headers["authorization"]) headers["Authorization"] = String(req.headers["authorization"]);
       if (req.headers["content-type"]) headers["Content-Type"] = String(req.headers["content-type"]);
       if (req.headers["accept-language"]) headers["Accept-Language"] = String(req.headers["accept-language"]);
+      // Sessions: the refresh token is the backend's HttpOnly cookie (scoped to /api/identity/auth); a browser asks for that mode
+      // with X-Nexus-Session and proves it is not a cross-site form with X-Requested-With. The backend also decides from the
+      // client address and device (kept as the browser's own user agent and, behind this server, the forwarded address).
+      for (const name of ["cookie", "x-nexus-session", "x-requested-with", "user-agent"]) {
+        if (req.headers[name]) headers[name] = String(req.headers[name]);
+      }
+      const clientAddress = req.socket.remoteAddress;
+      if (clientAddress) headers["X-Forwarded-For"] = [req.headers["x-forwarded-for"], clientAddress].filter(Boolean).join(", ");
       // JSON bodies were already parsed above; anything else (a multipart document upload, for instance) is passed through byte for byte.
       let body: BodyInit | undefined;
       if (!["GET", "HEAD"].includes(req.method)) {
@@ -1535,6 +1543,14 @@ ${JSON.stringify(dbSummary.users || [], null, 2)}
       if (contentType) res.setHeader("Content-Type", contentType);
       const disposition = backendResponse.headers.get("content-disposition");
       if (disposition) res.setHeader("Content-Disposition", disposition);
+      // The cookie that carries the refresh token, why a session ended, how long to wait after "too many requests", and the
+      // no-store header the identity routes use so tokens are never cached.
+      const setCookies = backendResponse.headers.getSetCookie?.() ?? [];
+      if (setCookies.length) res.setHeader("Set-Cookie", setCookies);
+      for (const name of ["x-nexus-session-reason", "retry-after", "cache-control", "pragma"]) {
+        const value = backendResponse.headers.get(name);
+        if (value) res.setHeader(name, value);
+      }
       res.send(Buffer.from(await backendResponse.arrayBuffer()));
     } catch (err: any) {
       res.status(502).json({ title: "backend.unreachable", detail: `The backend (${BACKEND_TARGET}) could not be reached: ${err?.message || err}` });
