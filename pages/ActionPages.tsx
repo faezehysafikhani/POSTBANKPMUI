@@ -79,20 +79,20 @@ export const ActionDefinitionPage = ({ onNavigate, onSaveAction, users, calendar
     const isProjectLocked = !!pageContext?.relatedProject;
 
     return (
-        React.createElement("div", { className: "content-container" },
+        React.createElement("div", { className: "content-container creation-form" },
             React.createElement("div", { className: "page-header" },
                 React.createElement("h2", null, isEditing ? t('edit') : t('defineAction'))
             ),
             React.createElement("div", { className: "tab-content", style: { marginTop: '1rem' } },
-                React.createElement(ActionForm, { 
-                    actionData: actionData, 
-                    setActionData: setActionData, 
-                    users: users, 
-                    calendars: calendars, 
-                    projects: projects, 
-                    owningUnits: owningUnits, 
-                    currentUser: currentUser, 
-                    isProjectLocked: isProjectLocked 
+                React.createElement(ActionForm, {
+                    actionData: actionData,
+                    setActionData: setActionData,
+                    users: users,
+                    calendars: calendars,
+                    projects: projects,
+                    owningUnits: owningUnits,
+                    currentUser: currentUser,
+                    isProjectLocked: isProjectLocked
                 })
             ),
              React.createElement("div", { className: "project-details-footer" },

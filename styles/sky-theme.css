@@ -1,0 +1,48 @@
+/* Shared sky-blue surface and accent system across every application page. */
+:root:root, html[data-color-scheme] {
+  --primary-color: #0284c7;
+  --primary-color-dark: #0369a1;
+  --secondary-color: #e0f2fe;
+  --card-bg-color: #ffffff;
+  --body-bg-color: #f0f9ff;
+  --border-color: #d4eaf7;
+  --shadow-color: rgba(14, 116, 172, .08);
+  --hover-shadow-color: rgba(14, 116, 172, .17);
+  --text-color: #183b50;
+  --text-muted: #607e91;
+  --bg-secondary: #f0f9ff;
+  --placeholder-bg: #f4faff;
+  --info-box-bg: #eaf7ff;
+  --info-box-border: #bae6fd;
+  --info-box-title: #0369a1;
+  --teal-box-bg: #eaf7ff;
+  --teal-box-border: #bae6fd;
+}
+html body { background: #f0f9ff; color: var(--text-color); }
+html body::before { background: radial-gradient(ellipse at top right, #bae6fd70, transparent 65%), radial-gradient(ellipse at bottom left, #e0f2fe, transparent 70%); }
+html .app-container, html #root { background: transparent; }
+html .main-content { background-color: #f0f9ff; }
+html .app-container>header { background: linear-gradient(110deg,#38bdf8,#0284c7); box-shadow: 0 3px 18px #0284c71a; }
+html .app-sidebar { background: #f8fcff; border-color: #d4eaf7; box-shadow: -3px 0 18px #0284c708; }
+html .sidebar-group-header.active-parent, html .sidebar-group-header:hover { background: #e0f2fe; color: #0369a1; }
+html .sidebar-subitem.active, html .sidebar-nested-item.active { background: linear-gradient(110deg,#38bdf8,#0284c7); color: white; box-shadow: 0 3px 9px #0284c724; }
+html .app-container>footer { background: #eaf7ff; color: #607e91; border-color: #d4eaf7; }
+html .content-container { border-color: #d4eaf7; }
+html .settings-profile-page { --sp-accent:#0284c7; --sp-tint:#e0f2fe; --sp-line:#d4eaf7; --sp-text:#183b50; --sp-muted:#607e91; }
+html .sp-workspace { background:#f2faff; }
+html .sp-tab.is-active { box-shadow:0 3px 8px #0284c724; }
+html .sp-accordion-icon { background:#eaf7ff; }
+html .sp-accordion h3 button:hover { background:#f0f9ff; }
+html .sp-tab:focus-visible, html .sp-tab-panel:focus-visible, html .sp-accordion button:focus-visible { outline-color:#38bdf8; }
+html input:focus-visible, html textarea:focus-visible, html select:focus-visible { outline-color:#38bdf8; border-color:#38bdf8; }
+html .login-container-root { background:radial-gradient(ellipse at 80% 15%,#bae6fd,transparent 65%),linear-gradient(135deg,#f0f9ff,#e0f2fe); }
+html .login-card-wrapper { border-color:#bae6fd; box-shadow:0 12px 40px #0284c71a; }
+
+/* Dark mode retains the sky accent while keeping readable dark surfaces. */
+html[data-theme="dark"] { --card-bg-color:#102c40; --body-bg-color:#082235; --text-color:#e0f2fe; --border-color:#24485e; --secondary-color:#143c56; --bg-secondary:#0c293d; }
+html[data-theme="dark"] body, html[data-theme="dark"] .main-content { background:#082235; }
+html[data-theme="dark"] .app-sidebar, html[data-theme="dark"] .app-container>footer { background:#102c40; border-color:#24485e; }
+html[data-theme="dark"] .settings-profile-page { --sp-text:#e0f2fe; --sp-muted:#a3c6dc; --sp-tint:#143c56; --sp-line:#24485e; }
+html[data-theme="dark"] .sp-workspace { background:#0c293d; }
+html[data-theme="dark"] .sp-tab-list, html[data-theme="dark"] .sp-accordion, html[data-theme="dark"] .sp-placeholder { background:#102c40; }
+html[data-theme="dark"] .sp-accordion h3 button:hover, html[data-theme="dark"] .sp-accordion-icon { background:#143c56; }

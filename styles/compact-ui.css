@@ -1,0 +1,99 @@
+/* Compact, shared controls for all pages. Keep charts and status colours semantic. */
+html .app-container { --control-radius:12px; --control-height:32px; }
+html .app-container>.app-body { min-height:calc(100vh - 112px); }
+html .app-container .header-content { height:64px; }
+html .app-container .header-logo { height:36px; }
+html .app-container>header h1 { font-size:1.35rem; }
+html .app-container .app-sidebar { top:64px; height:calc(100vh - 64px); }
+html .app-container .main-content { padding:18px 22px; }
+html .app-container .content-container { padding:20px; border-radius:18px; }
+html .app-container .page-header { margin-bottom:14px; gap:10px; }
+html .app-container .page-header h2 { font-size:1.2rem; line-height:1.7; }
+html .app-container .page-header-actions { gap:7px!important; flex-wrap:wrap; }
+html .app-container :is(.form-section,.list-section) { margin-top:16px; }
+html .app-container :is(.form-section h3,.list-section h3) { font-size:1rem; margin-bottom:12px; padding-bottom:7px; }
+
+html .app-container button { font-family:inherit; }
+html .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.submit-progress-btn,.add-user-btn,.approve-btn,.reject-btn,.delete-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.add-team-member-btn,.remove-team-member-btn,.export-btn,.print-btn,.sp-tab,.sp-secondary .sp-tab) {
+  min-height:var(--control-height); padding:6px 12px!important; border-radius:var(--control-radius)!important;
+  font-size:.82rem!important; line-height:1.55; gap:6px; border:1px solid #c4e6f7!important;
+  background:linear-gradient(145deg,#ffffffed,#e3f4ffdb)!important; color:#0369a1!important;
+  box-shadow:3px 3px 8px #82b4d125,inset 1px 1px 2px #fff,inset -1px -1px 3px #c9e5f333!important;
+  backdrop-filter:blur(12px); transition:background .15s,box-shadow .15s,transform .15s;
+}
+html .app-container :is(.save-btn,.submit-progress-btn,.action-button.primary,.quick-action-btn:not(.secondary),.sp-tab.is-active) {
+  background:linear-gradient(135deg,#38bdf8,#0284c7)!important; color:#fff!important; border-color:#7dd3fc!important;
+  box-shadow:3px 4px 10px #0284c726,inset 1px 1px 2px #ffffff80!important;
+}
+html .app-container :is(.action-icon,.modal-close-button,.logout-button,.sidebar-toggle-btn) {
+  width:32px; height:32px; min-width:32px; min-height:32px; padding:5px!important; border-radius:11px!important;
+  border:1px solid #d0e9f7; background:linear-gradient(145deg,#ffffffd9,#e6f5ffd9); color:#0369a1;
+  box-shadow:2px 3px 6px #91bcd124,inset 1px 1px 2px #fff;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+html .app-container :is(.action-icon,.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn) .material-symbols-outlined { font-size:18px!important; }
+html .app-container :is(.action-icon,.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn) .material-symbols-outlined { color:inherit!important; }
+html .app-container .sidebar-subitem.active .material-symbols-outlined { color:white!important; }
+html .app-container :is(.action-cell,.action-buttons) { gap:5px; }
+html .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.action-icon):hover:not(:disabled) {
+  filter:brightness(1.025); transform:translateY(-1px); box-shadow:3px 5px 10px #0284c72b,inset 1px 1px 2px #fff!important;
+}
+html .app-container button:focus-visible { outline:3px solid #38bdf8; outline-offset:3px; }
+html .app-container button:disabled { cursor:not-allowed; }
+html .app-container :is(.delete-btn,.reject-btn,.action-icon.delete,.remove-team-member-btn) { color:#b42335!important; background:linear-gradient(145deg,#fff,#fff0f1)!important; border-color:#f3d1d7!important; }
+html .app-container .approve-btn { color:#147254!important; background:linear-gradient(145deg,#fff,#eaf9f2)!important; border-color:#caeade!important; }
+html .app-container>header .logout-button { color:white; background:#ffffff20; border-color:#ffffff42; box-shadow:inset 1px 1px 2px #ffffff25; }
+
+/* Reduce row gaps as well as field margins: they previously accumulated. */
+html .app-container :is(.charter-form,.action-form,.user-form,.kanban-task-form,.risk-form,.stakeholder-form,.form-grid,.settings-grid) { gap:10px 16px!important; }
+html .app-container .form-group { margin-bottom:4px!important; gap:0; }
+html .app-container .form-group label { margin-bottom:5px!important; font-size:.83rem; line-height:1.6; }
+html .app-container :is(input[type="text"],input[type="number"],input[type="password"],input[type="email"],input[type="tel"],input[type="date"],select) {
+  min-height:34px; height:34px; padding:6px 10px!important; font-size:.85rem; line-height:1.5; border-radius:10px;
+  border-color:#cce5f3; background:linear-gradient(180deg,#ffffff,#fbfdff); box-shadow:inset 0 1px 3px #1d648708;
+}
+html .app-container textarea { padding:8px 10px; font-size:.85rem; border-radius:10px; line-height:1.8; }
+html .app-container input.shamsi-datepicker-input { padding-right:36px!important; padding-left:10px!important; }
+html .app-container .charter-form textarea { height:84px; min-height:72px; }
+html .app-container :is(.tab-content,.project-details-footer) { margin-top:12px!important; }
+html .app-container .project-details-footer { padding-top:12px; gap:8px; }
+html .app-container .form-group:has(> input:disabled) { opacity:.9; }
+html .app-container .tabs-nav { gap:6px; margin-bottom:14px; }
+html .app-container .tabs-nav .tab-item { border-radius:12px; font-size:.82rem; padding:8px 12px; }
+html .settings-preview-layout .app-body .app-sidebar { height:auto; max-height:calc(100vh - 112px); }
+
+/* Creation cards: same row, approximately half the original height. */
+html .app-container .portfolio-create-actions { gap:12px; margin-bottom:16px; }
+html .app-container .portfolio-create-button { min-height:64px; padding:11px 14px; border-radius:18px; gap:10px; box-shadow:4px 5px 12px #94c8e426,inset 1px 1px 3px #fff; }
+html .app-container .portfolio-create-icon { width:36px; height:36px; border-radius:12px; font-size:21px!important; }
+html .app-container .portfolio-create-copy { gap:2px; }
+html .app-container .portfolio-create-copy strong { font-size:.88rem; line-height:1.65; }
+html .app-container .portfolio-create-copy>span { font-size:.68rem; line-height:1.5; }
+html .app-container .portfolio-create-plus { font-size:17px!important; }
+
+/* Desktop form navigation fits one row; mobile wraps without page overflow. */
+html .app-container .creation-form .tabs-nav { gap:5px; padding:7px!important; margin:10px 0 14px!important; border-radius:18px!important; }
+html .app-container .creation-form .tabs-nav .tab-item {
+  padding:8px 9px!important; min-height:34px; border-radius:12px!important; font-size:.78rem!important;
+  gap:4px; line-height:1.6; margin:0!important; min-width:0;
+}
+html .app-container .creation-form .tab-item:disabled { opacity:.58; transform:none; }
+@media(min-width:1100px) {
+  html .app-container .creation-form .tabs-nav { flex-wrap:nowrap; }
+  html .app-container .creation-form .tabs-nav .tab-item { flex:1 1 0; white-space:normal; text-align:center; }
+  html .app-container .creation-form .tabs-nav .tab-item .material-symbols-outlined { font-size:17px!important; }
+}
+@media(max-width:700px) {
+  html .app-container .main-content { padding:12px 10px; }
+  html .app-container .content-container { padding:14px; border-radius:14px; }
+  html .app-container .portfolio-create-actions { grid-template-columns:1fr; gap:9px; }
+  html .app-container .portfolio-create-button { min-height:58px; padding:10px 12px; }
+  html .app-container .creation-form .tabs-nav { flex-wrap:wrap; }
+  html .app-container .creation-form .tabs-nav .tab-item { flex:1 1 110px; }
+  html .app-container button { touch-action:manipulation; }
+}
+html[data-theme="dark"] .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.action-icon,.sp-tab:not(.is-active)) {
+  background:linear-gradient(145deg,#1c425b,#123249)!important; color:#bae6fd!important; border-color:#31576e!important; box-shadow:2px 3px 7px #04182466,inset 1px 1px 2px #ffffff10!important;
+}
+html[data-theme="dark"] .app-container :is(input,select,textarea) { background:#102c40; color:#e0f2fe; border-color:#31576e; }
+@media(prefers-reduced-motion:reduce) { html .app-container button { transition:none!important; } }

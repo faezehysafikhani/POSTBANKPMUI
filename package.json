@@ -10,7 +10,6 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^2.16.0",
     "@types/express": "^5.0.6",
     "esbuild": "^0.28.1",
     "express": "^5.2.1",

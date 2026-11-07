@@ -3,7 +3,7 @@
 export const i18nStrings = {
   en: {
     // General
-    mainTitle: 'Project & Task Management System (PTMS)',
+    mainTitle: 'Post Bank Project Management',
     login: 'Login',
     logout: 'Logout',
     username: 'Username',
@@ -56,11 +56,11 @@ export const i18nStrings = {
     rial: 'Rial',
     details: 'Details',
     progress: 'Progress',
-    
+
     // Header & Footer
     welcomeUser: 'Welcome, {{username}}!',
     footerText: '© 2024 All rights reserved for Pars Project Management Company.',
-    
+
     // Login Page
     loginErrorInactive: 'This account is inactive. Please contact an administrator.',
     loginErrorInvalid: 'Invalid username or password.',
@@ -92,7 +92,7 @@ export const i18nStrings = {
     passwordHint: 'Leave blank to keep the current password',
     toggleUserStatus: 'Toggle user status',
     deleteUser: 'Delete user',
-    
+
     // Settings
     softwareSettings: 'Software Settings',
     defineTables: 'Define Tables, Fields, and Base Tables',
@@ -162,7 +162,7 @@ export const i18nStrings = {
     projectSavedAsDraft: 'Project saved as a draft. You can continue editing it from your portfolio.',
     viewProject: 'View Project',
     projectMustBeApproved: 'Project must be approved to access this tab.',
-    
+
     // Project Charter
     projectName: 'Project Name',
     projectGoal: 'Project Goal',
@@ -213,7 +213,7 @@ export const i18nStrings = {
     noDocuments: 'No documents uploaded.',
     editNotImplemented: 'Edit not implemented for documents.',
     selectFileAndDesc: "Please select a file and provide a description.",
-    
+
     // Schedule
     createMainActivity: 'Create Main Activity',
     gantt: 'Gantt',
@@ -307,7 +307,7 @@ export const i18nStrings = {
     // Delete Projects
     confirmProjectDelete: 'Are you sure you want to permanently delete this project? This action cannot be undone.',
     noProjectsToDelete: 'There are no projects to delete.',
-    
+
     // Document Types
     letter: 'Letter',
     meetingMinutes: 'Meeting Minutes',
@@ -465,7 +465,7 @@ export const i18nStrings = {
     relatedProject: 'Related Project',
     relatedActions: 'Related Actions',
     addRelatedAction: 'Add Related Action',
-    
+
     // Knowledge Management
     addKnowledgeDocument: 'Add Knowledge Document',
     knowledgeDocsList: 'Knowledge Documents List',
@@ -488,7 +488,7 @@ export const i18nStrings = {
   },
   fa: {
     // General
-    mainTitle: 'سامانه مدیریت پروژه (PM)',
+    mainTitle: 'سامانه مدیریت پروژه پست بانک',
     login: 'ورود',
     logout: 'خروج',
     username: 'نام کاربری',
@@ -541,7 +541,7 @@ export const i18nStrings = {
     rial: 'ریال',
     details: 'جزئیات',
     progress: 'پیشرفت',
-    
+
     // Header & Footer
     welcomeUser: 'خوش آمدید، {{username}}!',
     footerText: '© ۱۴۰۳ تمام حقوق برای شرکت مدیریت پروژه پارس محفوظ است.',
@@ -577,7 +577,7 @@ export const i18nStrings = {
     passwordHint: 'برای حفظ رمز عبور فعلی، این فیلد را خالی بگذارید',
     toggleUserStatus: 'تغییر وضعیت کاربر',
     deleteUser: 'حذف کاربر',
-    
+
     // Settings
     softwareSettings: 'تنظیمات نرم‌افزار',
     defineTables: 'تعریف جداول، فیلدها و جداول پایه',
@@ -613,7 +613,7 @@ export const i18nStrings = {
     waterfallProject: 'پروژه آبشاری',
     agileProject: 'پروژه چابک',
     backToProjectTypes: 'بازگشت به انواع پروژه',
-    
+
     // Project Details
     newProject: 'جدید',
     projectCharter: 'منشور پروژه',
@@ -647,7 +647,7 @@ export const i18nStrings = {
     projectSavedAsDraft: 'پروژه به عنوان پیش‌نویس ذخیره شد. می‌توانید آن را از سبد پروژه‌های خود ویرایش کنید.',
     viewProject: 'مشاهده پروژه',
     projectMustBeApproved: 'برای دسترسی به این تب، پروژه باید تایید شود.',
-    
+
     // Project Charter
     projectName: 'نام پروژه',
     projectGoal: 'هدف پروژه',
@@ -655,14 +655,14 @@ export const i18nStrings = {
     projectLocation: 'محل پروژه',
     projectCalendar: 'تقویم پروژه',
     sprintCount: 'تعداد اسپرینت',
-    
+
     // Project Team
     availableUsers: 'کاربران در دسترس',
     projectTeamMembers: 'اعضای تیم پروژه',
     addUserToTeam: 'افزودن {{user}} به تیم',
     removeUserFromTeam: 'حذف {{user}} از تیم',
     noTeamMembers: 'هیچ عضوی به تیم اختصاص داده نشده است.',
-    
+
     // Project Risks
     addOrUpdateRisk: 'افزودن یا بروزرسانی ریسک',
     addNewRisk: 'افزودن ریسک جدید',
@@ -679,14 +679,14 @@ export const i18nStrings = {
     riskRegister: 'فهرست ریسک‌ها',
     noRisksDefined: 'هیچ ریسکی هنوز تعریف نشده است.',
     fillRiskFields: "لطفاً تمام فیلدهای ریسک را پر کنید.",
-    
+
     // Project Status
     enterNewStatus: 'شرح وضعیت جدید را وارد کنید',
     addStatus: 'افزودن وضعیت',
     updateStatus: 'بروزرسانی وضعیت',
     confirmStatusDelete: 'آیا از حذف این گزارش وضعیت اطمینان دارید؟',
     noStatusUpdates: 'هیچ گزارش وضعیتی ثبت نشده است.',
-    
+
     // Project Documents
     docDescription: 'شرح سند',
     docType: 'نوع',
@@ -698,7 +698,7 @@ export const i18nStrings = {
     noDocuments: 'هیچ سندی بارگذاری نشده است.',
     editNotImplemented: 'ویرایش برای اسناد پیاده‌سازی نشده است.',
     selectFileAndDesc: "لطفاً یک فایل انتخاب کرده و توضیحات را ارائه دهید.",
-    
+
     // Schedule
     createMainActivity: 'ایجاد فعالیت اصلی',
     gantt: 'گانت',
@@ -771,7 +771,7 @@ export const i18nStrings = {
     kanbanBoard: 'تابلوی کانبان',
     sprints: 'اسپرینت',
     sprintNumber: 'شماره اسپرینت',
-    
+
     // Portfolio
     portfolioView: 'نمای سبد',
     portfolioStructure: 'ساختار سبد پروژه‌ها',
@@ -788,11 +788,11 @@ export const i18nStrings = {
     filterPlaceholder: 'فیلتر بر اساس نام...',
     expandAll: 'باز کردن همه',
     collapseAll: 'بستن همه',
-    
+
     // Delete Projects
     confirmProjectDelete: 'آیا از حذف دائمی این پروژه اطمینان دارید؟ این عمل قابل بازگشت نیست.',
     noProjectsToDelete: 'پروژه‌ای برای حذف وجود ندارد.',
-    
+
     // Document Types
     letter: 'نامه',
     meetingMinutes: 'صورتجلسه',
@@ -949,7 +949,7 @@ export const i18nStrings = {
     relatedProject: 'پروژه مرتبط',
     relatedActions: 'اقدامات مرتبط',
     addRelatedAction: 'افزودن اقدام مرتبط',
-    
+
     // Knowledge Management
     addKnowledgeDocument: 'افزودن سند دانش',
     knowledgeDocsList: 'لیست اسناد دانش',

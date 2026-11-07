@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# PostBank Project Management UI
 
-# Run and deploy your AI Studio app
+React and TypeScript project-management interface.
 
-This contains everything you need to run your app locally.
+## Run
 
-View your app in AI Studio: https://ai.studio/apps/2a519d84-b141-4d32-857f-8537bb1d6457
+```powershell
+cd F:\POSTBANKPM\POSTBANKPMUI
+npm install
+npm run dev
+```
 
-## Run Locally
+Open http://localhost:3000. Run only one development server per port.
 
-**Prerequisites:**  Node.js
+This branch retains the existing NexusCore/.NET backend integration and server-side API proxy.
+Start the API separately (default `http://localhost:5251`), or set `BACKEND_URL` when running the UI server.
+Use an account registered in the backend; local demo users are not used on this branch.
 
+The Post Bank interface includes compact glass dashboard cards, a unified portfolio,
+creation dialogs, a settings navigation preview, reports navigation and a document-upload dialog.
+The document dialog passes the selected `File` to the existing backend upload handler.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Checks
+
+```powershell
+npm run lint
+npm run build
+```
