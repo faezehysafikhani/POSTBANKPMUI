@@ -128,7 +128,7 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
 
   let response: Response;
   try {
-    response = await fetch(url, { method, headers, body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body) });
+    response = await fetch(url, { method, headers, signal: AbortSignal.timeout(isForm ? 120000 : 20000), body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body) });
   } catch (err: any) {
     return { ok: false, error: { status: 0, code: 'network', message: err?.message || 'The server could not be reached.' } };
   }
@@ -142,8 +142,12 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
 
   if (!response.ok) return { ok: false, error: await toError(response) };
   if (response.status === 204) return { ok: true, value: undefined as T };
-  const text = await response.text();
-  return { ok: true, value: (text ? JSON.parse(text) : undefined) as T };
+  try {
+    const text = await response.text();
+    return { ok: true, value: (text ? JSON.parse(text) : undefined) as T };
+  } catch {
+    return { ok: false, error: { status: response.status, code: 'invalid_response', message: 'پاسخ سرور معتبر نیست. سرور فرانت و بک‌اند را دوباره اجرا کنید.' } };
+  }
 }
 
 /** Fetches a file with the session's token and hands it to the browser to save (the backend names it in Content-Disposition). */

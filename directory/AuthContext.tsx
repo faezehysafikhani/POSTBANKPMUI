@@ -40,9 +40,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // A stored session that the backend has ended says why (idle timeout, closed by an administrator, ...).
         if (!restored) setEndMessage(current => endReasonText(endReason()) ?? current);
         setSession(restored);
-        setRestoring(false);
       }
-    });
+    }).catch(() => {
+      if (!cancelled) {
+        setSession(null);
+        setEndMessage('بازیابی نشست انجام نشد. ارتباط سرور را بررسی کرده و دوباره وارد شوید.');
+      }
+    }).finally(() => { if (!cancelled) setRestoring(false); });
     const expired = () => {
       setEndMessage(current => endReasonText(endReason()) ?? current);
       setSession(null);
