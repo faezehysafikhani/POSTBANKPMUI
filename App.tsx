@@ -20,8 +20,8 @@ import {
     getEffectiveProjectWorkflowStages
 } from './types';
 import { getISODateString, getISODateTimeString, calculateScheduleTreeAndProgress, isProjectVisibleToUser, isActionVisibleToUser, toPersianDigits, generateRecurringOccurrences } from './utils';
-import { LocalizationProvider, LocalizationContext, ThemeProvider } from './context';
-import { LoginPage, MainMenu, SettingsPage } from './pages/CorePages';
+import { LocalizationProvider, LocalizationContext, ThemeProvider, ThemeContext } from './context';
+import { MainMenu } from './pages/CorePages';
 import { UserManagementPage, TaskCenterPage, ApprovalCenterPage } from './pages/UserAndTaskPages';
 import { CalendarManagementPage, EditCalendarPage, StrategyManagementHubPage, DefineStrategiesPage, AlignmentMatrixPage, ColorFormatPage, KnowledgeManagementPage, ReferenceTablesPage } from './pages/AdvancedPages';
 import { ActionDefinitionPage } from './pages/ActionPages';
@@ -38,8 +38,14 @@ import { ApprovalCommentModal, InfoModal } from './components/Modals';
 import { AiChatbot } from './components/AiChatbot';
 
 
+import { SettingsPage, TmpbLogin } from './components/TmpbSettings';
+import { getSessionUser, refreshCurrentUser, logout as logoutApi, SESSION_ENDED_EVENT } from './tmpb/services/nexusApi';
+import type { User as BackendUser } from './tmpb/types';
+import { startActivityTracking } from './tmpb/utils/sessionActivity';
+
 const AppContent = () => {
     const { t, language } = useContext(LocalizationContext);
+    const { setTheme } = useContext(ThemeContext);
 
     // --- STATE MANAGEMENT ---
     const [users, setUsers] = useState<User[]>(() => {
@@ -315,7 +321,9 @@ const AppContent = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(() => {
         try {
             const saved = sessionStorage.getItem('pms_current_user');
-            return saved ? JSON.parse(saved) : null;
+            const restored = saved ? JSON.parse(saved) : null;
+            const session = getSessionUser();
+            return session && restored?.backendId === session.id ? restored : null;
         } catch(e) {
             return null;
         }
@@ -588,25 +596,49 @@ const AppContent = () => {
     };
 
     // --- AUTHENTICATION ---
-    const handleLogin = (username: string, password: string): void => {
-        const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
-        if (user) {
-            if (user.isActive) {
-                setCurrentUser(user);
-                setLoginError(null);
-                setPage('dashboard');
-            } else {
-                setLoginError(t('loginErrorInactive'));
-            }
-        } else {
-            setLoginError(t('loginErrorInvalid'));
-        }
+    // Keep the existing numeric project references while the platform identity stays a GUID.
+    // All settings and organization permissions are checked by the server, via TMPB's API client.
+    const acceptBackendUser = (backendUser: BackendUser) => {
+        const existing = users.find(u => u.backendId === backendUser.id)
+            ?? users.find(u => !u.backendId && u.username.toLowerCase() === backendUser.username.toLowerCase());
+        const user: User = {
+            id: existing?.id ?? Math.max(0, ...users.map(u => u.id)) + 1,
+            backendId: backendUser.id,
+            username: backendUser.username,
+            name: backendUser.name,
+            isActive: !backendUser.disabled,
+            role: backendUser.role === 'admin' ? 'Admin' : existing?.role === 'Project Manager' ? 'Project Manager' : 'Project Team',
+            owningUnit: existing?.owningUnit,
+        };
+        setUsers(prev => [...prev.filter(u => u.id !== user.id), user]);
+        setCurrentUser(user);
+        if (backendUser.themeMode) setTheme(backendUser.themeMode);
+        setLoginError(null);
+    };
+
+    const handleLoginSuccess = () => {
+        const user = getSessionUser();
+        if (!user) return;
+        acceptBackendUser(user);
+        setPage('dashboard');
     };
 
     const handleLogout = (): void => {
+        logoutApi();
         setCurrentUser(null);
         setPage('login');
     };
+
+    useEffect(() => {
+        startActivityTracking();
+        const ended = () => { setCurrentUser(null); setPage('login'); };
+        window.addEventListener(SESSION_ENDED_EVENT, ended);
+        // Revalidate a restored identity; a browser snapshot alone grants no access.
+        if (getSessionUser()) {
+            void refreshCurrentUser().then(user => { if (user) acceptBackendUser(user); else ended(); }).catch(ended);
+        }
+        return () => window.removeEventListener(SESSION_ENDED_EVENT, ended);
+    }, []);
 
     // --- PROJECT & TASK HANDLERS ---
     const handleSaveProject = (project: Project, mode: 'draft' | 'sent') => {
@@ -1264,7 +1296,7 @@ const AppContent = () => {
     // --- RENDER LOGIC ---
     const renderPage = () => {
         if (!currentUser) {
-            return <LoginPage onLogin={handleLogin} error={loginError} />;
+            return <TmpbLogin onSuccess={handleLoginSuccess} />;
         }
         switch (page) {
             case 'main':
@@ -1280,6 +1312,8 @@ const AppContent = () => {
             case 'settings':
                 return (
                     <SettingsPage 
+                        onLogout={handleLogout}
+                        onProfileUpdated={acceptBackendUser}
                         onNavigate={handleNavigate} 
                         currentUser={currentUser} 
                         users={users}

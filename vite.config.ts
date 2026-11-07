@@ -372,7 +372,9 @@ ${isWaterfall ? `
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
+      build: { target: 'esnext' },
       server: {
+        proxy: env.VITE_DEV_API_BASE_URL ? { '/api/identity': env.VITE_DEV_API_BASE_URL, '/api/platform': env.VITE_DEV_API_BASE_URL, '/api/org-structure': env.VITE_DEV_API_BASE_URL, '/api/organization': env.VITE_DEV_API_BASE_URL } : undefined,
         port: 3000,
         host: '0.0.0.0',
       },
