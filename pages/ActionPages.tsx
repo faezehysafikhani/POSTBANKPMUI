@@ -96,7 +96,7 @@ export const ActionDefinitionPage = ({ onNavigate, onSaveAction, users, calendar
     const isProjectLocked = !!pageContext?.relatedProject;
 
     return (
-        React.createElement("div", { className: "content-container" },
+        React.createElement("div", { className: "content-container creation-form" },
             React.createElement("div", { className: "page-header" },
                 React.createElement("h2", null, isEditing ? t('edit') : t('defineAction'))
             ),

@@ -54,8 +54,8 @@ export const LoginPage = ({ onLogin, error }: { onLogin: (u: string, p: string) 
 
           <h2 className="login-main-title">{t('mainTitle')}</h2>
           <p className="login-subtitle">
-            {isFa 
-              ? 'سامانه جامع مدیریت هوشمند پروژه‌ها و کارتابل وظایف' 
+            {isFa
+              ? 'سامانه جامع مدیریت هوشمند پروژه‌ها و کارتابل وظایف'
               : 'Smart Project & Task Management System'}
           </p>
           <div className="login-company-badge">
@@ -120,8 +120,8 @@ export const LoginPage = ({ onLogin, error }: { onLogin: (u: string, p: string) 
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={`login-btn ${isSubmitting ? 'loading' : ''}`}
             disabled={isSubmitting}
             id="login-submit-btn"
@@ -132,9 +132,9 @@ export const LoginPage = ({ onLogin, error }: { onLogin: (u: string, p: string) 
 
           <div className="login-actions-row">
             {/* Dark/Light Mode Switcher */}
-            <button 
-              type="button" 
-              onClick={toggleTheme} 
+            <button
+              type="button"
+              onClick={toggleTheme}
               className="login-pill-btn"
               id="login-theme-toggle"
               title={isDark ? (isFa ? 'تغییر به حالت روشن' : 'Switch to Light mode') : (isFa ? 'تغییر به حالت تاریک' : 'Switch to Dark mode')}
@@ -146,9 +146,9 @@ export const LoginPage = ({ onLogin, error }: { onLogin: (u: string, p: string) 
             </button>
 
             {/* Language Switcher */}
-            <button 
-              type="button" 
-              onClick={toggleLanguage} 
+            <button
+              type="button"
+              onClick={toggleLanguage}
               className="login-pill-btn"
               id="login-lang-toggle"
               title={isFa ? 'Change language' : 'تغییر زبان'}
@@ -178,8 +178,8 @@ export const LoginPage = ({ onLogin, error }: { onLogin: (u: string, p: string) 
 
 
 // --- MainMenu (Home Overview) ---
-export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendingApprovalsCount, taskCenterNotificationCount }: { 
-    onNavigate: (page: string, context?: any) => void, 
+export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendingApprovalsCount, taskCenterNotificationCount }: {
+    onNavigate: (page: string, context?: any) => void,
     currentUser: User | null,
     overdueProjectsCount: number,
     pendingApprovalsCount: number,
@@ -222,9 +222,9 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
         React.createElement("div", { className: "welcome-info" },
           React.createElement("h2", null, t('welcomeUser', { username: currentUser?.username || '' })),
           React.createElement("span", { className: "role-badge" }, getRoleTitle(currentUser?.role)),
-          React.createElement("p", { className: "welcome-subtext" }, 
-            language === 'fa' 
-              ? 'به سامانه مدیریت پروژه و وظایف خوش آمدید. کلیه بخش‌ها و امکانات از طریق منوی سمت راست قابل دسترسی هستند.' 
+          React.createElement("p", { className: "welcome-subtext" },
+            language === 'fa'
+              ? 'به سامانه مدیریت پروژه و وظایف خوش آمدید. کلیه بخش‌ها و امکانات از طریق منوی سمت راست قابل دسترسی هستند.'
               : 'Welcome to PTMS. All modules and features are accessible via the right-side menu.'
           )
         )
@@ -247,9 +247,9 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
           ),
           React.createElement("div", { className: "metric-details" },
             React.createElement("h3", null, t('projectPortfolio')),
-            React.createElement("p", null, 
-              overdueProjectsCount > 0 
-                ? (language === 'fa' ? `${toPersianDigits(overdueProjectsCount)} پروژه دارای تاخیر` : `${overdueProjectsCount} overdue projects`) 
+            React.createElement("p", null,
+              overdueProjectsCount > 0
+                ? (language === 'fa' ? `${toPersianDigits(overdueProjectsCount)} پروژه دارای تاخیر` : `${overdueProjectsCount} overdue projects`)
                 : (language === 'fa' ? 'مشاهده و مدیریت پروژه‌ها' : 'View & manage projects')
             )
           ),
@@ -262,9 +262,9 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
           ),
           React.createElement("div", { className: "metric-details" },
             React.createElement("h3", null, t('taskCenter')),
-            React.createElement("p", null, 
-              taskCenterNotificationCount > 0 
-                ? (language === 'fa' ? `${toPersianDigits(taskCenterNotificationCount)} کار نیازمند بررسی` : `${taskCenterNotificationCount} tasks needing attention`) 
+            React.createElement("p", null,
+              taskCenterNotificationCount > 0
+                ? (language === 'fa' ? `${toPersianDigits(taskCenterNotificationCount)} کار نیازمند بررسی` : `${taskCenterNotificationCount} tasks needing attention`)
                 : (language === 'fa' ? 'مشاهده کارهای محوله' : 'View assigned tasks')
             )
           ),
@@ -277,9 +277,9 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
           ),
           React.createElement("div", { className: "metric-details" },
             React.createElement("h3", null, t('approvalCenter')),
-            React.createElement("p", null, 
-              pendingApprovalsCount > 0 
-                ? (language === 'fa' ? `${toPersianDigits(pendingApprovalsCount)} مورد در انتظار تایید` : `${pendingApprovalsCount} pending approvals`) 
+            React.createElement("p", null,
+              pendingApprovalsCount > 0
+                ? (language === 'fa' ? `${toPersianDigits(pendingApprovalsCount)} مورد در انتظار تایید` : `${pendingApprovalsCount} pending approvals`)
                 : (language === 'fa' ? 'تایید گزارش‌های پیشرفت' : 'Approve progress reports')
             )
           ),
@@ -292,15 +292,15 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
         React.createElement("div", { className: "quick-actions-flex" },
           ['Admin', 'Project Manager'].includes(currentUser?.role || '') && (
             React.createElement("div", { className: "quick-action-dropdown-wrapper", ref: dropdownRef },
-              React.createElement("button", { 
+              React.createElement("button", {
                 type: "button",
-                className: `quick-action-btn ${createProjectDropdownOpen ? 'active' : ''}`, 
+                className: `quick-action-btn ${createProjectDropdownOpen ? 'active' : ''}`,
                 onClick: () => setCreateProjectDropdownOpen(prev => !prev),
                 "aria-expanded": createProjectDropdownOpen
               },
                 React.createElement("span", { className: "material-symbols-outlined" }, "add_business"),
                 React.createElement("span", null, t('createProject')),
-                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', marginInlineStart: '4px' } }, 
+                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', marginInlineStart: '4px' } },
                   createProjectDropdownOpen ? 'expand_less' : 'expand_more'
                 )
               ),
@@ -318,7 +318,7 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
                   ),
                   React.createElement("div", { className: "item-text" },
                     React.createElement("span", { className: "item-title" }, t('waterfallProject')),
-                    React.createElement("span", { className: "item-desc" }, 
+                    React.createElement("span", { className: "item-desc" },
                       isFa ? 'پروژه‌های ساختاریافته و فازبندی شده با گانت چارت' : 'Structured phased projects with Gantt chart'
                     )
                   )
@@ -336,7 +336,7 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
                   ),
                   React.createElement("div", { className: "item-text" },
                     React.createElement("span", { className: "item-title" }, t('agileProject')),
-                    React.createElement("span", { className: "item-desc" }, 
+                    React.createElement("span", { className: "item-desc" },
                       isFa ? 'پروژه‌های چابک مبتنی بر اسپرینت، اسکرام و کانبان' : 'Agile sprint, Scrum and Kanban projects'
                     )
                   )
@@ -354,10 +354,10 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
             React.createElement("span", { className: "material-symbols-outlined" }, "school"),
             t('knowledgeManagement')
           ),
-          currentUser?.role === 'Admin' && (
-            React.createElement("button", { className: "quick-action-btn secondary", onClick: () => onNavigate('settings') },
+          (
+            React.createElement("button", { className: "quick-action-btn secondary", onClick: () => onNavigate('settings_profile') },
               React.createElement("span", { className: "material-symbols-outlined" }, "settings"),
-              t('settings')
+              'تنظیمات و پروفایل'
             )
           )
         )
@@ -365,9 +365,9 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
 
       React.createElement("div", { className: "navigation-hint-banner" },
         React.createElement("span", { className: "material-symbols-outlined hint-icon" }, "info"),
-        React.createElement("span", null, 
-          language === 'fa' 
-            ? 'نکته: جهت پیمایش بین کلیه بخش‌های نرم‌افزار، از آیکون‌های منوی سمت راست استفاده نمایید.' 
+        React.createElement("span", null,
+          language === 'fa'
+            ? 'نکته: جهت پیمایش بین کلیه بخش‌های نرم‌افزار، از آیکون‌های منوی سمت راست استفاده نمایید.'
             : 'Tip: Use the icons in the right-side menu for navigating between all application modules.'
         )
       )
@@ -376,8 +376,8 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
 };
 
 // --- SettingsPage ---
-export const SettingsPage = ({ 
-  onNavigate, 
+export const SettingsPage = ({
+  onNavigate,
   currentUser,
   users = [],
   isProjectWorkflowEnabled,
@@ -390,8 +390,8 @@ export const SettingsPage = ({
   setVisibilitySettings,
   dynamicWorkflowSettings,
   setDynamicWorkflowSettings
-}: { 
-  onNavigate: (page: string) => void, 
+}: {
+  onNavigate: (page: string) => void,
   currentUser: User | null,
   users?: User[],
   isProjectWorkflowEnabled: boolean,
@@ -465,7 +465,7 @@ export const SettingsPage = ({
       React.createElement("div", { className: "page-header" },
         React.createElement("h2", null, t('softwareSettings'))
       ),
-      
+
       // 1. Language Settings Section
       React.createElement("div", {
         className: "card shadow-sm",
@@ -496,7 +496,7 @@ export const SettingsPage = ({
                 height: '40px',
                 borderRadius: '10px',
                 backgroundColor: 'rgba(37, 99, 235, 0.12)',
-                color: '#2563eb',
+                color: '#0284c7',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -516,7 +516,7 @@ export const SettingsPage = ({
                 fontWeight: 600,
                 padding: '3px 10px',
                 borderRadius: '20px',
-                background: 'var(--primary-color, #2563eb)',
+                background: 'var(--primary-color, #0284c7)',
                 color: '#ffffff'
               }
             }, language === 'fa' ? 'فارسی' : 'English'),

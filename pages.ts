@@ -3,7 +3,7 @@
 export const i18nStrings = {
   en: {
     // General
-    mainTitle: 'Project & Task Management System (PTMS)',
+    mainTitle: 'Post Bank Project Management',
     login: 'Login',
     logout: 'Logout',
     username: 'Username',
@@ -488,7 +488,7 @@ export const i18nStrings = {
   },
   fa: {
     // General
-    mainTitle: 'سامانه مدیریت پروژه (PM)',
+    mainTitle: 'سامانه مدیریت پروژه پست بانک',
     login: 'ورود',
     logout: 'خروج',
     username: 'نام کاربری',

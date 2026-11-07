@@ -25,7 +25,7 @@ export const LocalizationProvider = ({ children }: { children: React.ReactNode }
     }
     return str as string;
   }, [language]);
-  
+
   const value = React.useMemo(() => ({ language, setLanguage, t }), [language, t]);
 
   return React.createElement(LocalizationContext.Provider, { value: value }, children);
@@ -36,16 +36,18 @@ export type ColorScheme = 'teal' | 'blue' | 'emerald' | 'purple' | 'crimson';
 export const ThemeContext = React.createContext({
   theme: 'light' as 'light' | 'dark',
   setTheme: (theme: 'light' | 'dark') => {},
-  colorScheme: 'teal' as ColorScheme,
+  colorScheme: 'blue' as ColorScheme,
   setColorScheme: (scheme: ColorScheme) => {},
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   const [theme, setTheme] = React.useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('pms_theme') as 'light' | 'dark') || 'light';
+    return localStorage.getItem('pms_sky_theme_version') === '1'
+      ? (localStorage.getItem('pms_theme') as 'light' | 'dark') || 'light' : 'light';
   });
   const [colorScheme, setColorScheme] = React.useState<ColorScheme>(() => {
-    return (localStorage.getItem('pms_color_scheme') as ColorScheme) || 'teal';
+    return localStorage.getItem('pms_sky_theme_version') === '1'
+      ? (localStorage.getItem('pms_color_scheme') as ColorScheme) || 'blue' : 'blue';
   });
 
   React.useEffect(() => {
@@ -55,6 +57,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }): Reac
 
   React.useEffect(() => {
     localStorage.setItem('pms_color_scheme', colorScheme);
+    localStorage.setItem('pms_sky_theme_version', '1');
     document.documentElement.setAttribute('data-color-scheme', colorScheme);
   }, [colorScheme]);
 

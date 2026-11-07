@@ -1,4 +1,4 @@
-import React, { useContext, ReactElement, useState, useMemo } from 'react';
+import React, { useContext, ReactElement, useState, useMemo, useEffect } from 'react';
 import { LocalizationContext, ThemeContext } from '../context';
 import { User } from '../types';
 import { toPersianDigits, appLogoUrl } from '../utils';
@@ -74,6 +74,7 @@ interface MenuItem {
 
 interface MenuGroup {
   id: string;
+  page?: string;
   titleFa: string;
   titleEn: string;
   icon: string;
@@ -90,6 +91,14 @@ export const Sidebar = ({
 }: SidebarProps): ReactElement | null => {
   const { t, language } = useContext(LocalizationContext);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  useEffect(() => {
+    if (currentPage !== 'settings_profile') return;
+    const media = window.matchMedia('(max-width: 700px)');
+    const collapseForMobile = () => { if (media.matches) setIsCollapsed(true); };
+    collapseForMobile();
+    media.addEventListener('change', collapseForMobile);
+    return () => media.removeEventListener('change', collapseForMobile);
+  }, [currentPage]);
   const [openGroupId, setOpenGroupId] = useState<string | null>(null);
   const [expandedSubMenuId, setExpandedSubMenuId] = useState<string | null>(null);
   const [hoveredSubMenuId, setHoveredSubMenuId] = useState<string | null>(null);
@@ -110,16 +119,16 @@ export const Sidebar = ({
           nameEn: 'Dashboard',
           icon: 'dashboard_customize',
           count: 0
-        },
-        {
-          id: 'reports_dashboard',
-          page: 'reports_dashboard',
-          nameFa: 'داشبورد پروژه',
-          nameEn: 'Project Dashboard',
-          icon: 'analytics',
-          count: 0
         }
       ]
+    },
+    {
+      id: 'reports',
+      page: 'reports_dashboard',
+      titleFa: 'گزارشات',
+      titleEn: 'Reports',
+      icon: 'summarize',
+      items: [{ id: 'reports_dashboard', page: 'reports_dashboard', nameFa: 'گزارشات', nameEn: 'Reports', icon: 'analytics', count: 0 }]
     },
     {
       id: 'projects_actions',
@@ -134,42 +143,8 @@ export const Sidebar = ({
           nameEn: 'Projects & Actions Portfolio',
           icon: 'inventory',
           count: overdueProjectsCount
-        },
-        {
-          id: 'create_project',
-          nameFa: 'ایجاد پروژه',
-          nameEn: 'Create Project',
-          icon: 'add_business',
-          count: 0,
-          roles: ['Admin', 'Project Manager'],
-          subItems: [
-            {
-              id: 'create_waterfall',
-              page: 'create_waterfall_details',
-              context: { type: 'waterfall' },
-              nameFa: 'پروژه آبشاری جدید',
-              nameEn: 'New Waterfall Project',
-              icon: 'account_tree'
-            },
-            {
-              id: 'create_agile',
-              page: 'create_agile_details',
-              context: { type: 'agile' },
-              nameFa: 'پروژه چابک جدید',
-              nameEn: 'New Agile Project',
-              icon: 'sync_alt'
-            }
-          ]
-        },
-        {
-          id: 'define_action',
-          page: 'define_action',
-          nameFa: 'ایجاد اقدام',
-          nameEn: 'Create Action',
-          icon: 'edit_note',
-          count: 0,
-          roles: ['Admin', 'Project Manager']
         }
+
       ]
     },
     {
@@ -228,6 +203,14 @@ export const Sidebar = ({
       icon: 'settings_suggest',
       items: [
         {
+          id: 'settings_profile',
+          page: 'settings_profile',
+          nameFa: 'تنظیمات و پروفایل',
+          nameEn: 'Settings & Profile',
+          icon: 'settings',
+          count: 0
+        },
+        {
           id: 'users',
           page: 'users',
           nameFa: 'مدیریت کاربران',
@@ -257,7 +240,7 @@ export const Sidebar = ({
     }
     if (item.page === 'dashboard' && ['dashboard', 'dashboard_hub', 'project_dashboard_details'].includes(currentPage)) return true;
     if (item.page === 'action_dashboard' && currentPage === 'action_dashboard') return true;
-    if (item.page === 'portfolio' && ['view_snapshot'].includes(currentPage)) return true;
+    if (item.page === 'portfolio' && ['view_snapshot', 'create_project', 'create_waterfall_details', 'create_agile_details', 'define_action'].includes(currentPage)) return true;
     if (item.page === 'strategy_management' && ['define_strategies', 'alignment_matrix'].includes(currentPage)) return true;
     if (item.page === 'settings' && ['calendar_management', 'edit_calendar', 'color_format', 'reference_tables'].includes(currentPage)) return true;
     return false;
@@ -307,7 +290,7 @@ export const Sidebar = ({
 
           if (visibleItems.length === 0) return null;
 
-          const isOpen = openGroupId === group.id;
+          const isOpen = !group.page && openGroupId === group.id;
           const hasActiveChild = visibleItems.some(item => isItemActive(item));
           const totalGroupBadge = visibleItems.reduce((sum, item) => sum + (item.count || 0), 0);
           const groupTitle = isFa ? group.titleFa : group.titleEn;
@@ -319,9 +302,10 @@ export const Sidebar = ({
             React.createElement("button", {
               type: "button",
               className: `sidebar-group-header ${isOpen ? 'open' : ''} ${hasActiveChild ? 'active-parent' : ''}`,
-              onClick: () => handleToggleGroup(group.id),
+              onClick: () => group.page ? onNavigate(group.page) : handleToggleGroup(group.id),
               title: isCollapsed ? groupTitle : undefined,
-              "aria-expanded": isOpen
+              "aria-expanded": group.page ? undefined : isOpen,
+              "aria-current": group.page === currentPage ? "page" : undefined
             },
               React.createElement("div", { className: "sidebar-group-header-left" },
                 React.createElement("span", { className: "material-symbols-outlined sidebar-icon" }, group.icon),
@@ -329,7 +313,7 @@ export const Sidebar = ({
               ),
               !isCollapsed && React.createElement("div", { className: "sidebar-group-header-right" },
                 (!isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge),
-                React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron" }, isOpen ? "expand_less" : "expand_more")
+                !group.page && React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron" }, isOpen ? "expand_less" : "expand_more")
               ),
               (isCollapsed && !isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge collapsed-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge)
             ),
@@ -350,7 +334,7 @@ export const Sidebar = ({
                     },
                       React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-icon" }, item.icon),
                       React.createElement("span", { className: "sidebar-text" }, itemName),
-                      React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-chevron" }, 
+                      React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-chevron" },
                         isSubMenuExpanded ? "expand_less" : "expand_more"
                       )
                     ),

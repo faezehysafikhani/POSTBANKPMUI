@@ -1,23 +1,23 @@
 import React, { useMemo, useState, useContext, ReactElement, Fragment } from 'react';
-import { 
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area 
+import {
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import { LocalizationContext } from '../context';
-import { 
+import {
     Project, ProjectActivity, Calendar, ProgressUpdate, KanbanStatus
 } from '../types';
-import { 
-    calculateSCurveData, formatDate, toPersianDigits, exportDashboardToLandscapePdf 
+import {
+    calculateSCurveData, formatDate, toPersianDigits, exportDashboardToLandscapePdf
 } from '../utils';
 
-export const SCurveChartInline = ({ 
-    project, 
-    activities, 
-    calendar 
-}: { 
-    project: Project, 
-    activities: ProjectActivity[], 
-    calendar: Calendar 
+export const SCurveChartInline = ({
+    project,
+    activities,
+    calendar
+}: {
+    project: Project,
+    activities: ProjectActivity[],
+    calendar: Calendar
 }): ReactElement => {
     const { language } = useContext(LocalizationContext);
 
@@ -44,7 +44,7 @@ export const SCurveChartInline = ({
         React.createElement("div", { className: "form-section" },
             React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                 React.createElement("h3", null, language === 'fa' ? 'نمودار پیشرفت (S-Curve)' : 'Progress S-Curve'),
-                React.createElement("button", { 
+                React.createElement("button", {
                     onClick: () => exportDashboardToLandscapePdf(`${project.name || 'Project'}_S_Curve`),
                     className: "action-button no-print",
                     title: language === 'fa' ? 'خروجی PDF' : 'Export PDF',
@@ -55,7 +55,7 @@ export const SCurveChartInline = ({
                 React.createElement("div", { style: { marginBottom: '1.5rem', display: 'flex', gap: '1.75rem', flexWrap: 'wrap', fontSize: '0.88rem', color: 'var(--text-secondary)' } },
                     React.createElement("div", null,
                         React.createElement("strong", null, language === 'fa' ? 'نهایی پیشرفت برنامه‌ای: ' : 'Final Planned Progress: '),
-                        React.createElement("span", { style: { color: '#2563eb', fontWeight: 700 } }, `${language === 'fa' ? toPersianDigits(sCurveData[sCurveData.length - 1]?.plannedProgress || 100) : (sCurveData[sCurveData.length - 1]?.plannedProgress || 100)}%`)
+                        React.createElement("span", { style: { color: '#0284c7', fontWeight: 700 } }, `${language === 'fa' ? toPersianDigits(sCurveData[sCurveData.length - 1]?.plannedProgress || 100) : (sCurveData[sCurveData.length - 1]?.plannedProgress || 100)}%`)
                     ),
                     hasActualData && React.createElement("div", null,
                         React.createElement("strong", null, language === 'fa' ? 'آخرین پیشرفت واقعی: ' : 'Latest Actual Progress: '),
@@ -66,18 +66,18 @@ export const SCurveChartInline = ({
                     React.createElement(ResponsiveContainer, { width: "100%", height: "100%" },
                         React.createElement(LineChart, { data: sCurveData, margin: { top: 15, right: 30, left: 35, bottom: 90 } },
                             React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border-color, #e2e8f0)" }),
-                            React.createElement(XAxis, { 
-                                dataKey: "dateLabel", 
-                                tick: { fontSize: 10, fill: 'var(--text-color, #64748b)' }, 
-                                angle: -90, 
-                                textAnchor: "start", 
+                            React.createElement(XAxis, {
+                                dataKey: "dateLabel",
+                                tick: { fontSize: 10, fill: 'var(--text-color, #64748b)' },
+                                angle: -90,
+                                textAnchor: "start",
                                 height: 75,
                                 interval: 0,
                                 orientation: 'bottom',
                                 dy: 8
                             }),
-                            React.createElement(YAxis, { 
-                                domain: [0, 100], 
+                            React.createElement(YAxis, {
+                                domain: [0, 100],
                                 width: 60,
                                 orientation: "left",
                                 tick: { fontSize: 11, fill: 'var(--text-color, #64748b)', dx: -16 },
@@ -91,23 +91,23 @@ export const SCurveChartInline = ({
                                 labelStyle: { fontWeight: 'bold', color: '#1e293b' },
                                 contentStyle: { borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.85rem', direction: language === 'fa' ? 'rtl' : 'ltr' }
                             }),
-                            React.createElement(Legend, { 
-                                layout: 'horizontal', 
-                                align: 'center', 
-                                verticalAlign: "bottom", 
-                                height: 36, 
-                                wrapperStyle: { 
-                                    fontSize: '0.85rem', 
+                            React.createElement(Legend, {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: "bottom",
+                                height: 36,
+                                wrapperStyle: {
+                                    fontSize: '0.85rem',
                                     paddingTop: '20px',
                                     direction: language === 'fa' ? 'rtl' : 'ltr'
-                                } 
+                                }
                             }),
-                            React.createElement(Line, { 
-                                type: "monotone", 
-                                dataKey: "plannedProgress", 
-                                name: language === 'fa' ? 'پیشرفت برنامه‌ای' : 'Planned Progress', 
-                                stroke: "#2563eb", 
-                                strokeWidth: 3, 
+                            React.createElement(Line, {
+                                type: "monotone",
+                                dataKey: "plannedProgress",
+                                name: language === 'fa' ? 'پیشرفت برنامه‌ای' : 'Planned Progress',
+                                stroke: "#0284c7",
+                                strokeWidth: 3,
                                 dot: (props: any) => {
                                     const { cx, cy, value } = props;
                                     if (value === null || value === undefined || isNaN(value)) return null;
@@ -137,12 +137,12 @@ export const SCurveChartInline = ({
                                     });
                                 }
                             }),
-                            hasActualData && React.createElement(Line, { 
-                                type: "monotone", 
-                                dataKey: "actualProgress", 
-                                name: language === 'fa' ? 'پیشرفت واقعی' : 'Actual Progress', 
-                                stroke: "#ef4444", 
-                                strokeWidth: 3, 
+                            hasActualData && React.createElement(Line, {
+                                type: "monotone",
+                                dataKey: "actualProgress",
+                                name: language === 'fa' ? 'پیشرفت واقعی' : 'Actual Progress',
+                                stroke: "#ef4444",
+                                strokeWidth: 3,
                                 connectNulls: true,
                                 dot: (props: any) => {
                                     const { cx, cy, value, payload } = props;
@@ -157,7 +157,7 @@ export const SCurveChartInline = ({
                                         strokeWidth: 1.5
                                     });
                                 },
-                                activeDot: { r: 6 } 
+                                activeDot: { r: 6 }
                             })
                         )
                     )
@@ -167,18 +167,18 @@ export const SCurveChartInline = ({
     );
 };
 
-export const AgileProgressChartInline = ({ 
-    project, 
-    progressUpdates = [] 
-}: { 
-    project: Project, 
+export const AgileProgressChartInline = ({
+    project,
+    progressUpdates = []
+}: {
+    project: Project,
     progressUpdates?: ProgressUpdate[]
 }): ReactElement => {
     const { language } = useContext(LocalizationContext);
     const [chartMode, setChartMode] = useState<'burnup' | 'burndown'>('burnup');
 
     const sprintCount = project.sprintCount || Math.max(1, ...(project.kanbanTasks || []).map(t => t.sprintNumber || 1));
-    
+
     const chartData = useMemo(() => {
         const tasks = project.kanbanTasks || [];
         const data = [];
@@ -217,7 +217,7 @@ export const AgileProgressChartInline = ({
         React.createElement("div", { className: "form-section" },
             React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
                 React.createElement("h3", null, language === 'fa' ? 'نمودار پیشرفت اسپرینت‌ها (Burn-Up / Burn-Down)' : 'Sprint Progress Chart (Burn-Up / Burn-Down)'),
-                React.createElement("button", { 
+                React.createElement("button", {
                     onClick: () => exportDashboardToLandscapePdf(`${project.name || 'Project'}_Agile_Progress`),
                     className: "action-button no-print",
                     title: language === 'fa' ? 'خروجی PDF' : 'Export PDF',
@@ -233,7 +233,7 @@ export const AgileProgressChartInline = ({
                                 padding: '0.4rem 0.8rem',
                                 borderRadius: '6px',
                                 border: 'none',
-                                background: chartMode === 'burnup' ? 'var(--primary-color, #2563eb)' : 'transparent',
+                                background: chartMode === 'burnup' ? 'var(--primary-color, #0284c7)' : 'transparent',
                                 color: chartMode === 'burnup' ? '#fff' : 'var(--text-secondary, #64748b)',
                                 fontWeight: 600,
                                 cursor: 'pointer',
@@ -246,7 +246,7 @@ export const AgileProgressChartInline = ({
                                 padding: '0.4rem 0.8rem',
                                 borderRadius: '6px',
                                 border: 'none',
-                                background: chartMode === 'burndown' ? 'var(--primary-color, #2563eb)' : 'transparent',
+                                background: chartMode === 'burndown' ? 'var(--primary-color, #0284c7)' : 'transparent',
                                 color: chartMode === 'burndown' ? '#fff' : 'var(--text-secondary, #64748b)',
                                 fontWeight: 600,
                                 cursor: 'pointer',
@@ -280,7 +280,7 @@ export const AgileProgressChartInline = ({
                                     formatter: (value) => value === 'completed' ? (language === 'fa' ? 'موارد تکمیل شده' : 'Completed') : (language === 'fa' ? 'مجموع حوزه (Scope)' : 'Total Scope')
                                 }),
                                 React.createElement(Line, { type: "monotone", dataKey: "completed", name: "completed", stroke: "#10b981", strokeWidth: 3, dot: { r: 5, fill: '#10b981' }, activeDot: { r: 8 } }),
-                                React.createElement(Line, { type: "monotone", dataKey: "total", name: "total", stroke: "#2563eb", strokeWidth: 2, strokeDasharray: "5 5", dot: { r: 4, fill: '#2563eb' } })
+                                React.createElement(Line, { type: "monotone", dataKey: "total", name: "total", stroke: "#0284c7", strokeWidth: 2, strokeDasharray: "5 5", dot: { r: 4, fill: '#0284c7' } })
                             )
                         ) : (
                             React.createElement(AreaChart, { data: chartData, margin: { top: 20, right: 30, left: 20, bottom: 20 } },

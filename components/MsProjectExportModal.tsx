@@ -357,7 +357,7 @@ export const MsProjectExportModal: React.FC<MsProjectExportModalProps> = ({
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted, #64748b)', display: 'block' }}>
                     {isFa ? 'فازهای خلاصه WBS' : 'Summary Phases'}
                   </span>
-                  <span style={{ fontSize: '1.35rem', fontWeight: 700, color: '#2563eb' }}>
+                  <span style={{ fontSize: '1.35rem', fontWeight: 700, color: '#0284c7' }}>
                     {isFa ? toPersianDigits(summaryCount) : summaryCount}
                   </span>
                 </div>
@@ -712,7 +712,7 @@ export const MsProjectExportModal: React.FC<MsProjectExportModalProps> = ({
                                   color:
                                     (act.actualProgress || 0) >= 100
                                       ? '#059669'
-                                      : '#2563eb'
+                                      : '#0284c7'
                                 }}
                               >
                                 {isFa ? `${toPersianDigits(Math.round(act.actualProgress || 0))}٪` : `${Math.round(act.actualProgress || 0)}%`}

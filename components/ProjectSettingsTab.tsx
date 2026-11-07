@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useMemo, useContext, ChangeEvent, ReactElement, Fragment } from 'react';
 import { LocalizationContext, ThemeContext } from '../context';
-import { 
-    User, Project, ScheduleSnapshot, WorkflowEntityType, DynamicWorkflowSettings, 
+import {
+    User, Project, ScheduleSnapshot, WorkflowEntityType, DynamicWorkflowSettings,
     DEFAULT_DYNAMIC_WORKFLOW_SETTINGS, ProjectContractPermissions, ProjectInvoicePermissions,
     Calendar, ProjectActivity
 } from '../types';
 import { formatDate, toPersianDigits, calculateSCurveData } from '../utils';
 import { DynamicWorkflowSettingsEditor } from './DynamicWorkflowSettingsEditor';
 
-export const ProjectSettingsTab = ({ 
+export const ProjectSettingsTab = ({
     project,
     calendar,
     activities,
     onSaveSettings,
-    scheduleSnapshots, 
-    onSaveSnapshot, 
-    onDeleteSnapshot, 
+    scheduleSnapshots,
+    onSaveSnapshot,
+    onDeleteSnapshot,
     onViewSnapshot,
     currentUser,
     users = [],
@@ -39,7 +39,7 @@ export const ProjectSettingsTab = ({
     const { theme } = useContext(ThemeContext);
     const isDark = theme === 'dark';
     const isFa = language === 'fa';
-    
+
     // Collapsible sections - closed by default
     const [expandedSections, setExpandedSections] = useState<{
         weighting: boolean;
@@ -127,7 +127,7 @@ export const ProjectSettingsTab = ({
             manageByPM: true
         });
     }, [project, dynamicWorkflowSettings]);
-    
+
     const totalWeightFactor = timeWeightFactor + costWeightFactor + complexityWeightFactor;
 
     const tabDefinitions: { id: string; name: string; entityType?: WorkflowEntityType }[] = [
@@ -164,8 +164,8 @@ export const ProjectSettingsTab = ({
             alert(t('weightFactorsMustSum100'));
             return;
         }
-        onSaveSettings({ 
-            weightingType: localWeightingType, 
+        onSaveSettings({
+            weightingType: localWeightingType,
             plannedProgressType: localPlannedProgressType,
             timeWeightFactor,
             costWeightFactor,
@@ -195,7 +195,7 @@ export const ProjectSettingsTab = ({
     const ownerUser = users.find(u => Number(u.id) === Number(project.ownerId));
 
     return React.createElement("div", { className: "project-settings-tab", style: { display: 'flex', flexDirection: 'column', gap: '1.25rem' } },
-        
+
         // ==========================================
         // SECTION 1: تنظیمات وزن‌دهی و محاسبه پیشرفت
         // ==========================================
@@ -217,7 +217,7 @@ export const ProjectSettingsTab = ({
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    backgroundColor: expandedSections.weighting ? (isDark ? 'rgba(79, 70, 229, 0.15)' : '#eef2ff') : 'transparent',
+                    backgroundColor: expandedSections.weighting ? (isDark ? 'rgba(2, 132, 199, 0.15)' : '#eef2ff') : 'transparent',
                     borderBottom: expandedSections.weighting ? '1px solid var(--border-color, #e2e8f0)' : 'none',
                     transition: 'background-color 0.2s ease'
                 }
@@ -226,8 +226,8 @@ export const ProjectSettingsTab = ({
                     React.createElement("span", {
                         className: "material-symbols-outlined",
                         style: {
-                            color: '#4f46e5',
-                            backgroundColor: isDark ? 'rgba(79, 70, 229, 0.25)' : '#e0e7ff',
+                            color: '#0284c7',
+                            backgroundColor: isDark ? 'rgba(2, 132, 199, 0.25)' : '#e0e7ff',
                             padding: '6px',
                             borderRadius: '8px',
                             fontSize: '1.25rem'
@@ -288,11 +288,11 @@ export const ProjectSettingsTab = ({
                         )
                     )
                 ),
-                !isReadOnly && React.createElement("button", { 
-                    onClick: handleSave, 
+                !isReadOnly && React.createElement("button", {
+                    onClick: handleSave,
                     className: "save-btn",
                     style: { marginTop: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }
-                }, 
+                },
                     React.createElement("span", { className: "material-symbols-outlined" }, "save"),
                     t('save')
                 )
@@ -366,11 +366,11 @@ export const ProjectSettingsTab = ({
                     )
                 ),
 
-                !isReadOnly && React.createElement("button", { 
-                    onClick: handleSave, 
+                !isReadOnly && React.createElement("button", {
+                    onClick: handleSave,
                     className: "save-btn",
                     style: { marginTop: '0.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', alignSelf: 'flex-start' }
-                }, 
+                },
                     React.createElement("span", { className: "material-symbols-outlined" }, "save"),
                     t('save')
                 )
@@ -449,11 +449,11 @@ export const ProjectSettingsTab = ({
                                 const stageCount = entityKey ? (localCustomWorkflowSettings[entityKey]?.stages?.length || 0) : 0;
 
                                 return React.createElement(Fragment, { key: tab.id },
-                                    React.createElement("tr", { 
-                                        style: { 
+                                    React.createElement("tr", {
+                                        style: {
                                             backgroundColor: isExpanded ? (isDark ? 'rgba(124, 58, 237, 0.15)' : '#faf5ff') : undefined,
                                             fontWeight: isExpanded ? 600 : undefined
-                                        } 
+                                        }
                                     },
                                         React.createElement("td", null, language === 'fa' ? toPersianDigits(idx + 1) : (idx + 1)),
                                         React.createElement("td", { style: { fontWeight: 600 } }, tab.name),
@@ -468,35 +468,35 @@ export const ProjectSettingsTab = ({
                                         ),
                                         React.createElement("td", { style: { textAlign: 'center' } },
                                             isWorkflowGlobal ? (
-                                                React.createElement("span", { 
-                                                    style: { 
-                                                        display: 'inline-flex', 
-                                                        alignItems: 'center', 
+                                                React.createElement("span", {
+                                                    style: {
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
                                                         gap: '4px',
-                                                        backgroundColor: isDark ? 'rgba(79, 70, 229, 0.25)' : '#e0e7ff', 
-                                                        color: isDark ? '#c7d2fe' : '#3730a3', 
-                                                        padding: '3px 8px', 
+                                                        backgroundColor: isDark ? 'rgba(2, 132, 199, 0.25)' : '#e0e7ff',
+                                                        color: isDark ? '#c7d2fe' : '#3730a3',
+                                                        padding: '3px 8px',
                                                         borderRadius: '9999px',
                                                         fontSize: '0.75rem',
                                                         fontWeight: 600
-                                                    } 
+                                                    }
                                                 },
                                                     React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "public"),
                                                     isFa ? 'عمومی سیستم' : 'Global System'
                                                 )
                                             ) : (
-                                                React.createElement("span", { 
-                                                    style: { 
-                                                        display: 'inline-flex', 
-                                                        alignItems: 'center', 
+                                                React.createElement("span", {
+                                                    style: {
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
                                                         gap: '4px',
-                                                        backgroundColor: isDark ? 'rgba(217, 119, 6, 0.25)' : '#fef3c7', 
-                                                        color: isDark ? '#fef08a' : '#b45309', 
-                                                        padding: '3px 8px', 
+                                                        backgroundColor: isDark ? 'rgba(217, 119, 6, 0.25)' : '#fef3c7',
+                                                        color: isDark ? '#fef08a' : '#b45309',
+                                                        padding: '3px 8px',
                                                         borderRadius: '9999px',
                                                         fontSize: '0.75rem',
                                                         fontWeight: 600
-                                                    } 
+                                                    }
                                                 },
                                                     React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "star"),
                                                     isFa ? `منحصربفرد پروژه (${toPersianDigits(stageCount)} مرحله)` : `Custom (${stageCount} stages)`
@@ -532,7 +532,7 @@ export const ProjectSettingsTab = ({
                                                         gap: '4px'
                                                     }
                                                 },
-                                                    React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, 
+                                                    React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } },
                                                         isExpanded ? "expand_less" : "tune"
                                                     ),
                                                     isExpanded ? (isFa ? 'بستن' : 'Close') : (isFa ? 'تنظیم مراحل' : 'Configure')
@@ -544,13 +544,13 @@ export const ProjectSettingsTab = ({
                                         key: `${tab.id}-drawer`,
                                         className: "workflow-drawer-row"
                                     },
-                                        React.createElement("td", { 
-                                            colSpan: 5, 
-                                            style: { 
-                                                padding: '1.25rem', 
-                                                backgroundColor: isDark ? 'rgba(124, 58, 237, 0.1)' : '#faf5ff', 
+                                        React.createElement("td", {
+                                            colSpan: 5,
+                                            style: {
+                                                padding: '1.25rem',
+                                                backgroundColor: isDark ? 'rgba(124, 58, 237, 0.1)' : '#faf5ff',
                                                 borderBottom: '2px solid #a855f7'
-                                            } 
+                                            }
                                         },
                                             React.createElement(DynamicWorkflowSettingsEditor, {
                                                 settings: localCustomWorkflowSettings,
@@ -580,11 +580,11 @@ export const ProjectSettingsTab = ({
                     )
                 ),
 
-                !isReadOnly && React.createElement("button", { 
-                    onClick: handleSave, 
+                !isReadOnly && React.createElement("button", {
+                    onClick: handleSave,
                     className: "save-btn",
                     style: { marginTop: '0.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', alignSelf: 'flex-start' }
-                }, 
+                },
                     React.createElement("span", { className: "material-symbols-outlined" }, "save"),
                     t('save')
                 )

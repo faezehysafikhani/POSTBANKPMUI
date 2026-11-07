@@ -3,7 +3,5 @@
   "description": "سامانه مدیریت پروژه و اقدامات",
   "requestFramePermissions": [],
   "prompt": "",
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "majorCapabilities": []
 }

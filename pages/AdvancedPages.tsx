@@ -2,7 +2,7 @@
 
 import React, { useContext, useState, useMemo, useEffect, useCallback, SetStateAction, Dispatch, FormEvent, ChangeEvent, MouseEvent, ReactElement, Fragment } from 'react';
 import { LocalizationContext, ThemeContext, ColorScheme } from '../context';
-import { 
+import {
     Project, Calendar, Strategy, AlignmentLevel, ProjectStrategyAlignment, TranslationKey, SpecificHoliday, KnowledgeDocument, KnowledgeDocumentType, WorkStatus, OwningUnitTreeNode
 } from '../types';
 import { initialOwningUnitsTree } from '../data';
@@ -33,7 +33,7 @@ export const CalendarManagementPage = ({ calendars, projects, onNavigate, onDele
             onDelete(calendar.id);
         }
     };
-    
+
     return (
         React.createElement("div", { className: "content-container" },
             React.createElement("div", { className: "page-header" },
@@ -72,10 +72,10 @@ export const CalendarManagementPage = ({ calendars, projects, onNavigate, onDele
     );
 };
 
-export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: { 
+export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     onNavigate: (page: string, context?: any) => void,
     onSave: (calendar: Calendar) => void,
-    existingCalendar?: Calendar | null 
+    existingCalendar?: Calendar | null
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const [calendar, setCalendar] = useState<Calendar>(
@@ -90,17 +90,17 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     const isShamsi = language === 'fa';
 
     const dayNames = useMemo(() => (
-        isShamsi 
+        isShamsi
             ? [t('Saturday'), t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday')]
             : [t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday'), t('Saturday')]
     ), [t, isShamsi]);
-    
+
     const monthNames = useMemo(() => (
         isShamsi
             ? ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند']
             : [t('January'), t('February'), t('March'), t('April'), t('May'), t('June'), t('July'), t('August'), t('September'), t('October'), t('November'), t('December')]
     ), [t, isShamsi]);
-    
+
     const handleSave = () => {
         if(!calendar.name.trim()){
             alert(t('fillRequiredFields'));
@@ -109,7 +109,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
         onSave(calendar);
         onNavigate('calendar_management');
     }
-    
+
     const toggleWorkingDay = (dayIndex: number) => {
         const jsDayIndex = isShamsi ? (dayIndex + 6) % 7 : dayIndex; // Sat=0 -> 6, Sun=1 -> 0
         setCalendar(prev => {
@@ -119,7 +119,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             return { ...prev, workingDays: newWorkingDays.sort() };
         });
     };
-    
+
     const handleDayClick = (date: Date) => {
         const dateString = getISODateString(date);
         const existingHoliday = calendar.specificHolidays.find(h => h.date === dateString);
@@ -134,7 +134,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             setIsReasonModalOpen(true);
         }
     };
-    
+
     const saveSpecificHoliday = (reason: string) => {
         if (selectedDateForHoliday) {
             setCalendar(prev => ({
@@ -268,7 +268,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             ),
             React.createElement("div", { className: "edit-calendar-container" },
                 React.createElement("div", { className: "calendar-sidebar" },
-                    React.createElement("div", null, 
+                    React.createElement("div", null,
                         React.createElement("div", { className: "form-group" },
                             React.createElement("label", { htmlFor: "calendarName" }, t('calendarName') + '*'),
                             React.createElement("input", { type: "text", id: "calendarName", value: calendar.name, onChange: (e: ChangeEvent<HTMLInputElement>) => setCalendar({...calendar, name: e.target.value}) })
@@ -291,7 +291,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCalendar({ ...calendar, applyOfficialHolidays: e.target.checked }),
                                 style: { width: 'auto', margin: 0, cursor: 'pointer' }
                             }),
-                            React.createElement("label", { htmlFor: "applyOfficialHolidays", style: { margin: 0, fontWeight: '500', cursor: 'pointer' } }, 
+                            React.createElement("label", { htmlFor: "applyOfficialHolidays", style: { margin: 0, fontWeight: '500', cursor: 'pointer' } },
                                 language === 'fa' ? 'اعمال تعطیلات رسمی' : 'Apply Official Holidays'
                             )
                         )
@@ -394,17 +394,17 @@ export const ReferenceTablesPage = ({
     const [newStatus, setNewStatus] = useState('');
     const [editingStatus, setEditingStatus] = useState<{ original: string; current: string } | null>(null);
 
-    const workStatusTranslations: Record<string, TranslationKey> = { 
-        'Planning': 'planning', 
-        'In Progress': 'inProgress', 
-        'On Hold': 'onHold', 
-        'Completed': 'completed' 
+    const workStatusTranslations: Record<string, TranslationKey> = {
+        'Planning': 'planning',
+        'In Progress': 'inProgress',
+        'On Hold': 'onHold',
+        'Completed': 'completed'
     };
 
     // Calculate flat WBS nodes
     const flatWbsUnits = useMemo(() => {
         const flatList: FlatWbsUnitNode[] = [];
-        
+
         const getChildren = (pId: string | null) => unitNodes.filter(n => n.parentId === pId);
 
         const processNode = (node: OwningUnitTreeNode, parentWbs: string, level: number, parentName?: string, parentPath?: string, indexInSiblings: number = 0) => {
@@ -458,7 +458,7 @@ export const ReferenceTablesPage = ({
         e.preventDefault();
         const name = newRootUnitName.trim();
         if (!name) return;
-        
+
         const newNode: OwningUnitTreeNode = {
             id: `unit-${Date.now()}`,
             name,
@@ -525,7 +525,7 @@ export const ReferenceTablesPage = ({
             setProjectStatuses(prev => prev.filter(s => s !== status));
         }
     };
-    
+
     const handleUpdateStatus = () => {
         if (editingStatus && editingStatus.current && !projectStatuses.includes(editingStatus.current)) {
             setProjectStatuses(prev => prev.map(s => s === editingStatus.original ? editingStatus.current : s));
@@ -536,7 +536,7 @@ export const ReferenceTablesPage = ({
             setEditingStatus(null);
         }
     };
-    
+
     return (
         React.createElement("div", { className: "content-container" },
             React.createElement("div", { className: "page-header" },
@@ -549,7 +549,7 @@ export const ReferenceTablesPage = ({
                     React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' } },
                         React.createElement("div", null,
                             React.createElement("h3", { style: { margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' } },
-                                React.createElement("span", { className: "material-symbols-outlined", style: { color: '#2563eb' } }, "account_tree"),
+                                React.createElement("span", { className: "material-symbols-outlined", style: { color: '#0284c7' } }, "account_tree"),
                                 language === 'fa' ? 'واحد سازمانی (ساختار شکست سازمانی)' : 'Organizational Unit Breakdown Structure'
                             ),
                             React.createElement("p", { style: { margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: isDark ? '#94a3b8' : '#64748b' } },
@@ -624,14 +624,14 @@ export const ReferenceTablesPage = ({
                                             padding: '0.6rem 0.85rem',
                                             paddingRight: `${(unit.level - 1) * 24 + 12}px`,
                                             borderRadius: '8px',
-                                            background: isDark 
-                                                ? (unit.level === 1 ? '#0f172a' : unit.level === 2 ? '#1e293b' : '#141e2e') 
+                                            background: isDark
+                                                ? (unit.level === 1 ? '#0f172a' : unit.level === 2 ? '#1e293b' : '#141e2e')
                                                 : (unit.level === 1 ? '#f8fafc' : unit.level === 2 ? '#f1f5f9' : '#fafafa'),
                                             border: isDark ? '1px solid #334155' : '1px solid #cbd5e1',
-                                            borderRight: unit.level === 1 
-                                                ? '4px solid #2563eb' 
-                                                : unit.level === 2 
-                                                    ? '4px solid #059669' 
+                                            borderRight: unit.level === 1
+                                                ? '4px solid #0284c7'
+                                                : unit.level === 2
+                                                    ? '4px solid #059669'
                                                     : '4px solid #7c3aed'
                                         }
                                     },
@@ -666,7 +666,7 @@ export const ReferenceTablesPage = ({
 
                                             React.createElement("span", {
                                                 style: {
-                                                    background: unit.level === 1 ? '#2563eb' : unit.level === 2 ? '#059669' : '#7c3aed',
+                                                    background: unit.level === 1 ? '#0284c7' : unit.level === 2 ? '#059669' : '#7c3aed',
                                                     color: '#ffffff',
                                                     padding: '2px 8px',
                                                     borderRadius: '6px',
@@ -692,7 +692,7 @@ export const ReferenceTablesPage = ({
                                                         onChange: (e) => setEditingUnitName(e.target.value),
                                                         autoFocus: true,
                                                         onKeyDown: (e) => e.key === 'Enter' && handleSaveEditUnit(unit.id),
-                                                        style: { padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid #2563eb', fontSize: '0.85rem' }
+                                                        style: { padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid #0284c7', fontSize: '0.85rem' }
                                                     }),
                                                     React.createElement("button", { onClick: () => handleSaveEditUnit(unit.id), className: "action-icon", style: { color: '#059669' } }, React.createElement("span", { className: "material-symbols-outlined" }, "check")),
                                                     React.createElement("button", { onClick: () => setEditingUnitId(null), className: "action-icon", style: { color: '#64748b' } }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))
@@ -850,11 +850,11 @@ export const StrategyManagementHubPage = ({ onNavigate }: { onNavigate: (page: s
     );
 };
 
-export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate, setInfoModal }: { 
-    strategies: Strategy[], 
-    onSaveStrategies: (strategies: Strategy[]) => void, 
+export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate, setInfoModal }: {
+    strategies: Strategy[],
+    onSaveStrategies: (strategies: Strategy[]) => void,
     onNavigate: (page: string) => void,
-    setInfoModal: (modal: { title: string, message: string } | null) => void 
+    setInfoModal: (modal: { title: string, message: string } | null) => void
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const backIcon = language === 'fa' ? 'arrow_forward' : 'arrow_back';
@@ -886,7 +886,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
                 }
             });
         };
-        
+
         setLevelsAndCalculateWeights(tree, 0);
         return tree;
     }, [localStrategies]);
@@ -894,7 +894,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
     const totalWeight = useMemo(() => {
         return processedStrategies.reduce((sum, s) => sum + (s.weight || 0), 0);
     }, [processedStrategies]);
-    
+
     const handleUpdate = (id: string, field: 'name' | 'weight' | 'description', value: string | number) => {
         setLocalStrategies(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
     };
@@ -925,7 +925,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
         }
         setLocalStrategies(prev => prev.filter(s => !idsToDelete.has(s.id)));
     };
-    
+
     const handleSave = () => {
         if (Math.round(totalWeight) !== 100) {
             setInfoModal({ title: t('error'), message: t('weightError') });
@@ -1026,7 +1026,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
                 tree.push(strat);
             }
         });
-        
+
         const setLevelsWeightsAndLeafStatus = (nodes: Strategy[], level: number) => {
             nodes.forEach(node => {
                 node.level = level;
@@ -1055,7 +1055,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
 
         return { strategyTree: tree, leafStrategies: leafStrategiesResult };
     }, [strategies]);
-    
+
     const getLeafCount = useCallback((strategy: Strategy): number => {
         if (strategy.isLeaf) {
             return 1;
@@ -1071,12 +1071,12 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
         }
         return max;
     }, []);
-    
+
     const maxDepth = useMemo(() => getMaxDepth(strategyTree) || 1, [strategyTree, getMaxDepth]);
 
     const headerRows = useMemo(() => {
         if (maxDepth === 0) return [];
-        
+
         const rows: { label: string, colspan: number, rowspan: number, key: string }[][] = Array.from({ length: maxDepth }, () => []);
 
         const buildHeader = (nodes: Strategy[], level: number) => {
@@ -1084,7 +1084,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
             nodes.forEach(node => {
                 const colspan = getLeafCount(node);
                 const rowspan = node.isLeaf ? maxDepth - level : 1;
-                
+
                 if (colspan > 0) { // Only add to header if it has leaf nodes
                     rows[level].push({
                         label: `${node.name} (${language === 'fa' ? toPersianDigits(node.weight) : node.weight}%)`,
@@ -1093,7 +1093,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
                         key: node.id
                     });
                 }
-                
+
                 if (node.children) {
                     buildHeader(node.children, level + 1);
                 }
@@ -1103,7 +1103,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
         buildHeader(strategyTree, 0);
         return rows.filter(row => row.length > 0);
     }, [strategyTree, maxDepth, getLeafCount]);
-    
+
     const calculateAlignmentPercentage = useCallback((projectId: number): number => {
         const levelWeights: Record<AlignmentLevel, number> = { None: 0, Low: 1, Medium: 2, High: 3 };
         let totalScore = 0;
@@ -1117,7 +1117,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
                 maxScore += levelWeights['High'] * strategy.weight;
             }
         }
-        
+
         return maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
     }, [leafStrategies, localAlignments]);
 
@@ -1137,7 +1137,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, onSaveAl
                 };
             });
     }, [projects, leafStrategies, localAlignments, calculateAlignmentPercentage]);
-    
+
     const alignmentLevels: AlignmentLevel[] = ['None', 'Low', 'Medium', 'High'];
     const levelTranslations: Record<AlignmentLevel, TranslationKey> = {
         'None': 'none', 'Low': 'low', 'Medium': 'medium', 'High': 'high'
@@ -1227,8 +1227,8 @@ export const ColorFormatPage = ({ onNavigate }: { onNavigate: (page: string) => 
     };
 
     const schemes: { id: ColorScheme; labelFa: string; labelEn: string; color: string }[] = [
-        { id: 'teal', labelFa: 'تیل (پیش‌فرض)', labelEn: 'Teal (Default)', color: '#005f73' },
-        { id: 'blue', labelFa: 'آبی کلاسیک', labelEn: 'Classic Blue', color: '#1d4ed8' },
+        { id: 'teal', labelFa: 'تیل (پیش‌فرض)', labelEn: 'Teal (Default)', color: '#0284c7' },
+        { id: 'blue', labelFa: 'آبی کلاسیک', labelEn: 'Classic Blue', color: '#0284c7' },
         { id: 'emerald', labelFa: 'زمردی', labelEn: 'Emerald Green', color: '#047857' },
         { id: 'purple', labelFa: 'بنفش سلطنتی', labelEn: 'Royal Purple', color: '#6d28d9' },
         { id: 'crimson', labelFa: 'یاقوتی (سرخ)', labelEn: 'Crimson Red', color: '#be123c' },
@@ -1314,7 +1314,7 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
             fileInputRef.current.value = '';
         }
     };
-    
+
     const handleDelete = (id: number) => {
         if(window.confirm(t('confirmDocDelete'))) {
             onDelete(id);
@@ -1411,7 +1411,7 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
 
                 React.createElement("div", { className: "list-section" },
                     React.createElement("h3", null, t('knowledgeDocsList')),
-                    filteredDocuments.length === 0 
+                    filteredDocuments.length === 0
                     ? React.createElement("p", { style: { padding: '1.5rem', textAlign: 'center', color: '#64748b' } }, language === 'fa' ? 'هیچ سند دانشی با این مشخصات یافت نشد.' : t('noKnowledgeDocs'))
                     : docTypeOrder.map(type => (
                         groupedDocuments[type] && groupedDocuments[type].length > 0 && (
@@ -1432,7 +1432,7 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
                                                     React.createElement("td", null, doc.name),
                                                     React.createElement("td", null, doc.description),
                                                     React.createElement("td", { className: "action-cell" },
-                                                        React.createElement("button", { onClick: () => handleDelete(doc.id), className: "action-icon delete", "aria-label": t('delete') } as React.HTMLAttributes<HTMLButtonElement>, 
+                                                        React.createElement("button", { onClick: () => handleDelete(doc.id), className: "action-icon delete", "aria-label": t('delete') } as React.HTMLAttributes<HTMLButtonElement>,
                                                             React.createElement("span", { className: "material-symbols-outlined" }, "delete")
                                                         )
                                                     )

@@ -41,12 +41,12 @@
   border-radius: 16px;
   text-decoration: none;
   color: var(--text-color);
-  box-shadow: 0 4px 16px rgba(0, 95, 115, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
 }
 
-[data-theme="dark"] .menu-item, 
+[data-theme="dark"] .menu-item,
 [data-theme="dark"] .settings-item {
   background: rgba(30, 41, 59, 0.7);
   border-color: rgba(255, 255, 255, 0.12);
@@ -57,10 +57,10 @@
   transform: translateY(-5px);
   background: rgba(255, 255, 255, 0.92);
   border-color: var(--primary-color);
-  box-shadow: 0 12px 28px rgba(0, 95, 115, 0.15);
+  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.15);
 }
 
-[data-theme="dark"] .menu-item:hover, 
+[data-theme="dark"] .menu-item:hover,
 [data-theme="dark"] .settings-item:hover {
   background: rgba(30, 41, 59, 0.9);
   border-color: #38bdf8;
@@ -73,12 +73,12 @@
   transition: transform 0.25s ease;
 }
 
-[data-theme="dark"] .menu-item .material-symbols-outlined, 
+[data-theme="dark"] .menu-item .material-symbols-outlined,
 [data-theme="dark"] .settings-item .material-symbols-outlined {
   color: #38bdf8;
 }
 
-.menu-item:hover .material-symbols-outlined, 
+.menu-item:hover .material-symbols-outlined,
 .settings-item:hover .material-symbols-outlined {
   transform: scale(1.1);
 }
@@ -131,7 +131,7 @@ html[lang="fa"] .notification-badge {
   border-radius: 16px;
   text-decoration: none;
   color: var(--text-color);
-  box-shadow: 0 4px 16px rgba(0, 95, 115, 0.06);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.06);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
 }
@@ -146,7 +146,7 @@ html[lang="fa"] .notification-badge {
   transform: translateY(-5px);
   background: rgba(255, 255, 255, 0.92);
   border-color: var(--primary-color);
-  box-shadow: 0 12px 28px rgba(0, 95, 115, 0.15);
+  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.15);
 }
 
 [data-theme="dark"] .project-type-option:hover {
@@ -192,7 +192,7 @@ html[lang="fa"] .notification-badge {
 }
 .portfolio-filter-container input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(0, 95, 115, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(2, 132, 199, 0.25);
     outline: none;
 }
 
@@ -209,7 +209,7 @@ html[lang="fa"] .notification-badge {
     border-color: rgba(255, 255, 255, 0.08);
 }
 .portfolio-group .group-header {
-    background: rgba(0, 95, 115, 0.06);
+    background: rgba(2, 132, 199, 0.06);
     padding: 0.85rem 1.25rem;
     font-size: 1.15rem;
     font-weight: 600;
@@ -247,7 +247,7 @@ html[lang="fa"] .notification-badge {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: rgba(0, 95, 115, 0.04);
+    background-color: rgba(2, 132, 199, 0.04);
 }
 [data-theme="dark"] .subgroup-header {
     background-color: rgba(255, 255, 255, 0.04);

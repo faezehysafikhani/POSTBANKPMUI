@@ -143,7 +143,7 @@ export const ReportsDashboardPage = ({
     return Object.values(dataMap).map((item) => {
       const avgPlanned = item.projectsCount > 0 ? item.totalPlannedProgress / item.projectsCount : 0;
       const avgActual = item.projectsCount > 0 ? item.totalActualProgress / item.projectsCount : 0;
-      
+
       // Average of performance scores capped at 100 per project for fairness, or direct average
       const avgPerformance = item.performanceScores.length > 0
         ? item.performanceScores.reduce((sum, val) => sum + Math.min(100, val), 0) / item.performanceScores.length
@@ -354,21 +354,21 @@ export const ReportsDashboardPage = ({
       {/* PAGE HEADER */}
       <div className="page-header" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem', color: 'var(--primary-color, #2563eb)' }}>analytics</span>
+          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem', color: 'var(--primary-color, #0284c7)' }}>analytics</span>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)' }}>
-              {language === 'fa' ? 'داشبوردها و گزارشات ارزیابی عملکرد' : 'Dashboards & Performance Reports'}
+              {language === 'fa' ? 'گزارشات پروژه‌ها و اقدامات' : 'Project & Action Reports'}
             </h2>
             <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-muted, #64748b)' }}>
-              {language === 'fa' 
-                ? 'تحلیل جامع عملکرد واحدها، ارزیابی خروجی مدیران پروژه و ماتریس توزیع وضعیت پروژه‌ها' 
+              {language === 'fa'
+                ? 'تحلیل جامع عملکرد واحدها، ارزیابی خروجی مدیران پروژه و ماتریس توزیع وضعیت پروژه‌ها'
                 : 'Comprehensive analysis of department performance, project managers evaluation, and project distribution matrix'}
             </p>
           </div>
         </div>
         <button
           onClick={() => {
-            const reportName = activeTab === 'units' 
+            const reportName = activeTab === 'units'
               ? (language === 'fa' ? 'گزارش_ارزیابی_عملکرد_واحدها' : 'Owning_Units_Performance_Report')
               : activeTab === 'managers'
               ? (language === 'fa' ? 'گزارش_ارزیابی_مدیران_پروژه' : 'Project_Managers_Evaluation_Report')
@@ -414,7 +414,7 @@ export const ReportsDashboardPage = ({
             border: 'none',
             borderBottom: activeTab === 'units' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
             color: activeTab === 'units' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'units' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            boxShadow: activeTab === 'units' ? '0 4px 12px var(--shadow-color, rgba(2, 132, 199, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -438,7 +438,7 @@ export const ReportsDashboardPage = ({
             border: 'none',
             borderBottom: activeTab === 'managers' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
             color: activeTab === 'managers' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'managers' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            boxShadow: activeTab === 'managers' ? '0 4px 12px var(--shadow-color, rgba(2, 132, 199, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -462,7 +462,7 @@ export const ReportsDashboardPage = ({
             border: 'none',
             borderBottom: activeTab === 'matrix' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
             color: activeTab === 'matrix' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'matrix' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            boxShadow: activeTab === 'matrix' ? '0 4px 12px var(--shadow-color, rgba(2, 132, 199, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -493,13 +493,13 @@ export const ReportsDashboardPage = ({
                   <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #64748b)' }}>
                     {language === 'fa' ? 'میانگین عملکرد کل سازمان' : 'Org-Wide Performance'}
                   </span>
-                  <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #2563eb)' }}>equalizer</span>
+                  <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #0284c7)' }}>equalizer</span>
                 </div>
                 <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e293b)' }}>
                   {displayPercent(orgStats.avgPerformance)}
                 </h3>
                 <div style={{ width: '100%', backgroundColor: 'var(--placeholder-bg, #f1f5f9)', height: '6px', borderRadius: '3px', marginTop: '0.5rem', overflow: 'hidden' }}>
-                  <div style={{ width: `${Math.min(100, orgStats.avgPerformance)}%`, height: '100%', backgroundColor: 'var(--primary-color, #2563eb)' }} />
+                  <div style={{ width: `${Math.min(100, orgStats.avgPerformance)}%`, height: '100%', backgroundColor: 'var(--primary-color, #0284c7)' }} />
                 </div>
               </div>
 
@@ -561,7 +561,7 @@ export const ReportsDashboardPage = ({
                     <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
                       {language === 'fa' ? 'گزارش ارزیابی عملکرد واحدهای سازمانی' : 'Organizational Units Performance Evaluation'}
                     </h3>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #0284c7)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
                       {language === 'fa' ? 'تجمیع براساس واحدهای سازمانی' : 'Aggregated by Owning Units'}
                     </span>
                   </div>
@@ -602,8 +602,8 @@ export const ReportsDashboardPage = ({
                         const isNeg = item.variance < -0.1;
                         const isPos = item.variance > 0.1;
                         const ratingClass = item.rating === 'Excellent' ? 'excellent' : (item.rating === 'Good' ? 'good' : 'needs-support');
-                        const ratingText = item.rating === 'Excellent' 
-                          ? (language === 'fa' ? 'عالی' : 'Excellent') 
+                        const ratingText = item.rating === 'Excellent'
+                          ? (language === 'fa' ? 'عالی' : 'Excellent')
                           : (item.rating === 'Good' ? (language === 'fa' ? 'قابل قبول' : 'Good') : (language === 'fa' ? 'نیازمند بهبود' : 'Needs Support'));
 
                         return (
@@ -612,22 +612,22 @@ export const ReportsDashboardPage = ({
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayNum(item.projectsCount)}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayPercent(item.avgPlanned)}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayPercent(item.avgActual)}</td>
-                            <td style={{ 
-                              padding: '1rem', 
-                              textAlign: 'center', 
+                            <td style={{
+                              padding: '1rem',
+                              textAlign: 'center',
                               direction: 'ltr',
                               color: isNeg ? 'var(--warning-color, #ef4444)' : (isPos ? 'var(--success-color, #22c55e)' : 'var(--text-muted, #64748b)'),
-                              fontWeight: 600 
+                              fontWeight: 600
                             }}>
                               {item.variance === 0 ? displayPercent(0) : (isPos ? '+' : '') + displayPercent(item.variance)}
                             </td>
                             <td style={{ padding: '1rem' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f5f9)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                                  <div style={{ 
-                                    width: `${Math.min(100, item.avgPerformance)}%`, 
-                                    height: '100%', 
-                                    backgroundColor: item.avgPerformance >= 90 ? 'var(--success-color, #22c55e)' : (item.avgPerformance >= 70 ? 'var(--warning-color, #eab308)' : 'var(--danger-color, #ef4444)') 
+                                  <div style={{
+                                    width: `${Math.min(100, item.avgPerformance)}%`,
+                                    height: '100%',
+                                    backgroundColor: item.avgPerformance >= 90 ? 'var(--success-color, #22c55e)' : (item.avgPerformance >= 70 ? 'var(--warning-color, #eab308)' : 'var(--danger-color, #ef4444)')
                                   }} />
                                 </div>
                                 <span style={{ fontSize: '0.85rem', fontWeight: 700, width: '45px', textAlign: 'right' }}>
@@ -668,22 +668,22 @@ export const ReportsDashboardPage = ({
                         <div key={idx} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem' }}>
                           <div style={{ width: '160px', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary, #1e293b)' }}>{item.unit}</div>
                           <div style={{ flex: 1, minWidth: '200px', background: 'var(--placeholder-bg, #f1f5f9)', height: '26px', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
-                            <div style={{ 
-                              width: `${Math.min(100, item.avgPerformance)}%`, 
-                              height: '100%', 
+                            <div style={{
+                              width: `${Math.min(100, item.avgPerformance)}%`,
+                              height: '100%',
                               background: barGradient,
                               borderRadius: '6px',
                               boxShadow: '0 2px 5px rgba(0,0,0,0.12)',
                               transition: 'width 1s ease-out'
                             }} />
-                            <span style={{ 
-                              position: 'absolute', 
-                              left: language === 'fa' ? '10px' : 'auto', 
-                              right: language === 'fa' ? 'auto' : '10px', 
-                              top: '50%', 
-                              transform: 'translateY(-50%)', 
-                              fontSize: '0.8rem', 
-                              fontWeight: 700, 
+                            <span style={{
+                              position: 'absolute',
+                              left: language === 'fa' ? '10px' : 'auto',
+                              right: language === 'fa' ? 'auto' : '10px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              fontSize: '0.8rem',
+                              fontWeight: 700,
                               color: item.avgPerformance > 35 ? '#ffffff' : 'var(--text-primary, #1e293b)',
                               textShadow: item.avgPerformance > 35 ? '0 1px 2px rgba(0,0,0,0.4)' : 'none'
                             }}>
@@ -717,7 +717,7 @@ export const ReportsDashboardPage = ({
                 <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)', textAlign: 'center' }}>
                   {language === 'fa' ? 'برترین مدیران پروژه بر اساس شاخص تحقق اهداف زمانی' : 'Top Project Managers by Schedule Performance Index'}
                 </h3>
-                
+
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: '2rem', height: '200px', paddingBottom: '1rem', flexWrap: 'wrap', marginTop: '1.5rem' }}>
                   {/* SECOND PLACE */}
                   {managerPerformanceData[1] && (
@@ -728,7 +728,7 @@ export const ReportsDashboardPage = ({
                         </div>
                       </div>
                       <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[1].managerName}</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[1].avgPerformance)}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #0284c7)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[1].avgPerformance)}</span>
                       <div style={{ width: '100px', height: '70px', backgroundColor: 'var(--podium-silver-bg, #e2e8f0)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-silver-border, #cbd5e1)', boxShadow: '0 -2px 10px rgba(0,0,0,0.03)' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--podium-silver-text, #64748b)' }}>۲</span>
                       </div>
@@ -745,7 +745,7 @@ export const ReportsDashboardPage = ({
                         <span className="material-symbols-outlined" style={{ position: 'absolute', top: '-18px', left: '22px', color: '#eab308', fontSize: '1.5rem' }}>workspace_premium</span>
                       </div>
                       <span style={{ fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[0].managerName}</span>
-                      <span style={{ fontSize: '0.9rem', color: 'var(--primary-color, #2563eb)', fontWeight: 800 }}>{displayPercent(managerPerformanceData[0].avgPerformance)}</span>
+                      <span style={{ fontSize: '0.9rem', color: 'var(--primary-color, #0284c7)', fontWeight: 800 }}>{displayPercent(managerPerformanceData[0].avgPerformance)}</span>
                       <div style={{ width: '110px', height: '100px', backgroundColor: 'var(--podium-gold-bg, #fef9c3)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-gold-border, #fde047)', boxShadow: '0 -4px 15px rgba(234, 179, 8, 0.08)' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--podium-gold-text, #854d0e)' }}>۱</span>
                       </div>
@@ -761,7 +761,7 @@ export const ReportsDashboardPage = ({
                         </div>
                       </div>
                       <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[2].managerName}</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[2].avgPerformance)}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #0284c7)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[2].avgPerformance)}</span>
                       <div style={{ width: '100px', height: '50px', backgroundColor: 'var(--podium-bronze-bg, #ffedd5)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-bronze-border, #fed7aa)', boxShadow: '0 -2px 10px rgba(0,0,0,0.03)' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--podium-bronze-text, #9a3412)' }}>۳</span>
                       </div>
@@ -799,7 +799,7 @@ export const ReportsDashboardPage = ({
               <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.85rem', color: 'var(--text-muted, #64748b)' }}>
                 {language === 'fa' ? 'جهت مشاهده جزئیات پروژه‌های تحت مدیریت هر مدیر، بر روی نام وی کلیک کنید.' : 'Click on any manager to inspect all their managed projects.'}
               </p>
-              
+
               <div style={{ overflowX: 'auto' }}>
                 <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'fa' ? 'right' : 'left' }}>
                   <thead>
@@ -817,25 +817,25 @@ export const ReportsDashboardPage = ({
                     {managerPerformanceData.map((item, idx) => {
                       const isSelected = selectedManagerId === item.managerId;
                       const ratingClass = item.rating === 'Excellent' ? 'excellent' : (item.rating === 'Good' ? 'good' : 'needs-support');
-                      const ratingText = item.rating === 'Excellent' 
-                        ? (language === 'fa' ? 'عالی' : 'Excellent') 
+                      const ratingText = item.rating === 'Excellent'
+                        ? (language === 'fa' ? 'عالی' : 'Excellent')
                         : (item.rating === 'Good' ? (language === 'fa' ? 'قابل قبول' : 'Good') : (language === 'fa' ? 'نیازمند بهبود' : 'Needs Support'));
 
                       return (
-                        <tr 
-                          key={idx} 
+                        <tr
+                          key={idx}
                           onClick={() => setSelectedManagerId(isSelected ? null : item.managerId)}
-                          style={{ 
-                            borderBottom: '1px solid var(--border-color, #e2e8f0)', 
+                          style={{
+                            borderBottom: '1px solid var(--border-color, #e2e8f0)',
                             cursor: 'pointer',
                             backgroundColor: isSelected ? 'var(--secondary-bg, #f8fafc)' : 'transparent',
                             fontWeight: isSelected ? 600 : 'normal',
                             transition: 'all 0.2s'
-                          }} 
+                          }}
                           className="hover:bg-slate-50"
                         >
                           <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span className="material-symbols-outlined" style={{ fontSize: '1.25rem', color: isSelected ? 'var(--primary-color, #2563eb)' : '#94a3b8' }}>
+                            <span className="material-symbols-outlined" style={{ fontSize: '1.25rem', color: isSelected ? 'var(--primary-color, #0284c7)' : '#94a3b8' }}>
                               {isSelected ? 'expand_circle_down' : 'chevron_right'}
                             </span>
                             <span style={{ color: 'var(--text-primary, #1e293b)', fontWeight: 600 }}>{item.managerName}</span>
@@ -847,10 +847,10 @@ export const ReportsDashboardPage = ({
                           <td style={{ padding: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                               <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f5f9)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{ 
-                                  width: `${Math.min(100, item.avgPerformance)}%`, 
-                                  height: '100%', 
-                                  backgroundColor: item.avgPerformance >= 90 ? 'var(--success-color, #22c55e)' : (item.avgPerformance >= 70 ? 'var(--warning-color, #eab308)' : 'var(--danger-color, #ef4444)') 
+                                <div style={{
+                                  width: `${Math.min(100, item.avgPerformance)}%`,
+                                  height: '100%',
+                                  backgroundColor: item.avgPerformance >= 90 ? 'var(--success-color, #22c55e)' : (item.avgPerformance >= 70 ? 'var(--warning-color, #eab308)' : 'var(--danger-color, #ef4444)')
                                 }} />
                               </div>
                               <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>
@@ -891,11 +891,11 @@ export const ReportsDashboardPage = ({
                   <div style={{ background: 'var(--body-bg-color, #f8fafc)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                       <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
-                        {language === 'fa' 
-                          ? `لیست پروژه‌های تحت مدیریت: ${getManagerName(selectedManagerId)}` 
+                        {language === 'fa'
+                          ? `لیست پروژه‌های تحت مدیریت: ${getManagerName(selectedManagerId)}`
                           : `Projects Supervised by: ${getManagerName(selectedManagerId)}`}
                       </h4>
-                      <button 
+                      <button
                         onClick={() => setSelectedManagerId(null)}
                         style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-muted, #64748b)' }}
                       >
@@ -931,12 +931,12 @@ export const ReportsDashboardPage = ({
                                 </td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>{displayPercent(p.plannedProgress)}</td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>{displayPercent(p.actualProgress)}</td>
-                                <td style={{ 
-                                  padding: '0.75rem', 
-                                  textAlign: 'center', 
+                                <td style={{
+                                  padding: '0.75rem',
+                                  textAlign: 'center',
                                   direction: 'ltr',
                                   color: hasDelay ? '#ef4444' : (delayVal > 0 ? '#22c55e' : '#475569'),
-                                  fontWeight: 600 
+                                  fontWeight: 600
                                 }}>
                                   {delayVal === 0 ? displayPercent(0) : (delayVal > 0 ? '+' : '') + displayPercent(delayVal)}
                                 </td>
@@ -980,8 +980,8 @@ export const ReportsDashboardPage = ({
             <div className="navigation-hint-banner" style={{ marginBottom: '1.5rem' }}>
               <span className="material-symbols-outlined hint-icon">info</span>
               <span>
-                {language === 'fa' 
-                  ? 'راهنما: بر روی هر یک از اعداد ماتریس (تلاقی سطر و ستون یا جمع کل) کلیک کنید تا لیست کامل پروژه‌های متناظر با آن در جدول پایین نمایش داده شود.' 
+                {language === 'fa'
+                  ? 'راهنما: بر روی هر یک از اعداد ماتریس (تلاقی سطر و ستون یا جمع کل) کلیک کنید تا لیست کامل پروژه‌های متناظر با آن در جدول پایین نمایش داده شود.'
                   : 'Guide: Click on any number inside the matrix (including row and column totals) to display the corresponding projects list below.'}
               </span>
             </div>
@@ -993,7 +993,7 @@ export const ReportsDashboardPage = ({
                   <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
                     {language === 'fa' ? 'ماتریس توزیع پروژه‌ها: واحد سازمانی / وضعیت' : 'Project Distribution Matrix: Owning Unit vs. Status'}
                   </h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #0284c7)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
                     {language === 'fa' ? 'محاسبه براساس واحد سازمانی' : 'Aggregated by Owning Unit'}
                   </span>
                 </div>
@@ -1016,7 +1016,7 @@ export const ReportsDashboardPage = ({
                   <span className="material-symbols-outlined" style={{ fontSize: '1.15rem', color: '#fff' }}>picture_as_pdf</span>
                 </button>
               </div>
-              
+
               <div style={{ overflowX: 'auto' }}>
                 <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
                   <thead>
@@ -1045,19 +1045,19 @@ export const ReportsDashboardPage = ({
                           {matrixData.statuses.map((status) => {
                             const count = matrixData.grid[unit] ? matrixData.grid[unit][status] || 0 : 0;
                             const isCellSelected = selectedCell.unit === unit && selectedCell.status === status;
-                            
+
                             return (
-                              <td 
-                                key={status} 
+                              <td
+                                key={status}
                                 onClick={() => setSelectedCell({ unit, status })}
-                                style={{ 
+                                style={{
                                   padding: '1rem',
                                   cursor: 'pointer',
-                                  backgroundColor: isCellSelected 
-                                    ? 'var(--secondary-color, #dbeafe)' 
+                                  backgroundColor: isCellSelected
+                                    ? 'var(--secondary-color, #dbeafe)'
                                     : (count > 0 ? 'var(--status-in-progress-bg, #f0fdf4)' : 'transparent'),
-                                  color: isCellSelected 
-                                    ? 'var(--primary-color, #1e40af)' 
+                                  color: isCellSelected
+                                    ? 'var(--primary-color, #1e40af)'
                                     : (count > 0 ? 'var(--status-in-progress-text, #166534)' : 'var(--text-muted, #64748b)'),
                                   fontWeight: count > 0 || isCellSelected ? 700 : 'normal',
                                   transition: 'all 0.15s'
@@ -1068,11 +1068,11 @@ export const ReportsDashboardPage = ({
                               </td>
                             );
                           })}
-                          <td 
+                          <td
                             onClick={() => setSelectedCell({ unit, status: null })}
-                            style={{ 
-                              padding: '1rem', 
-                              backgroundColor: selectedCell.unit === unit && selectedCell.status === null ? 'var(--secondary-color, #dbeafe)' : 'var(--placeholder-bg, #f8fafc)', 
+                            style={{
+                              padding: '1rem',
+                              backgroundColor: selectedCell.unit === unit && selectedCell.status === null ? 'var(--secondary-color, #dbeafe)' : 'var(--placeholder-bg, #f8fafc)',
                               color: selectedCell.unit === unit && selectedCell.status === null ? 'var(--primary-color, #1e40af)' : 'var(--text-color, #1e293b)',
                               fontWeight: 800,
                               cursor: 'pointer',
@@ -1095,11 +1095,11 @@ export const ReportsDashboardPage = ({
                         const isColSelected = selectedCell.unit === null && selectedCell.status === status;
 
                         return (
-                          <td 
+                          <td
                             key={status}
                             onClick={() => setSelectedCell({ unit: null, status })}
-                            style={{ 
-                              padding: '1rem', 
+                            style={{
+                              padding: '1rem',
                               cursor: 'pointer',
                               backgroundColor: isColSelected ? 'var(--secondary-color, #dbeafe)' : 'transparent',
                               color: isColSelected ? 'var(--primary-color, #1e40af)' : 'inherit',
@@ -1110,11 +1110,11 @@ export const ReportsDashboardPage = ({
                           </td>
                         );
                       })}
-                      <td 
+                      <td
                         onClick={() => setSelectedCell({ unit: null, status: null })}
-                        style={{ 
-                          padding: '1rem', 
-                          backgroundColor: selectedCell.unit === null && selectedCell.status === null ? 'var(--secondary-color, #bfdbfe)' : 'var(--placeholder-bg, #f1f5f9)', 
+                        style={{
+                          padding: '1rem',
+                          backgroundColor: selectedCell.unit === null && selectedCell.status === null ? 'var(--secondary-color, #bfdbfe)' : 'var(--placeholder-bg, #f1f5f9)',
                           color: selectedCell.unit === null && selectedCell.status === null ? 'var(--primary-color, #1e40af)' : 'var(--text-color, #0f172a)',
                           fontWeight: 900,
                           cursor: 'pointer',
@@ -1143,7 +1143,7 @@ export const ReportsDashboardPage = ({
                   <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '0.75rem' }}>
                       <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #2563eb)' }}>format_list_bulleted</span>
+                        <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #0284c7)' }}>format_list_bulleted</span>
                         {language === 'fa' ? 'لیست پروژه‌های فیلتر شده بر اساس ماتریس انتخاب شده' : 'Filtered Projects List from Selection'}
                         <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted, #64748b)', background: 'var(--placeholder-bg, #f1f5f9)', padding: '0.1rem 0.6rem', borderRadius: '4px', margin: `0 ${language === 'fa' ? '0.75rem' : '0'} 0 ${language === 'fa' ? '0' : '0.75rem'}` }}>
                           {selectedCell.unit ? selectedCell.unit : (language === 'fa' ? 'همه واحدها' : 'All Units')}
@@ -1186,12 +1186,12 @@ export const ReportsDashboardPage = ({
                                 </td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>{displayPercent(p.plannedProgress)}</td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>{displayPercent(p.actualProgress)}</td>
-                                <td style={{ 
-                                  padding: '0.75rem', 
-                                  textAlign: 'center', 
+                                <td style={{
+                                  padding: '0.75rem',
+                                  textAlign: 'center',
                                   direction: 'ltr',
                                   color: hasDelay ? 'var(--warning-color, #ef4444)' : (delayVal > 0 ? 'var(--success-color, #22c55e)' : 'inherit'),
-                                  fontWeight: 600 
+                                  fontWeight: 600
                                 }}>
                                   {delayVal === 0 ? displayPercent(0) : (delayVal > 0 ? '+' : '') + displayPercent(delayVal)}
                                 </td>

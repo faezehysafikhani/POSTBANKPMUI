@@ -397,7 +397,7 @@ export const initialProjects: Project[] = [
     {
         id: 113,
         type: 'agile',
-        name: 'توسعه موتور هوش مصنوعی و تحلیل پیش‌بینانه',
+        name: 'توسعه سامانه تحلیل داده و گزارش‌های پیش‌بینانه',
         projectManagerId: 4,
         startDate: '2024-05-01',
         endDate: '2024-11-30',
