@@ -24,6 +24,8 @@ export type PlannedProgressType = 'continuous' | 'zero-hundred';
 
 export type UserRole = 'Admin' | 'Project Manager' | 'Project Team';
 export interface User {
+  /** Identity in NexusCore; numeric id is retained for existing project relationships. */
+  backendId?: string;
   id: number;
   username: string;
   name?: string;

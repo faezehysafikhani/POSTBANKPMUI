@@ -376,7 +376,7 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
 };
 
 // --- SettingsPage ---
-export const SettingsPage = ({ 
+export const ProjectSettingsPage = ({
   onNavigate, 
   currentUser,
   users = [],
