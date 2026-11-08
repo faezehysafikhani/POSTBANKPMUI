@@ -36,3 +36,16 @@ html #login-container-root .login-logo-container{width:56px!important;height:56p
 #login-container-root .pb-brand .pb-portal-date time{font-size:13px}
 html #login-container-root .pb-brand-mark{padding:10px;box-sizing:content-box;border:1px solid #ffffffa8;border-radius:50%;background:linear-gradient(135deg,#ffffffa6,#d9eee355);box-shadow:10px 15px 25px #005c3633,-7px -7px 20px #ffffffbf,inset 2px 2px 5px #fff,inset -3px -4px 7px #8fbaa54d;filter:drop-shadow(0 5px 4px #00663a16)}
 @media(max-width:850px){#login-container-root.pb-login{grid-template-rows:auto auto}#login-container-root .pb-brand{grid-row:1}#login-container-root .login-form-wrapper{grid-row:2}#login-container-root .pb-brand .pb-portal-clock{margin-bottom:18px;padding:12px 16px;gap:8px}#login-container-root .pb-brand .pb-portal-date time{font-size:12px}}
+/* Flowing mint layers and transparent calendar typography echo the reference. */
+#login-container-root.pb-login{background:radial-gradient(ellipse at 24% 25%,#ffffff 0%,#e9f5ee 38%,#a6d9bf 72%,#007344 100%)}
+#login-container-root .pb-flowing-background{position:absolute;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}
+#login-container-root .pb-brand-watermark{position:absolute;width:clamp(220px,34vw,550px);height:auto;left:-2%;top:2%;opacity:.065;transform:rotate(-14deg);z-index:-1;pointer-events:none}
+#login-container-root .pb-brand .pb-portal-clock{background:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;padding:0;margin:0 auto 22px;gap:7px;color:#35634b}
+#login-container-root .pb-brand .pb-portal-clock small{color:#577864;font-size:10px}
+#login-container-root .pb-brand .pb-portal-clock .material-symbols-outlined{font-size:18px;color:#40795a}
+#login-container-root .pb-brand .pb-portal-time time{font-size:21px}
+#login-container-root .pb-features{max-width:490px;margin-inline:auto;gap:12px}
+#login-container-root .pb-features>div{min-height:52px;box-sizing:border-box;padding:11px 14px;gap:12px;font-size:15px;border-radius:17px;background:linear-gradient(130deg,#ffffffb5,#ecf7ef70);box-shadow:0 10px 18px #006b3321,inset 0 2px 2px #ffffffd9}
+#login-container-root .pb-features .material-symbols-outlined{font-size:28px}
+html #login-container-root .pb-brand-mark{padding:0;border:0;background:none;border-radius:50%;box-shadow:none;filter:drop-shadow(5px 10px 9px #00623530)}
+@media(max-width:850px){#login-container-root .pb-features{gap:9px;max-width:420px}#login-container-root .pb-features>div{min-height:43px;padding:9px 8px;gap:8px;font-size:12px}#login-container-root .pb-features .material-symbols-outlined{font-size:23px}#login-container-root .pb-brand .pb-portal-clock{padding:0;margin-bottom:18px}#login-container-root .pb-brand-watermark{width:240px;left:-55px;top:0}}
