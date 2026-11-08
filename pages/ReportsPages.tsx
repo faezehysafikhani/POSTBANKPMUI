@@ -5,6 +5,7 @@ import { User, Project, EnrichedProject, Calendar, WorkStatus } from '../types';
 import { toPersianDigits, enrichProjectWithProgress, getUnitLevel2, exportDashboardToLandscapePdf } from '../utils';
 import { reportsApi } from '../services/backend/reports';
 import type { BackendManagerEvaluation, BackendStatusMatrix, BackendUnitReport } from '../services/backend/reports';
+import { ProjectActionReport } from '../components/reports/ProjectActionReport';
 
 interface ReportsDashboardPageProps {
   projects: Project[];
@@ -41,7 +42,8 @@ export const ReportsDashboardPage = ({
   projectStatuses,
 }: ReportsDashboardPageProps) => {
   const { t, language } = useContext(LocalizationContext);
-  const [activeTab, setActiveTab] = useState<'units' | 'managers' | 'matrix'>('units');
+  // «گزارش پروژه‌ها و اقدامات» (the dynamic report, built from the loaded data) opens first.
+  const [activeTab, setActiveTab] = useState<'projectsActions' | 'units' | 'managers' | 'matrix'>('projectsActions');
 
   // Matrix specific states
   const [selectedCell, setSelectedCell] = useState<{ unit: string | null; status: string | null }>({ unit: null, status: null });
@@ -235,7 +237,7 @@ export const ReportsDashboardPage = ({
             </p>
           </div>
         </div>
-        <button
+        {activeTab !== 'projectsActions' && <button
           onClick={() => {
             const reportName = activeTab === 'units'
               ? (language === 'fa' ? 'گزارش_ارزیابی_عملکرد_واحدها' : 'Owning_Units_Performance_Report')
@@ -259,13 +261,13 @@ export const ReportsDashboardPage = ({
           title={language === 'fa' ? 'خروجی PDF این گزارش' : 'Export Current Report to PDF'}
         >
           <span className="material-symbols-outlined" style={{ fontSize: '1.2rem', color: '#fff' }}>picture_as_pdf</span>
-        </button>
+        </button>}
       </div>
 
-      {reportError && (
+      {reportError && activeTab !== 'projectsActions' && (
         <div id="reports-error" style={{ padding: '0.75rem 1rem', marginBottom: '1rem', borderRadius: '8px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '0.85rem' }}>{reportError}</div>
       )}
-      {reportsLoading && !reportError && (
+      {reportsLoading && !reportError && activeTab !== 'projectsActions' && (
         <div style={{ padding: '0.5rem 0', color: 'var(--text-muted, #648b74)', fontSize: '0.85rem' }}>...</div>
       )}
 
@@ -278,6 +280,30 @@ export const ReportsDashboardPage = ({
         overflowX: 'auto',
         paddingBottom: '2px'
       }}>
+        <button
+          onClick={() => { setActiveTab('projectsActions'); setSelectedCell({ unit: null, status: null }); setSelectedManagerId(null); }}
+          className={`tab-btn ${activeTab === 'projectsActions' ? 'active' : ''}`}
+          style={{
+            padding: '0.75rem 1.5rem',
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            background: activeTab === 'projectsActions' ? 'linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark, var(--primary-color)) 100%)' : 'none',
+            borderRadius: '10px 10px 0 0',
+            border: 'none',
+            borderBottom: activeTab === 'projectsActions' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
+            color: activeTab === 'projectsActions' ? '#ffffff' : 'var(--text-muted, #648b74)',
+            boxShadow: activeTab === 'projectsActions' ? '0 4px 12px var(--shadow-color, rgba(0, 115, 48, 0.2))' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>query_stats</span>
+            {language === 'fa' ? 'گزارش پروژه‌ها و اقدامات' : 'Projects & Actions Report'}
+          </div>
+        </button>
+
         <button
           onClick={() => { setActiveTab('units'); setSelectedCell({ unit: null, status: null }); setSelectedManagerId(null); }}
           className={`tab-btn ${activeTab === 'units' ? 'active' : ''}`}
@@ -353,6 +379,11 @@ export const ReportsDashboardPage = ({
 
       {/* CONTENT SECTIONS */}
       <AnimatePresence mode="wait">
+        {activeTab === 'projectsActions' && (
+          <motion.div key="projectsActions" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} transition={{ duration: 0.25 }}>
+            <ProjectActionReport projects={projects} actions={actions} users={users} onNavigate={onNavigate} />
+          </motion.div>
+        )}
         {activeTab === 'units' && (
           <motion.div
             key="units"
