@@ -1,4 +1,5 @@
 import React, { useId, useRef, useState } from 'react';
+import '../pages/settings-profile.css';
 
 export type SettingsIconName = 'user' | 'users' | 'palette' | 'document' | 'message' | 'admin' | 'lock' | 'chevron';
 const paths: Record<SettingsIconName, React.ReactNode> = {

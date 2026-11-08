@@ -20,6 +20,11 @@ The Post Bank interface includes compact glass dashboard cards, a unified portfo
 creation dialogs, a settings navigation preview, reports navigation and a document-upload dialog.
 The document dialog passes the selected `File` to the existing backend upload handler.
 
+The landing dashboard shows portfolio statistics, a Persian month calendar and the project-status chart.
+Personal events are loaded and created through `/api/events`; entered times use Asia/Tehran.
+The event form's people, minutes and task-link tabs are preview sections; the current Events API stores
+the title, description/agenda, UTC start/end times and reminder interval. Creating an event requires a signed-in account.
+
 ## Checks
 
 ```powershell

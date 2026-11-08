@@ -92,7 +92,7 @@ export const Sidebar = ({
   const { t, language } = useContext(LocalizationContext);
   const [isCollapsed, setIsCollapsed] = useState(false);
   useEffect(() => {
-    if (currentPage !== 'settings_profile') return;
+    if (!['settings_profile', 'dashboard'].includes(currentPage)) return;
     const media = window.matchMedia('(max-width: 700px)');
     const collapseForMobile = () => { if (media.matches) setIsCollapsed(true); };
     collapseForMobile();
@@ -108,8 +108,9 @@ export const Sidebar = ({
   const menuGroups: MenuGroup[] = useMemo(() => [
     {
       id: 'dashboards',
-      titleFa: 'داشبوردها',
-      titleEn: 'Dashboards',
+      page: 'dashboard',
+      titleFa: 'داشبورد مدیریتی',
+      titleEn: 'Management Dashboard',
       icon: 'dashboard',
       items: [
         {
@@ -132,8 +133,9 @@ export const Sidebar = ({
     },
     {
       id: 'projects_actions',
-      titleFa: 'پروژه‌ها و اقدامات',
-      titleEn: 'Projects & Actions',
+      page: 'portfolio',
+      titleFa: 'سبد پروژه‌ها و اقدامات',
+      titleEn: 'Projects & Actions Portfolio',
       icon: 'folder_special',
       items: [
         {
@@ -229,7 +231,7 @@ export const Sidebar = ({
         }
       ]
     }
-  ], [overdueProjectsCount, pendingApprovalsCount, taskCenterNotificationCount]);
+  ].sort((a, b) => ['dashboards', 'projects_actions', 'tasks_approvals', 'knowledge_strategy', 'reports', 'users_settings'].indexOf(a.id) - ['dashboards', 'projects_actions', 'tasks_approvals', 'knowledge_strategy', 'reports', 'users_settings'].indexOf(b.id)), [overdueProjectsCount, pendingApprovalsCount, taskCenterNotificationCount]);
 
   if (!currentUser) return null;
 

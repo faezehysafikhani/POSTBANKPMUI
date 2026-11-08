@@ -1,5 +1,6 @@
 import { CreationDialog } from './components/CreationDialog';
 import { SettingsProfilePage } from './pages/SettingsProfilePage';
+import { ManagementDashboard } from './pages/ManagementDashboard';
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { AuthProvider, useAuth } from './directory/AuthContext';
 import { DirectoryProvider, useDirectory } from './directory/DirectoryContext';
@@ -578,8 +579,9 @@ const AppContent = () => {
                 return <ColorFormatPage onNavigate={handleNavigate}/>;
             case 'reference_tables':
                 return <ReferenceTablesPage projectStatuses={projectStatuses} onNavigate={handleNavigate}/>;
-            case 'dashboard_hub':
             case 'dashboard':
+                return <ManagementDashboard projects={visibleProjectsForCurrentUser} actions={visibleActionsForCurrentUser} calendars={calendars} user={currentUser} onNavigate={handleNavigate}/>;
+            case 'dashboard_hub':
             case 'action_dashboard':
                 return <ProjectDashboardPage projects={visibleProjectsForCurrentUser} actions={visibleActionsForCurrentUser} users={users} calendars={calendars} onNavigate={handleNavigate} owningUnits={owningUnits} projectStatuses={projectStatuses}/>;
             case 'reports_dashboard':
@@ -604,7 +606,7 @@ const AppContent = () => {
         if (sourceProject) handleNavigate(`create_${sourceProject.type}_details`, { project: sourceProject, type: sourceProject.type, initialTab: 'actions', from: 'portfolio' });
         else handleNavigate(pageContext?.from || 'portfolio');
     };
-    return (<div className={`app-container ${language}${page === 'settings_profile' ? ' settings-preview-layout' : ''}`}>
+    return (<div className={`app-container ${language}${page === 'settings_profile' ? ' settings-preview-layout' : ''}${page === 'dashboard' ? ' management-layout' : ''}`}>
             {currentUser && <Header user={currentUser} onLogout={handleLogout}/>}
             <div className="app-body">
                 {currentUser && (<Sidebar currentPage={page} onNavigate={handleNavigate} currentUser={currentUser} overdueProjectsCount={overdueProjectsCount} pendingApprovalsCount={pendingApprovalsCount} taskCenterNotificationCount={taskCenterNotificationCount}/>)}
