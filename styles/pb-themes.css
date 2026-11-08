@@ -1,7 +1,7 @@
 /*
  * Three workspace themes: green (default), purple and black. The theme is html[data-pb-theme], set before the
  * first render from localStorage and changed from the header. Every colour below comes from the tokens, and each
- * theme gives buttons its own shape: glossy gel pills (green), gradient pills with a white cap (purple) and
+ * theme gives buttons its own shape: glossy gel pills (green), glossy violet pills (purple) and
  * black/silver capsules with a gold rim (black). Icon buttons share one squircle with a coloured rim.
  * Loaded last so it wins over the older layers (sky-theme, compact-ui, postbank-glass, postbank-workspace).
  */
@@ -18,20 +18,20 @@ html[data-pb-theme]{
   --pb-card-bg:linear-gradient(140deg,#ffffffef,#edf7f0dc);--pb-card-border:#ffffffee;
   --pb-shadow:#00632d2e;--pb-glow:#22b06a;--pb-focus:#22b06a40;
   --pb-field-bg:#fbfefc;--pb-field-inset:#9cc9ad40;--pb-clock-bg:linear-gradient(145deg,#cfe9d9,#eef8f2);
-  --pb-rim:linear-gradient(135deg,#5fe09a,#0a7a40);--pb-icon-color:#0b8a48;
+  --pb-rim:linear-gradient(135deg,#7eeab0,#14a95c 50%,#0a6e3a);--pb-icon-color:#0b8a48;
 }
 html[data-pb-theme="purple"]{
-  --pb-accent:#8b3dff;--pb-accent2:#5b21b6;--pb-hi:#c084fc;--pb-pink:#e14bd6;--pb-soft:#f1e8ff;--pb-soft2:#f8f4ff;--pb-line:#ddccf7;
+  --pb-accent:#7c3aed;--pb-accent2:#5b21b6;--pb-hi:#a978ff;--pb-pink:#e14bd6;--pb-soft:#f1e8ff;--pb-soft2:#f8f4ff;--pb-line:#ddccf7;
   --pb-text:#2e1a52;--pb-heading:#4c1d95;--pb-muted:#76679a;
   --pb-page-bg:#f3eefc;--pb-wash1:#f7f2ffd6;--pb-wash2:#ebe1fbcf;--pb-wave-filter:hue-rotate(128deg) saturate(1.15);
   --pb-header-bg:linear-gradient(120deg,#fbf8ffeb,#d9c6f7eb);--pb-header-text:#3b1a72;
   --pb-side-bg:linear-gradient(155deg,#fbf8ffe6,#e2d3fae0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#efe5ffc8);
   --pb-side-text:#3d2270;--pb-side-icon:#8b3dff;
-  --pb-active-bg:linear-gradient(90deg,#5b21b6,#8b3dff 55%,#e14bd6);--pb-active-text:#fff;
+  --pb-active-bg:linear-gradient(180deg,#ffffff40 0,#ffffff00 50%),linear-gradient(160deg,#a978ff,#7c3aed 55%,#5b21b6);--pb-active-text:#fff;
   --pb-card-bg:linear-gradient(140deg,#ffffffef,#f5efffdc);
   --pb-shadow:#5b21b633;--pb-glow:#9d5cff;--pb-focus:#9d5cff3d;
   --pb-field-bg:#fdfbff;--pb-field-inset:#b9a3e040;--pb-clock-bg:linear-gradient(145deg,#e4d6fb,#f8f4ff);
-  --pb-rim:linear-gradient(135deg,#e14bd6,#7c3aed);--pb-icon-color:#7c3aed;
+  --pb-rim:linear-gradient(135deg,#c38bff,#7c3aed 50%,#4c1d95);--pb-icon-color:#7c3aed;
 }
 html[data-pb-theme="black"]{
   --pb-accent:#1c1c1f;--pb-accent2:#000;--pb-hi:#4a4a50;--pb-gold:#d4af37;--pb-gold2:#f6e27a;--pb-soft:#f1efe9;--pb-soft2:#f8f7f3;--pb-line:#dcd6c8;
@@ -99,18 +99,16 @@ html[data-pb-theme] .app-container:not(.login-layout) :is(.save-btn,.submit-prog
 html[data-pb-theme] .app-container:not(.login-layout) :is(button,a,input,select,textarea):focus-visible{outline:3px solid var(--pb-glow)!important;outline-offset:2px}
 
 /* Icon buttons (all themes): white squircle with a coloured rim. */
-html[data-pb-theme] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn){border:2px solid transparent!important;border-radius:13px!important;background:linear-gradient(145deg,#fff,#f1f1f3) padding-box,var(--pb-rim) border-box!important;color:var(--pb-icon-color)!important;box-shadow:3px 5px 10px var(--pb-shadow),inset 1px 1px 2px #fff,inset -2px -2px 4px #0000000f!important}
+html[data-pb-theme] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn){border:3.5px solid transparent!important;border-radius:15px!important;background:linear-gradient(145deg,#fff,#f1f1f3) padding-box,var(--pb-rim) border-box!important;color:var(--pb-icon-color)!important;box-shadow:3px 5px 10px var(--pb-shadow),inset 1px 1px 2px #fff,inset -2px -2px 4px #0000000f!important}
 html[data-pb-theme] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn) .material-symbols-outlined{color:var(--pb-icon-color)!important}
 
 /* ---------- buttons: GREEN — glossy gel pills ---------- */
 html[data-pb-theme="green"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:1px solid #05753c!important;color:#fff!important;text-shadow:0 1px 1px #00401d80;background:linear-gradient(180deg,#ffffff94 0,#ffffff2e 46%,#ffffff00 52%),linear-gradient(180deg,#48d688,#0a8a46 60%,#06703a)!important;box-shadow:0 0 0 2px #ffffffd9,0 6px 14px #0063304d,inset 0 -3px 5px #00401d40!important}
 html[data-pb-theme="green"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:1px solid #b6dcc4!important;color:#0d5f34!important;background:linear-gradient(180deg,#fff 0,#f6fcf8 46%,#e3f4ea 52%,#eef9f2)!important;box-shadow:0 0 0 2px #ffffffcc,0 4px 10px #0063301f,inset 0 -2px 3px #9cc9ad40!important}
 
-/* ---------- buttons: PURPLE — gradient pills; a leading icon sits in a white cap ---------- */
-html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:2px solid #fff!important;color:#fff!important;background:linear-gradient(180deg,#ffffff38,#ffffff00 55%),linear-gradient(270deg,#5b21b6,#8b3dff 50%,#e14bd6)!important;box-shadow:0 7px 16px #6d28d94d,inset 0 -2px 4px #3b0f7a40!important}
-html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):has(>.material-symbols-outlined:first-child){padding-inline-start:9px!important;box-shadow:inset -38px 0 0 #fff,0 7px 16px #6d28d94d!important}
-html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary))>.material-symbols-outlined:first-child{color:#7c3aed!important;width:20px;margin-inline-end:13px;text-shadow:none}
-html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:14px!important;border:2px solid transparent!important;color:#4c1d95!important;background:linear-gradient(180deg,#fff,#f6f0ff) padding-box,linear-gradient(135deg,#e9a8ff,#7c3aed) border-box!important;box-shadow:0 4px 10px #6d28d926,inset 0 1px 2px #fff!important}
+/* ---------- buttons: PURPLE — glossy violet pills with a white ring ---------- */
+html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:1px solid #4c1d95!important;color:#fff!important;text-shadow:0 1px 1px #2e0a6680;background:linear-gradient(180deg,#ffffff8c 0,#ffffff2b 46%,#ffffff00 52%),linear-gradient(180deg,#a978ff,#7c3aed 55%,#5b21b6)!important;box-shadow:0 0 0 2px #ffffffdd,0 6px 15px #5b21b64d,inset 0 -3px 5px #2e0a6640!important}
+html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:1px solid #cdb6f5!important;color:#4c1d95!important;background:linear-gradient(180deg,#fff 0,#faf7ff 46%,#ece2fd 52%,#f5f0ff)!important;box-shadow:0 0 0 2px #ffffffcc,0 4px 10px #5b21b61f,inset 0 -2px 3px #b9a3e040!important}
 
 /* ---------- buttons: BLACK — glossy capsules with a gold rim ---------- */
 html[data-pb-theme="black"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:2px solid transparent!important;color:#f7e7b4!important;text-shadow:0 1px 1px #000;background:linear-gradient(180deg,#ffffff40 0,#ffffff0f 45%,#ffffff00 50%) padding-box,linear-gradient(180deg,#3d3d43,#050505) padding-box,linear-gradient(135deg,#f6e27a,#b8860b 50%,#f6e27a) border-box!important;box-shadow:0 7px 15px #0006,0 0 0 1px #00000033!important}

@@ -7,8 +7,8 @@
 /* ---- Color palettes (used by CSS-gradient patterns) ---- */
 :root, .palette-indigo { --pattern-color: #6366f147; }
 .dark, .dark .palette-indigo, .dark.palette-indigo { --pattern-color: #818cf859; }
-.palette-emerald { --pattern-color: #10b98152; }
-.dark .palette-emerald, .dark.palette-emerald { --pattern-color: #34d39961; }
+.palette-emerald { --pattern-color: var(--pbc-10b98152,#10b98152); }
+.dark .palette-emerald, .dark.palette-emerald { --pattern-color: var(--pbc-34d39961,#34d39961); }
 .palette-rose { --pattern-color: #f43f5e4d; }
 .dark .palette-rose, .dark.palette-rose { --pattern-color: #fb71855c; }
 .palette-amber { --pattern-color: #f59e0b52; }
