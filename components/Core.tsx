@@ -12,7 +12,7 @@ export const Header = ({ user, onLogout }: { user: User, onLogout: () => void })
         React.createElement("img", { src: "/post-bank-iran-logo.png", alt: "پست بانک ایران", className: "header-logo" }),
         React.createElement("h1", null, t('mainTitle'))
       ),
-      React.createElement(LoginPortalClock),
+      React.createElement(LoginPortalClock, { showGregorian: false }),
       React.createElement("div", { className: "user-info" },
         React.createElement("span", null, t('welcomeUser', { username: user.username })),
         React.createElement("button", { onClick: onLogout, className: "logout-button", "aria-label": t('logout'), title: t('logout') },
