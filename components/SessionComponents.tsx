@@ -4,6 +4,7 @@ import { LocalizationContext } from '../context';
 import { keepSessionAlive, sessionStatus } from '../services/backend/auth';
 import type { SessionLimit } from '../services/backend/auth';
 import { useAuth } from '../directory/AuthContext';
+import { hasPendingActivity, pauseActivityTracking, takeActivityFlag } from '../tmpb/utils/sessionActivity';
 
 /**
  * Sessions belong to the backend: it counts them, decides the limit and the idle timeout, and ends a session. These two
@@ -81,6 +82,8 @@ export const SessionWatcher = (): ReactElement | null => {
   const signedIn = !!auth.session;
 
   const poll = useCallback(async () => {
+    // The user is working but sent no request lately: tell the server, so the idle clock keeps moving.
+    if (hasPendingActivity() && takeActivityFlag()) await keepSessionAlive();
     const status = await sessionStatus();
     if (!status) return;
     warnAt.current = status.idleWarningSeconds;
@@ -100,6 +103,12 @@ export const SessionWatcher = (): ReactElement | null => {
     const tick = setTimeout(() => setRemaining(current => (current === null ? null : Math.max(0, current - 1))), 1000);
     return () => clearTimeout(tick);
   }, [remaining]);
+
+  // While the warning is open only its button counts as activity, not mouse moves.
+  useEffect(() => {
+    pauseActivityTracking(remaining !== null);
+    return () => pauseActivityTracking(false);
+  }, [remaining !== null]);
 
   if (!signedIn || remaining === null) return null;
 

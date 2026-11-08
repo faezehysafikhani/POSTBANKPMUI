@@ -6,6 +6,8 @@
  * `detail` the message). They are returned as `ApiError` so screens can show the backend's own message.
  */
 
+import { takeActivityFlag } from '../tmpb/utils/sessionActivity';
+
 export interface ApiError {
   status: number;
   /** Error code from the backend (validation.error, not_found, conflict, forbidden, unauthorized.captcha_required, ...). */
@@ -125,6 +127,8 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   const token = tokenStore.access;
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (isAuthUrl(url)) Object.assign(headers, SESSION_HEADERS);
+  // The server's idle clock moves only for requests the user caused (a click, a key, a scroll), never for polling.
+  if (takeActivityFlag()) headers['X-Nexus-Activity'] = '1';
 
   let response: Response;
   try {
