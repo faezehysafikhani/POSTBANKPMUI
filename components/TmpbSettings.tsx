@@ -5,7 +5,7 @@ import { SettingsView } from '../tmpb/components/SettingsView';
 import type { User } from '../tmpb/types';
 import { adoptExternalSession, forgetExternalSession, getSessionUser, updateMyProfile } from '../tmpb/services/nexusApi';
 import { tokenStore } from '../services/api';
-import referenceCss from '../tmpb/generated.css?inline';
+import referenceCss from '../tmpb/reference.css?inline';
 
 // The reference stylesheet is active only while its screens are mounted; the product's own pages keep their stylesheet.
 function useReferenceStyles() {
