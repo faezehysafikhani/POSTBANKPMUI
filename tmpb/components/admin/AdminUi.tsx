@@ -19,7 +19,7 @@ export interface TabItem<T extends string> {
 /** The main navigation of a settings page: a soft track with the active tab raised. */
 export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void }) {
   return (
-    <div className="flex gap-1 p-1.5 bg-slate-100/80 dark:bg-slate-800/70 rounded-2xl overflow-x-auto" role="tablist">
+    <div className="flex flex-nowrap gap-1 p-1 w-fit max-w-full bg-slate-100/80 dark:bg-slate-800/70 rounded-2xl overflow-x-auto" role="tablist">
       {tabs.map(({ id, label, icon: Icon }) => {
         const selected = id === active;
         return (
@@ -29,7 +29,7 @@ export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { ta
             role="tab"
             aria-selected={selected}
             onClick={() => onChange(id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`flex shrink-0 items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
               selected
                 ? 'bg-white dark:bg-slate-900 text-indigo-800 dark:text-indigo-300 shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -47,7 +47,7 @@ export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { ta
 /** Secondary navigation inside a tab: separate pills, the active one filled. */
 export function PillTabs<T extends string>({ tabs, active, onChange, compact = false }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void; compact?: boolean }) {
   return (
-    <div className={compact ? "grid grid-cols-2 sm:grid-cols-4 gap-1 rounded-xl bg-slate-100/80 dark:bg-slate-800/70 p-1" : "flex flex-wrap gap-2"} role="tablist">
+    <div className={compact ? "grid grid-cols-2 sm:grid-cols-4 gap-1 rounded-xl bg-slate-100/80 dark:bg-slate-800/70 p-1" : "flex flex-nowrap gap-1.5 overflow-x-auto"} role="tablist">
       {tabs.map(({ id, label, icon: Icon }) => {
         const selected = id === active;
         return (
@@ -57,7 +57,7 @@ export function PillTabs<T extends string>({ tabs, active, onChange, compact = f
             role="tab"
             aria-selected={selected}
             onClick={() => onChange(id)}
-            className={`flex items-center justify-center gap-1.5 rounded-lg font-bold border transition-all cursor-pointer ${compact ? 'px-2 py-2 text-xs' : 'px-4 py-2.5 text-sm'} ${
+            className={`flex items-center justify-center gap-1.5 rounded-lg font-bold border transition-all cursor-pointer ${compact ? 'px-2 py-2 text-xs' : 'px-3 py-1.5 text-xs whitespace-nowrap'} ${
               selected
                 ? 'bg-indigo-800 border-indigo-800 text-white shadow-sm dark:bg-indigo-600 dark:border-indigo-600'
                 : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-300'
