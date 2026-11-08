@@ -28,3 +28,6 @@ dist-ssr
 .env.*
 !.env.example
 
+
+# Generated TMPB settings stylesheet (compiled by vite.config.ts)
+tmpb/generated.css

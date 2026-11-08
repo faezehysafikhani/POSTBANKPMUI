@@ -87,7 +87,7 @@ The backend (Core branch `feature/pm-core-gap-phase0`, which now carries the new
 «تنظیمات و پروفایل» (`pages/SettingsProfilePage.tsx`) shows the TMPB reference screens from `tmpb/` (taken from `TMPBUI`,
 branch `feature/1405-08-07-orgNode`): profile, work team, appearance, help, SMS panel, user management and the organization
 structure. They use their own API client (`tmpb/services/nexusApi.ts`); it adopts the session the product already opened
-(`components/TmpbSettings.tsx`, `adoptExternalSession`) and renews it from the same HttpOnly cookie. The reference stylesheet (`tmpb/reference.css`) is compiled by the Tailwind Vite plugin on every start and build (no separate step, nothing generated to go stale) and mounted only while these screens are open.
+(`components/TmpbSettings.tsx`, `adoptExternalSession`) and renews it from the same HttpOnly cookie. The reference stylesheet (`tmpb/reference.css`) is compiled by the Tailwind CLI from `vite.config.ts` on every start and build (no separate step, so the generated `tmpb/generated.css` can never be stale) and mounted only while these screens are open.
 Administrators also get «تنظیمات مدیریت پروژه» with four sub-tabs (workflow and approvals, visibility, work calendars, base tables;
 `components/ProjectSettingsTabs.tsx`). The old «مدیریت کاربران» and «تنظیمات» pages and menu items are gone; their routes lead here.
 
