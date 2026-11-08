@@ -53,3 +53,14 @@ running PostBank API/database and the matching package feed. They are not verifi
 Visual browser verification is pending: Chromium is not installed in the workspace and its download
 was unavailable. TypeScript, the production build, and all three organization regression scripts passed.
 The 47 organization component/helper files and orgStructureApi.ts match the reference byte-for-byte.
+
+## Update: synced with the reference, project settings as a tab
+
+- Synced with `TMPBUI` `feature/1405-08-07-orgNode` (head `7c96832`): `SystemAdministration`, `PositionPermissionsDialog`,
+  `OrgNodeCard`, `nexusApi` (the active-post header) and `utils/activePost.ts` (without its task-report part, which PM does not use).
+  Only `SettingsView` (the `projectHelp` / `projectSettings` props) and `branding` (PM name and logo) differ from the reference now.
+- The settings page has a main tab «تنظیمات مدیریت پروژه» (admins) with four sub-tabs: گردش کار و تاییدات, سطح مشاهده,
+  تقویم کاری, جداول پایه (`components/ProjectSettingsTabs.tsx`). They reuse the existing PM pages and their data.
+- The menu group «کاربران و تنظیمات» now has one item, «تنظیمات»; the old «مدیریت کاربران» page and route are removed
+  (users, roles, titles, sign-in history, LDAP and SSO are in the settings page's «مدیریت کاربران» tab).
+- UI only: the PM data (workflow, calendars, base tables) is still the browser-kept data of this branch.

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from 'react';
-import { Smartphone, MessageSquare, Users, History, Network, KeyRound, Loader2, Save, User as UserIcon, Palette, FileText, UploadCloud, Building2, BadgeCheck, ShieldCheck, Image as ImageIcon, RotateCcw, ChevronDown, ChevronUp, MonitorSmartphone, LogOut } from 'lucide-react';
+import { Smartphone, MessageSquare, Users, History, Network, KeyRound, Loader2, Save, User as UserIcon, Palette, FileText, UploadCloud, Building2, BadgeCheck, ShieldCheck, Image as ImageIcon, RotateCcw, ChevronDown, ChevronUp, MonitorSmartphone, LogOut, Briefcase } from 'lucide-react';
 import { getKnownPermissions, getMyPermissions, changeMyPassword, requestPhoneChange, confirmPhoneChange, fetchUploadPolicy, updateMaxUploadSizeKb } from '../../services/nexusApi';
 import { AdminCard, SegmentedTabs, PillTabs, TabItem, Field, inputClass, Notice, PrimaryButton } from './AdminUi';
 import { UsersPanel } from './UsersPanel';
@@ -19,8 +19,9 @@ import { MyPlacementPanel } from './orgStructure/OrgViews';
 import { TitlesPanel } from './orgStructure/TitlesPanel';
 import { canSeeWorkTeams, PERSON_ACCESS_UI_ENABLED } from '../../utils/permissions';
 import { DEFAULT_SYSTEM_NAME, saveBranding, useBranding } from '../../utils/branding';
+import { useActivePost } from '../../utils/activePost';
 
-type MainTab = 'profile' | 'team' | 'appearance' | 'help' | 'sms' | 'users' | 'org';
+type MainTab = 'profile' | 'team' | 'appearance' | 'help' | 'project' | 'sms' | 'users' | 'org';
 type UsersTab = 'list' | 'roles' | 'titles' | 'history' | 'ldap' | 'sso';
 
 /**
@@ -33,6 +34,9 @@ export function useMyPermissions(userId: string | undefined): Set<string> | null
     const known = userId ? getKnownPermissions(userId) : null;
     return known ? new Set(known) : null;
   });
+  // The post the person works as: the server counts only that post's permissions, so they are read again on a switch.
+  const activePosts = useActivePost().postIds;
+  const activePostsKey = activePosts ? [...activePosts].sort().join(',') : '';
   useEffect(() => {
     if (!userId) { setPermissions(new Set()); return; }
     let alive = true;
@@ -42,7 +46,7 @@ export function useMyPermissions(userId: string | undefined): Set<string> | null
       .then((names) => alive && setPermissions(new Set(names)))
       .catch(() => alive && setPermissions((current) => current ?? new Set()));
     return () => { alive = false; };
-  }, [userId]);
+  }, [userId, activePostsKey]);
   return permissions;
 }
 
@@ -552,7 +556,9 @@ export const SystemAdministration: React.FC<{
   team: React.ReactNode;
   appearance: React.ReactNode;
   help: React.ReactNode;
-}> = ({ currentUserId, profile, team, appearance, help }) => {
+  /** Product-specific settings (the project-management product's workflow, visibility, calendars, base tables). Absent: no tab. */
+  projectSettings?: React.ReactNode;
+}> = ({ currentUserId, profile, team, appearance, help, projectSettings }) => {
   const permissions = useMyPermissions(currentUserId);
   const can = (p: string) => !!permissions?.has(p);
   const { available: orgStructureAvailable, known: orgStructureKnown } = useOrgStructureAvailable(currentUserId);
@@ -575,6 +581,7 @@ export const SystemAdministration: React.FC<{
     ...(canSeeWorkTeams(permissions) ? [{ id: 'team' as const, label: 'مدیریت تیم کاری', icon: Users }] : []),
     { id: 'appearance', label: 'ظاهر سامانه', icon: Palette },
     { id: 'help', label: 'آموزش سامانه', icon: FileText },
+    ...(projectSettings ? [{ id: 'project' as const, label: 'تنظیمات مدیریت پروژه', icon: Briefcase }] : []),
     ...(can('sms_settings.view') ? [{ id: 'sms' as const, label: 'پنل پیامکی', icon: MessageSquare }] : []),
     ...(can('users.view') || can('roles.view') || can('audit_logs.view') || can('ldap_settings.view') || can('sso_settings.view')
       ? [{ id: 'users' as const, label: 'مدیریت کاربران', icon: Users }] : []),
@@ -606,6 +613,7 @@ export const SystemAdministration: React.FC<{
         </div>
       )}
       {current === 'help' && help}
+      {current === 'project' && projectSettings}
       {current === 'sms' && <SmsPanel canUpdate={can('sms_settings.update')} canTest={can('sms_settings.test')} />}
       {current === 'users' && currentUserId && <UserManagementSection currentUserId={currentUserId} can={can} orgStructureAvailable={orgStructureAvailable} />}
       {current === 'org' && <OrgStructureSection can={can} />}

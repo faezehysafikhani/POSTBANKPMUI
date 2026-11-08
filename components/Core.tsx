@@ -228,15 +228,6 @@ export const Sidebar = ({
       icon: 'settings_suggest',
       items: [
         {
-          id: 'users',
-          page: 'users',
-          nameFa: 'مدیریت کاربران',
-          nameEn: 'User Management',
-          icon: 'manage_accounts',
-          count: 0,
-          roles: ['Admin']
-        },
-        {
           id: 'settings',
           page: 'settings',
           nameFa: 'تنظیمات',

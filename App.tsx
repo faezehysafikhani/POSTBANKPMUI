@@ -22,7 +22,7 @@ import {
 import { getISODateString, getISODateTimeString, calculateScheduleTreeAndProgress, isProjectVisibleToUser, isActionVisibleToUser, toPersianDigits, generateRecurringOccurrences } from './utils';
 import { LocalizationProvider, LocalizationContext, ThemeProvider, ThemeContext } from './context';
 import { MainMenu } from './pages/CorePages';
-import { UserManagementPage, TaskCenterPage, ApprovalCenterPage } from './pages/UserAndTaskPages';
+import { TaskCenterPage, ApprovalCenterPage } from './pages/UserAndTaskPages';
 import { CalendarManagementPage, EditCalendarPage, StrategyManagementHubPage, DefineStrategiesPage, AlignmentMatrixPage, ColorFormatPage, KnowledgeManagementPage, ReferenceTablesPage } from './pages/AdvancedPages';
 import { ActionDefinitionPage } from './pages/ActionPages';
 import { 
@@ -39,6 +39,8 @@ import { AiChatbot } from './components/AiChatbot';
 
 
 import { SettingsPage, TmpbLogin } from './components/TmpbSettings';
+import { requestProjectSettingsTab } from './components/ProjectSettingsTabs';
+import { requestSettingsTab } from './tmpb/utils/profileEvents';
 import { getSessionUser, refreshCurrentUser, logout as logoutApi, SESSION_ENDED_EVENT } from './tmpb/services/nexusApi';
 import type { User as BackendUser } from './tmpb/types';
 import { startActivityTracking } from './tmpb/utils/sessionActivity';
@@ -591,6 +593,12 @@ const AppContent = () => {
 
     // --- NAVIGATION ---
     const handleNavigate = (targetPage: string, context: any = null) => {
+        // The calendars and the base tables are tabs of the settings page now.
+        if (targetPage === 'calendar_management' || targetPage === 'reference_tables') {
+            requestSettingsTab('project');
+            requestProjectSettingsTab(targetPage === 'calendar_management' ? 'calendar' : 'tables');
+            targetPage = 'settings';
+        }
         setPage(targetPage);
         setPageContext(context);
     };
@@ -1307,26 +1315,37 @@ const AppContent = () => {
                             pendingApprovalsCount={pendingApprovalsCount}
                             taskCenterNotificationCount={taskCenterNotificationCount}
                         />;
-            case 'users':
-                return <UserManagementPage users={users} setUsers={setUsers} onNavigate={handleNavigate} owningUnits={owningUnits} />;
             case 'settings':
                 return (
-                    <SettingsPage 
+                    <SettingsPage
                         onLogout={handleLogout}
                         onProfileUpdated={acceptBackendUser}
-                        onNavigate={handleNavigate} 
-                        currentUser={currentUser} 
-                        users={users}
-                        isProjectWorkflowEnabled={isProjectWorkflowEnabled}
-                        setIsProjectWorkflowEnabled={setIsProjectWorkflowEnabled}
-                        allowApprovedProgress={allowApprovedProgress}
-                        setAllowApprovedProgress={setAllowApprovedProgress}
-                        defaultProjectApproverId={defaultProjectApproverId}
-                        setDefaultProjectApproverId={setDefaultProjectApproverId}
-                        visibilitySettings={visibilitySettings}
-                        setVisibilitySettings={setVisibilitySettings}
-                        dynamicWorkflowSettings={dynamicWorkflowSettings}
-                        setDynamicWorkflowSettings={setDynamicWorkflowSettings}
+                        canManageProject={currentUser.role === 'Admin'}
+                        project={{
+                            workflow: {
+                                onNavigate: handleNavigate,
+                                currentUser,
+                                users,
+                                isProjectWorkflowEnabled,
+                                setIsProjectWorkflowEnabled,
+                                allowApprovedProgress,
+                                setAllowApprovedProgress,
+                                defaultProjectApproverId,
+                                setDefaultProjectApproverId,
+                                visibilitySettings,
+                                setVisibilitySettings,
+                                dynamicWorkflowSettings,
+                                setDynamicWorkflowSettings,
+                            },
+                            calendars,
+                            projects,
+                            onDeleteCalendar: handleDeleteCalendar,
+                            owningUnits,
+                            setOwningUnits,
+                            projectStatuses,
+                            setProjectStatuses,
+                            onNavigate: handleNavigate,
+                        }}
                     />
                 );
             case 'create_project':
@@ -1404,8 +1423,6 @@ const AppContent = () => {
                             setProjects={setProjects}
                             dynamicWorkflowSettings={dynamicWorkflowSettings}
                         />;
-            case 'calendar_management':
-                return <CalendarManagementPage calendars={calendars} projects={projects} onNavigate={handleNavigate} onDelete={handleDeleteCalendar} />;
             case 'edit_calendar':
                 return <EditCalendarPage onNavigate={handleNavigate} onSave={handleSaveCalendar} existingCalendar={pageContext?.calendar} />;
             case 'strategy_management':
@@ -1416,8 +1433,6 @@ const AppContent = () => {
                 return <AlignmentMatrixPage projects={projects} strategies={strategies} alignments={alignments} onSaveAlignments={handleSaveAlignments} onNavigate={handleNavigate} />;
             case 'color_format':
                 return <ColorFormatPage onNavigate={handleNavigate} />;
-            case 'reference_tables':
-                return <ReferenceTablesPage owningUnits={owningUnits} setOwningUnits={setOwningUnits} projectStatuses={projectStatuses} setProjectStatuses={setProjectStatuses} onNavigate={handleNavigate} />;
             case 'dashboard_hub':
             case 'dashboard':
             case 'action_dashboard':

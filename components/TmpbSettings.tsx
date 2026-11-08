@@ -6,7 +6,7 @@ import { SettingsView } from '../tmpb/components/SettingsView';
 import { AuthModal } from '../tmpb/components/AuthModal';
 import type { AppColorPalette, AppTheme, User } from '../tmpb/types';
 import { getSessionUser, updateMyPreferences, updateMyProfile } from '../tmpb/services/nexusApi';
-import { ProjectSettingsPage } from '../pages/CorePages';
+import { ProjectSettingsTabs } from './ProjectSettingsTabs';
 import referenceCss from '../tmpb/generated.css?inline';
 
 // Keep the reference stylesheet active only while its screens are mounted.
@@ -28,12 +28,17 @@ export function TmpbLogin({ onSuccess }: { onSuccess: () => void }) {
     currentTheme="default" onThemeSelect={() => {}} />;
 }
 
-type Props = React.ComponentProps<typeof ProjectSettingsPage> & {
+type ProjectTabsProps = React.ComponentProps<typeof ProjectSettingsTabs>;
+
+type Props = {
   onLogout: () => void;
   onProfileUpdated: (user: User) => void;
+  /** Whether the signed-in person may see the project-management settings tab. */
+  canManageProject: boolean;
+  project: ProjectTabsProps;
 };
 
-export function SettingsPage({ onLogout, onProfileUpdated, ...projectProps }: Props) {
+export function SettingsPage({ onLogout, onProfileUpdated, canManageProject, project }: Props) {
   useReferenceStyles();
   const { theme, setTheme } = useContext(ThemeContext);
   const [user, setUser] = useState(getSessionUser);
@@ -56,7 +61,7 @@ export function SettingsPage({ onLogout, onProfileUpdated, ...projectProps }: Pr
 
   return <div className={`content-container bg-pattern-${pattern} palette-${palette}`} dir="rtl">
     {error && <p role="alert">{error}</p>}
-    <SettingsView projectHelp={<FeaturesHandbook />} themeMode={theme} setThemeMode={mode => void preference({ themeMode: mode })}
+    <SettingsView projectHelp={<FeaturesHandbook />} projectSettings={canManageProject ? <ProjectSettingsTabs {...project} /> : undefined} themeMode={theme} setThemeMode={mode => void preference({ themeMode: mode })}
       appColorTheme={pattern} setAppColorTheme={next => void preference({ theme: next })}
       appColorPalette={palette} setAppColorPalette={next => void preference({ colorPalette: next })}
       totalTasksCount={0} currentUser={user} onLogout={onLogout} onOpenAuthModal={onLogout}
@@ -65,9 +70,5 @@ export function SettingsPage({ onLogout, onProfileUpdated, ...projectProps }: Pr
         setUser(saved);
         onProfileUpdated(saved);
       }} />
-    <details className="mt-6 rounded-2xl border border-slate-200 p-4 dark:border-slate-700">
-      <summary className="cursor-pointer font-bold">تنظیمات اختصاصی مدیریت پروژه و گردش کار</summary>
-      <ProjectSettingsPage {...projectProps} />
-    </details>
   </div>;
 }

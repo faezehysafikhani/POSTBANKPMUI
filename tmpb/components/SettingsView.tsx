@@ -16,6 +16,8 @@ export type ThemeMode = 'light' | 'dark';
 
 export interface SettingsViewProps {
   projectHelp?: React.ReactNode;
+  /** The project-management product's own settings, shown as a main tab. */
+  projectSettings?: React.ReactNode;
   themeMode: ThemeMode;
   setThemeMode: (mode: ThemeMode) => void;
   appColorTheme: AppTheme;
@@ -106,6 +108,7 @@ const TUTORIAL_VIDEOS = TUTORIAL_CATEGORIES.flatMap((c) => c.videos.map((v) => (
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
   projectHelp,
+  projectSettings,
   themeMode,
   setThemeMode,
   appColorTheme,
@@ -841,6 +844,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       team={teamContent}
       appearance={appearanceContent}
       help={projectHelp ?? helpContent}
+      projectSettings={projectSettings}
     />
   );
 };
