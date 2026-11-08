@@ -6,6 +6,7 @@ import { useGovernance } from '../directory/GovernanceContext';
 import { toPersianDigits, appLogoUrl, appLogoWatermarkUrl } from '../utils';
 import { FeaturesHandbook } from '../components/FeaturesHandbook';
 import { DynamicWorkflowSettingsEditor } from '../components/DynamicWorkflowSettingsEditor';
+import { LoginPortalClock } from '../components/LoginPortalClock';
 import { FloatingSpheresCanvas } from '../components/FloatingSpheresCanvas';
 
 
@@ -51,6 +52,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
 
   return (
     <div className="pb-login" id="login-container-root"><div className="pb-wave" aria-hidden="true"/><section className="pb-brand"><img className="pb-brand-mark" src="/post-bank-iran-logo.png" alt="نشان پست بانک ایران" width="160" height="160" /><h1>پست بانک ایران</h1><p>POST BANK IRAN</p><div className="pb-features">{[['task_alt','مدیریت وظایف'],['layers','مدیریت پروژه'],['calendar_month','پایش و پیگیری'],['bar_chart','گزارش‌ها و داشبوردها']].map(([icon,label])=><div key={icon}><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</div>)}</div></section>
+      <LoginPortalClock />
       <FloatingSpheresCanvas />
       {/* Decorative ambient background glows */}
       <div className="login-ambient-glow login-glow-1" />
@@ -64,10 +66,10 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
             <span className="material-symbols-outlined pb-person" aria-hidden="true">person</span>
           </div>
 
-          <h2 className="login-main-title">{isFa ? 'ورود به سیستم' : 'Welcome back'}</h2>
+          <h2 className="login-main-title">{isFa ? 'سامانه مدیریت پروژه' : 'Project Management System'}</h2>
           <p className="login-subtitle">
             {isFa
-              ? 'سامانه مدیریت پروژه و وظایف سازمانی'
+              ? 'به سامانه پست بانک ایران خوش آمدید'
               : 'Smart Project & Task Management System'}
           </p>
 
