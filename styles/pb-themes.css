@@ -232,3 +232,11 @@ html[data-pb-theme] .app-container:not(.login-layout) .page-header-actions :is(b
 /* In creation dialogs the toolbar keeps clear of the floating close button. */
 .creation-dialog .page-header-actions{margin-inline-end:58px!important}
 .creation-dialog-close-floating{top:26px!important;left:26px!important}
+
+/* ---------- page height: no scrollbar when the content fits ----------
+   Header, body and footer share exactly one screen; the sidebar fills the body instead of being a full screen
+   tall on its own (which pushed the footer below the fold). Long pages still scroll and the sidebar stays sticky. */
+html .app-container:not(.login-layout){display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+html .app-container:not(.login-layout)>.app-body{flex:1 0 auto;min-height:0!important}
+html .app-container:not(.login-layout)>.app-body>.app-sidebar{height:auto!important;align-self:stretch;max-height:calc(100vh - 65px);max-height:calc(100dvh - 65px);overflow-y:auto}
+html .app-container:not(.login-layout)>footer{margin-top:0!important;flex-shrink:0}
