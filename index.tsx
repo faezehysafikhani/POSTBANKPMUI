@@ -1,6 +1,11 @@
 import './tmpb/bootRuntimeConfig';
 import '@fontsource-variable/vazirmatn/wght.css';
 import '@fontsource/reem-kufi/600.css';
+import '@fontsource/vazirmatn/400.css';
+import '@fontsource/vazirmatn/500.css';
+import '@fontsource/vazirmatn/600.css';
+import '@fontsource/vazirmatn/700.css';
+import 'material-symbols/outlined.css';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App';

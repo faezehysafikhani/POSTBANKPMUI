@@ -4,7 +4,14 @@ import { PieDoughnutChart } from '../components/Charts';
 import { getOfficialHolidayReason, toPersianDigits } from '../utils';
 import { PersonalEvent, personalEvents } from '../services/backend/events';
 import { gregorianDay, monthGrid, moveMonth, PERSIAN_MONTHS, persianDateKey, tehranDateTime, tehranDay } from '../components/managementCalendar';
+import { ManagementEventDialog } from '../components/ManagementEventDialog';
 import './management-dashboard.css';
+
+// Gregorian and lunar (Hijri) dates come from the browser's built-in calendars (Intl), so nothing is fetched.
+// The lunar dates follow the Umm al-Qura calendar and can differ by a day from Iran's official lunar calendar.
+const gregorianDayFormat = new Intl.DateTimeFormat('en-US', { day: 'numeric' });
+const hijriDayFormat = new Intl.DateTimeFormat('fa-IR-u-ca-islamic-umalqura', { day: 'numeric' });
+const hijriMonthFormat = new Intl.DateTimeFormat('fa-IR-u-ca-islamic-umalqura', { month: 'long', year: 'numeric' });
 
 const weekdays = ['ش','ی','د','س','چ','پ','ج'];
 
@@ -39,7 +46,9 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
   const [month, setMonth] = useState({year:today.jy,month:today.jm});
   const [selected, setSelected] = useState(persianDateKey(today.jy,today.jm,today.jd));
   const [events, setEvents] = useState<PersonalEvent[]>([]); const [loading,setLoading] = useState(false);
-  const [error,setError] = useState('');
+  const [error,setError] = useState(''); const [eventDate,setEventDate] = useState<string|null>(null);
+  const [notice,setNotice] = useState(''); const [dayMenu,setDayMenu] = useState<{key:string;top:number;left:number}|null>(null);
+  const gridBox = useRef<HTMLDivElement|null>(null); const menuBox = useRef<HTMLDivElement|null>(null);
   const [revision,setRevision] = useState(0);
   const dayButtons = useRef<(HTMLButtonElement|null)[]>([]);
   const grid = monthGrid(month.year,month.month);
@@ -67,6 +76,27 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
       .finally(()=>{if(live)setLoading(false);});
     return()=>{live=false;};
   },[month.year,month.month,revision]);
+  useEffect(()=>{
+    if(!dayMenu)return;
+    const close=(event:MouseEvent|KeyboardEvent)=>{
+      if(event instanceof KeyboardEvent){if(event.key==='Escape'){setDayMenu(null);dayButtons.current[Number(dayMenu.key.split('/')[2])]?.focus();}return;}
+      const target=event.target as Node;if(!menuBox.current?.contains(target)&&!(target instanceof Element&&target.closest('.mg-day')))setDayMenu(null);
+    };
+    document.addEventListener('mousedown',close);document.addEventListener('keydown',close);
+    return()=>{document.removeEventListener('mousedown',close);document.removeEventListener('keydown',close);};
+  },[dayMenu]);
+  function openDay(key:string,button:HTMLButtonElement){
+    setSelected(key);
+    const grid=gridBox.current;if(!grid)return;
+    const g=grid.getBoundingClientRect(),b=button.getBoundingClientRect();
+    setDayMenu(current=>current?.key===key?null:{key,top:b.bottom-g.top+6,left:Math.min(Math.max(b.left-g.left+b.width/2,110),g.width-110)});
+  }
+  function createFromDay(kind:'event'|'waterfall'|'agile'|'action'){
+    const key=dayMenu?.key||selected;setDayMenu(null);
+    if(kind==='event'){setNotice('');setEventDate(key);return;}
+    if(kind==='action')onNavigate('define_action',{from:'dashboard',date:key});
+    else onNavigate(kind==='waterfall'?'create_waterfall_details':'create_agile_details',{type:kind,from:'dashboard',date:key});
+  }
   const eventDays = useMemo(()=>{
     const grouped=new Map<string,PersonalEvent[]>();
     for(const event of events){const day=tehranDay(event.startAtUtc);const key=persianDateKey(day.jy,day.jm,day.jd);grouped.set(key,[...(grouped.get(key)||[]),event]);}
@@ -93,32 +123,38 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
       <section className="mg-calendar-card" aria-label="تقویم شمسی مدیریتی">
         <div className="mg-card-heading mg-toolbar"><CreateButtons onNavigate={onNavigate}/></div>
         {error&&<div className="mg-error" role="alert">{error}<button type="button" className="cancel-btn" onClick={()=>setRevision(value=>value+1)}>تلاش دوباره</button></div>}
-        <div className="mg-month-nav"><button type="button" className="mg-icon-button" onClick={()=>changeMonth(-1)} aria-label="ماه قبل"><span className="material-symbols-outlined" aria-hidden="true">chevron_right</span></button><div aria-live="polite"><h4>{PERSIAN_MONTHS[month.month-1]} {toPersianDigits(month.year)}</h4><p>{rangeFormat.format(gregorianStart)} تا {rangeFormat.format(gregorianEnd)}</p></div><button type="button" className="mg-icon-button" onClick={()=>changeMonth(1)} aria-label="ماه بعد"><span className="material-symbols-outlined" aria-hidden="true">chevron_left</span></button></div>
+        <div className="mg-month-nav"><button type="button" className="mg-icon-button" onClick={()=>changeMonth(-1)} aria-label="ماه قبل"><span className="material-symbols-outlined" aria-hidden="true">chevron_right</span></button><div aria-live="polite"><h4>{PERSIAN_MONTHS[month.month-1]} {toPersianDigits(month.year)}</h4><p>{rangeFormat.format(gregorianStart)} تا {rangeFormat.format(gregorianEnd)}</p><p className="mg-hijri-range">{hijriMonthFormat.format(gregorianStart)===hijriMonthFormat.format(gregorianEnd)?hijriMonthFormat.format(gregorianStart):`${hijriMonthFormat.format(gregorianStart)} تا ${hijriMonthFormat.format(gregorianEnd)}`}</p></div><button type="button" className="mg-icon-button" onClick={()=>changeMonth(1)} aria-label="ماه بعد"><span className="material-symbols-outlined" aria-hidden="true">chevron_left</span></button></div>
         <div className="mg-weekdays" aria-hidden="true">{weekdays.map(day=><span key={day}>{day}</span>)}</div>
-        <div className="mg-month-grid" role="group" aria-label={`روزهای ${PERSIAN_MONTHS[month.month-1]}`} aria-busy={loading}>
+        <div className="mg-month-grid" ref={gridBox} role="group" aria-label={`روزهای ${PERSIAN_MONTHS[month.month-1]}`} aria-busy={loading}>
           {grid.cells.map((day,index)=>{
             if(day===null)return <span key={`empty-${index}`} className="mg-empty-day"/>;
             const key=persianDateKey(month.year,month.month,day);const date=gregorianDay(month.year,month.month,day);
             const reason=workCalendar?.specificHolidays?.find(holiday=>holiday.date===key)?.reason || (workCalendar?.applyOfficialHolidays===false?null:getOfficialHolidayReason(date));
             const weekend=workCalendar?!workCalendar.workingDays.includes(date.getDay()):date.getDay()===5;
             const dayEvents=eventDays.get(key)||[];
-            return <button key={key} type="button" ref={element=>{dayButtons.current[day]=element;}} tabIndex={selected===key?0:-1} aria-pressed={selected===key} aria-current={key===todayKey?'date':undefined} aria-label={`${toPersianDigits(day)} ${PERSIAN_MONTHS[month.month-1]}${reason?`، ${reason}`:weekend?'، تعطیل هفتگی':''}${dayEvents.length?`، ${toPersianDigits(dayEvents.length)} رویداد`:''}`} className={`mg-day ${weekend||reason?'holiday':''} ${selected===key?'selected':''} ${key===todayKey?'today':''}`} onClick={()=>setSelected(key)} onKeyDown={event=>dayKey(event,day)}><span>{toPersianDigits(day)}</span>{reason?<small>{reason}</small>:weekend?<small>تعطیل</small>:null}{dayEvents.length>0&&<i className="mg-event-dot" aria-hidden="true"/>}</button>;
+            return <button key={key} type="button" ref={element=>{dayButtons.current[day]=element;}} tabIndex={selected===key?0:-1} aria-pressed={selected===key} aria-current={key===todayKey?'date':undefined} aria-label={`${toPersianDigits(day)} ${PERSIAN_MONTHS[month.month-1]}${reason?`، ${reason}`:weekend?'، تعطیل هفتگی':''}${dayEvents.length?`، ${toPersianDigits(dayEvents.length)} رویداد`:''}`} className={`mg-day ${weekend||reason?'holiday':''} ${selected===key?'selected':''} ${key===todayKey?'today':''}`} aria-haspopup="menu" aria-expanded={dayMenu?.key===key} onClick={event=>openDay(key,event.currentTarget)} onKeyDown={event=>dayKey(event,day)}><span>{toPersianDigits(day)}</span><span className="mg-alt-dates" aria-hidden="true"><b title="میلادی">{gregorianDayFormat.format(date)}</b><b title="قمری">{hijriDayFormat.format(date)}</b></span>{reason?<small>{reason}</small>:weekend?<small>تعطیل</small>:null}{dayEvents.length>0&&<i className="mg-event-dot" aria-hidden="true"/>}</button>;
           })}
+          {dayMenu&&<div className="mg-day-menu" ref={menuBox} role="menu" aria-label={`ایجاد برای ${toPersianDigits(Number(dayMenu.key.split('/')[2]))} ${PERSIAN_MONTHS[Number(dayMenu.key.split('/')[1])-1]}`} style={{top:dayMenu.top,left:dayMenu.left}}>
+            <button type="button" role="menuitem" autoFocus onClick={()=>createFromDay('event')}><span className="material-symbols-outlined" aria-hidden="true">event</span>رویداد جدید</button>
+            <button type="button" role="menuitem" onClick={()=>createFromDay('waterfall')}><span className="material-symbols-outlined" aria-hidden="true">account_tree</span>پروژه آبشاری</button>
+            <button type="button" role="menuitem" onClick={()=>createFromDay('agile')}><span className="material-symbols-outlined" aria-hidden="true">sync_alt</span>پروژه چابک</button>
+            <button type="button" role="menuitem" onClick={()=>createFromDay('action')}><span className="material-symbols-outlined" aria-hidden="true">add_task</span>اقدام جدید</button>
+          </div>}
         </div>
-        <div className="mg-calendar-legend"><span><i className="holiday"/>تعطیلات تقویم</span><span><i className="event"/>رویداد ثبت‌شده</span><button type="button" className="cancel-btn" onClick={()=>{setMonth({year:today.jy,month:today.jm});setSelected(todayKey);}}>امروز</button></div>
+        {notice&&<p className="mg-notice" role="status">{notice}</p>}
+        <div className="mg-calendar-legend"><span><i className="holiday"/>تعطیلات تقویم</span><span><i className="event"/>رویداد ثبت‌شده</span><span className="mg-legend-alt"><b>۱۲</b>میلادی</span><span className="mg-legend-alt hijri"><b>۱۲</b>قمری</span><button type="button" className="cancel-btn" onClick={()=>{setMonth({year:today.jy,month:today.jm});setSelected(todayKey);}}>امروز</button></div>
       </section>
       <section className="mg-agenda-card" aria-labelledby="mg-agenda-title">
-        <div className="mg-card-heading"><div><h3 id="mg-agenda-title">برنامه {toPersianDigits(selectedDay)} {PERSIAN_MONTHS[selectedMonth-1]} {toPersianDigits(selectedYear)}</h3></div><div className="mg-agenda-actions"><CreateButtons onNavigate={onNavigate} compact/></div></div>
+        <div className="mg-card-heading"><div><h3 id="mg-agenda-title">برنامه {toPersianDigits(selectedDay)} {PERSIAN_MONTHS[selectedMonth-1]} {toPersianDigits(selectedYear)}</h3></div></div>
         <div className="mg-agenda-list" tabIndex={0} aria-label="فهرست کارهای روز">
           <h4><span className="material-symbols-outlined" aria-hidden="true">folder_special</span>پروژه‌ها<b>{toPersianDigits(dayProjects.length)}</b></h4>
           {dayProjects.length?dayProjects.map(project=><button type="button" className="mg-agenda-item project" key={project.id} onClick={()=>onNavigate('project_dashboard_details',{project,from:'dashboard'})}><span className="mg-agenda-mark" aria-hidden="true"/><span><strong>{project.name}</strong><small>{shortDate(project.startDate)} تا {shortDate(project.endDate)}</small></span><em>{statusLabels[project.status]||project.status}</em></button>):<p className="mg-muted">پروژه‌ای در این روز در جریان نیست.</p>}
           <h4><span className="material-symbols-outlined" aria-hidden="true">assignment</span>اقدامات<b>{toPersianDigits(dayActions.length)}</b></h4>
           {dayActions.length?dayActions.map(action=><button type="button" className="mg-agenda-item action" key={action.id} onClick={()=>onNavigate('define_action',{action,from:'dashboard'})}><span className="mg-agenda-mark" aria-hidden="true"/><span><strong>{action.title}</strong><small>{shortDate(action.startDate)} تا {shortDate(action.endDate)}</small></span><em>{statusLabels[action.status]||action.status}</em></button>):<p className="mg-muted">اقدامی در این روز در جریان نیست.</p>}
-          <h4><span className="material-symbols-outlined" aria-hidden="true">event</span>رویدادها<b>{toPersianDigits(selectedEvents.length)}</b></h4>
-          {loading?<p role="status">در حال دریافت رویدادها…</p>:selectedEvents.length?selectedEvents.map(event=><div className="mg-event-row" key={event.id}><span className="material-symbols-outlined" aria-hidden="true">event</span><div><strong>{event.title}</strong><span>{new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit'}).format(new Date(/(?:Z|[+-]\d{2}:\d{2})$/i.test(event.startAtUtc)?event.startAtUtc:`${event.startAtUtc}Z`))}{event.isCompleted?' · انجام شده':''}</span></div></div>):<p className="mg-muted">{error?'رویدادهای این روز در دسترس نیستند.':'برای این روز رویدادی ثبت نشده است.'}</p>}
         </div>
       </section>
     </div>
     <section className="mg-status-card" aria-labelledby="mg-status-title"><div className="mg-card-heading"><div><h3 id="mg-status-title">پروژه‌ها بر اساس وضعیت</h3><p>توزیع وضعیت سبد پروژه‌ها</p></div><span className="mg-small-badge">دایره‌ای</span></div><div className="mg-status-body"><div className="mg-status-chart">{projects.length?<PieDoughnutChart data={chart.filter(item=>item.value>0).map(item=>({name:item.label,value:item.value,color:item.color}))} type="doughnut"/>:<div className="mg-empty-chart"><span className="material-symbols-outlined">donut_large</span><strong>۰</strong><p>هنوز پروژه‌ای ثبت نشده است.</p></div>}</div><div className="mg-status-summary">{chart.map(item=><div key={item.label}><span><i style={{background:item.color}}/>{item.label}</span><strong>{toPersianDigits(item.value)}</strong></div>)}</div></div><button type="button" className="cancel-btn mg-portfolio-link" onClick={()=>onNavigate('portfolio')}>مشاهده سبد پروژه‌ها و اقدامات <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span></button></section>
+    {eventDate&&<ManagementEventDialog date={eventDate} user={user} onClose={()=>setEventDate(null)} onSaved={savedDate=>{const [year,month]=savedDate.split('/').map(Number);setMonth({year,month});setSelected(savedDate);setEventDate(null);setNotice('رویداد با موفقیت ثبت شد.');setRevision(value=>value+1);}}/>}
   </section>;
 }
