@@ -76,3 +76,6 @@ html .app-container .mg-month-nav .mg-icon-button .material-symbols-outlined{fon
 /* The calendar card sits above the status strip so the day menu can overlap it. */
 .mg-calendar-card{position:relative;z-index:5}
 .mg-alt-dates{direction:ltr}
+/* Month header: the Gregorian and lunar month names under the Persian month. */
+.mg-month-nav p.mg-month-alt{display:flex;justify-content:center;gap:14px;margin-top:3px;font-size:.7rem;color:var(--pb-muted,#7a9a86)}
+.mg-month-alt span+span{padding-inline-start:14px;border-inline-start:1px solid var(--pb-line,#c9e5d4)}

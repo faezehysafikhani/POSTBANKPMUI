@@ -265,7 +265,10 @@ export const Sidebar = ({
 
           if (visibleItems.length === 0) return null;
 
-          const isOpen = !group.page && openGroupId === group.id;
+          // A group with a single plain item is shown as that item: one button, no submenu.
+          const single = visibleItems.length === 1 && !visibleItems[0].subItems?.length ? visibleItems[0] : null;
+          const directPage = group.page || single?.page;
+          const isOpen = !directPage && openGroupId === group.id;
           const hasActiveChild = visibleItems.some(item => isItemActive(item));
           const totalGroupBadge = visibleItems.reduce((sum, item) => sum + (item.count || 0), 0);
           const groupTitle = isFa ? group.titleFa : group.titleEn;
@@ -277,10 +280,10 @@ export const Sidebar = ({
             React.createElement("button", {
               type: "button",
               className: `sidebar-group-header ${isOpen ? 'open' : ''} ${hasActiveChild ? 'active-parent' : ''}`,
-              onClick: () => group.page ? onNavigate(group.page) : handleToggleGroup(group.id),
+              onClick: () => directPage ? onNavigate(directPage, single?.context) : handleToggleGroup(group.id),
               title: isCollapsed ? groupTitle : undefined,
-              "aria-expanded": group.page ? undefined : isOpen,
-              "aria-current": group.page === currentPage ? "page" : undefined
+              "aria-expanded": directPage ? undefined : isOpen,
+              "aria-current": directPage === currentPage ? "page" : undefined
             },
               React.createElement("div", { className: "sidebar-group-header-left" },
                 React.createElement("span", { className: "material-symbols-outlined sidebar-icon" }, group.icon),
@@ -288,7 +291,7 @@ export const Sidebar = ({
               ),
               !isCollapsed && React.createElement("div", { className: "sidebar-group-header-right" },
                 (!isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge),
-                !group.page && React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron" }, isOpen ? "expand_less" : "expand_more")
+                !directPage && React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron" }, isOpen ? "expand_less" : "expand_more")
               ),
               (isCollapsed && !isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge collapsed-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge)
             ),
