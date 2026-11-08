@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Generated TMPB settings stylesheet
+tmpb/generated.css

@@ -81,3 +81,13 @@ The backend (Core branch `feature/pm-core-gap-phase0`, which now carries the new
 * **Units in the chart.** The organization structure owns a unit's place and code. A top-level unit is still created with `POST /api/organization/units`; a sub-unit is created with `POST /api/org-structure/nodes` (needs `org_structure.node.create`) and moved with `POST /api/org-structure/nodes/{id}/move` (`org_structure.node.move`). Renaming uses `PUT /api/organization/units/{id}` with the name, manager and state only; a different parent or code sent there is refused by the backend. Moving a unit to the top level is not offered in this screen (it needs a company).
 * Seeded roles do not receive permissions added later: grant `org_structure.node.create`, `org_structure.node.move` and the session permissions to the roles that use these screens.
 
+
+## Settings and profile (TMPB reference screens)
+
+«تنظیمات و پروفایل» (`pages/SettingsProfilePage.tsx`) shows the TMPB reference screens from `tmpb/` (taken from `TMPBUI`,
+branch `feature/1405-08-07-orgNode`): profile, work team, appearance, help, SMS panel, user management and the organization
+structure. They use their own API client (`tmpb/services/nexusApi.ts`); it adopts the session the product already opened
+(`components/TmpbSettings.tsx`, `adoptExternalSession`) and renews it from the same HttpOnly cookie. The reference stylesheet is
+compiled by `npm run build:settings` (run by `predev` / `prebuild`) and mounted only while these screens are open.
+Administrators also get «تنظیمات مدیریت پروژه» with four sub-tabs (workflow and approvals, visibility, work calendars, base tables;
+`components/ProjectSettingsTabs.tsx`). The old «مدیریت کاربران» and «تنظیمات» pages and menu items are gone; their routes lead here.

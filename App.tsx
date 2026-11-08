@@ -14,9 +14,12 @@ import { toUiUser } from './services/backend/mappers';
 import { User, Project, ProjectType, ProjectRisk, ProjectStatusUpdate, ProjectDocument, ProjectActivity, KanbanTask, Calendar, ProjectApprovalStatus, ProjectApprovalRecord, EnrichedProject, ProgressUpdateStatus, ProgressUpdate, EnrichedTask, Strategy, AlignmentLevel, ProjectStrategyAlignment, KnowledgeDocumentType, SpecificHoliday, TaskPriority, KanbanStatus, UserRole, ActionItem, WorkStatus, PROJECT_WORK_STATUSES, KnowledgeDocument, Delegation } from './types';
 import { enrichProjectWithProgress, pickCalendar, getISODateString, getISODateTimeString, calculateScheduleTreeAndProgress, toPersianDigits } from './utils';
 import { LocalizationProvider, LocalizationContext, ThemeProvider } from './context';
-import { LoginPage, MainMenu, SettingsPage } from './pages/CorePages';
-import { UserManagementPage, TaskCenterPage, ApprovalCenterPage } from './pages/UserAndTaskPages';
-import { CalendarManagementPage, EditCalendarPage, StrategyManagementHubPage, DefineStrategiesPage, AlignmentMatrixPage, ColorFormatPage, KnowledgeManagementPage, ReferenceTablesPage } from './pages/AdvancedPages';
+import { LoginPage, MainMenu } from './pages/CorePages';
+import { ProjectSettingsTabs, requestProjectSettingsTab } from './components/ProjectSettingsTabs';
+import { requestSettingsTab } from './tmpb/utils/profileEvents';
+import { clearReferenceSession } from './components/TmpbSettings';
+import { TaskCenterPage, ApprovalCenterPage } from './pages/UserAndTaskPages';
+import { EditCalendarPage, StrategyManagementHubPage, DefineStrategiesPage, AlignmentMatrixPage, ColorFormatPage, KnowledgeManagementPage } from './pages/AdvancedPages';
 import { ActionDefinitionPage } from './pages/ActionPages';
 import { CreateProjectPage, ProjectDetailsPage, ProjectPortfolioPage, DeleteProjectsPage, ProjectDashboardPage, ProjectSpecificDashboardPage, DashboardHubPage, ScheduleSnapshotPage, ActionDashboardPage } from './pages/ProjectPages';
 import { ReportsDashboardPage } from './pages/ReportsPages';
@@ -218,6 +221,19 @@ const AppContent = () => {
     const visibleActionsForCurrentUser = actions;
     // --- NAVIGATION ---
     const handleNavigate = (targetPage: string, context: any = null) => {
+        // User management, the calendars, the base tables and the settings are tabs of «تنظیمات و پروفایل» now.
+        if (targetPage === 'users') {
+            requestSettingsTab('users');
+            targetPage = 'settings_profile';
+        }
+        else if (targetPage === 'calendar_management' || targetPage === 'reference_tables') {
+            requestSettingsTab('project');
+            requestProjectSettingsTab(targetPage === 'calendar_management' ? 'calendar' : 'tables');
+            targetPage = 'settings_profile';
+        }
+        else if (targetPage === 'settings') {
+            targetPage = 'settings_profile';
+        }
         setPage(targetPage);
         setPageContext(context);
     };
@@ -233,6 +249,7 @@ const AppContent = () => {
         }
     };
     const handleLogout = (): void => {
+        clearReferenceSession();
         void auth.signOut();
         setPage('login');
     };
@@ -546,12 +563,14 @@ const AppContent = () => {
         switch (page) {
             case 'main':
                 return <MainMenu onNavigate={handleNavigate} currentUser={currentUser} overdueProjectsCount={overdueProjectsCount} pendingApprovalsCount={pendingApprovalsCount} taskCenterNotificationCount={taskCenterNotificationCount}/>;
-            case 'users':
-                return <UserManagementPage users={users} onNavigate={handleNavigate} owningUnits={owningUnits} onCreate={directory.createUser} onUpdate={directory.updateUser} onSetActive={directory.setUserActive} onDelete={directory.deleteUser}/>;
             case 'settings_profile':
-                return <SettingsProfilePage />;
-            case 'settings':
-                return (<SettingsPage onNavigate={handleNavigate} currentUser={currentUser} users={users}/>);
+                return <SettingsProfilePage userId={auth.session?.user.id ?? ''} onLogout={handleLogout}
+                    projectSettings={currentUser.role === 'Admin' ? (
+                        <ProjectSettingsTabs
+                            workflow={{ onNavigate: handleNavigate, currentUser, users }}
+                            calendars={calendars} onDeleteCalendar={handleDeleteCalendar}
+                            projectStatuses={projectStatuses} onNavigate={handleNavigate}/>
+                    ) : undefined}/>;
             case 'create_project':
                 return <CreateProjectPage onNavigate={handleNavigate}/>;
             case 'create_waterfall_details':
@@ -565,8 +584,6 @@ const AppContent = () => {
                 return <TaskCenterPage projects={projects} actions={actions} users={users} currentUser={currentUser} progressUpdates={progressUpdates} calendars={calendars} onAddProgressUpdate={handleAddProgressUpdate} onAddKanbanStatusUpdate={handleAddKanbanStatusUpdate} onAddActionStatusUpdate={handleAddActionStatusUpdate} onUpdateRiskResponseStatus={handleUpdateRiskResponseStatus} onNavigate={handleNavigate} allProcessedActivities={allProcessedActivities} delegations={delegations} onDelegateTask={handleDelegateTask} onDeactivateDelegation={handleDeactivateDelegation}/>;
             case 'approval_center':
                 return <ApprovalCenterPage progressUpdates={progressUpdates} projects={projects} actions={actions} users={users} currentUser={currentUser} setApprovalCommentModalState={setApprovalCommentModalState} onNavigate={handleNavigate} allProcessedActivities={allProcessedActivities} setProjects={setProjects}/>;
-            case 'calendar_management':
-                return <CalendarManagementPage calendars={calendars} onNavigate={handleNavigate} onDelete={handleDeleteCalendar}/>;
             case 'edit_calendar':
                 return <EditCalendarPage onNavigate={handleNavigate} onSave={handleSaveCalendar} existingCalendar={pageContext?.calendar}/>;
             case 'strategy_management':
@@ -577,8 +594,6 @@ const AppContent = () => {
                 return <AlignmentMatrixPage projects={projects} strategies={strategies} alignments={alignments} percentages={strategyState.alignmentPercentages} onSaveAlignments={handleSaveAlignments} onNavigate={handleNavigate}/>;
             case 'color_format':
                 return <ColorFormatPage onNavigate={handleNavigate}/>;
-            case 'reference_tables':
-                return <ReferenceTablesPage projectStatuses={projectStatuses} onNavigate={handleNavigate}/>;
             case 'dashboard':
                 return <ManagementDashboard projects={visibleProjectsForCurrentUser} actions={visibleActionsForCurrentUser} calendars={calendars} user={currentUser} onNavigate={handleNavigate}/>;
             case 'dashboard_hub':

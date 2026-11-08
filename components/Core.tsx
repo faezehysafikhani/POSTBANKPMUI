@@ -199,23 +199,6 @@ export const Sidebar = ({
           nameEn: 'Settings & Profile',
           icon: 'settings',
           count: 0
-        },
-        {
-          id: 'users',
-          page: 'users',
-          nameFa: 'مدیریت کاربران',
-          nameEn: 'User Management',
-          icon: 'manage_accounts',
-          count: 0,
-          roles: ['Admin']
-        },
-        {
-          id: 'settings',
-          page: 'settings',
-          nameFa: 'تنظیمات',
-          nameEn: 'Settings',
-          icon: 'settings',
-          count: 0
         }
       ]
     }
@@ -232,7 +215,7 @@ export const Sidebar = ({
     if (item.page === 'action_dashboard' && currentPage === 'action_dashboard') return true;
     if (item.page === 'portfolio' && ['view_snapshot', 'create_project', 'create_waterfall_details', 'create_agile_details', 'define_action'].includes(currentPage)) return true;
     if (item.page === 'strategy_management' && ['define_strategies', 'alignment_matrix'].includes(currentPage)) return true;
-    if (item.page === 'settings' && ['calendar_management', 'edit_calendar', 'color_format', 'reference_tables'].includes(currentPage)) return true;
+    if (item.page === 'settings_profile' && ['edit_calendar'].includes(currentPage)) return true;
     return false;
   };
 

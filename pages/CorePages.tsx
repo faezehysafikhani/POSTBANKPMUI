@@ -403,8 +403,11 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
 export const SettingsPage = ({
   onNavigate,
   currentUser,
-  users = []
+  users = [],
+  only
 }: {
+  /** Show just one block, open and without the page title (used by the settings page's project tab). */
+  only?: 'workflow' | 'visibility',
   onNavigate: (page: string) => void,
   currentUser: User | null,
   users?: User[]
@@ -414,8 +417,8 @@ export const SettingsPage = ({
   const [showHandbook, setShowHandbook] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     language: false,
-    process: false,
-    visibility: false,
+    process: only === 'workflow',
+    visibility: only === 'visibility',
     other: false
   });
 
@@ -492,12 +495,12 @@ export const SettingsPage = ({
 
   return (
     React.createElement("div", { className: "content-container" },
-      React.createElement("div", { className: "page-header" },
+      !only && React.createElement("div", { className: "page-header" },
         React.createElement("h2", null, t('softwareSettings'))
       ),
 
       // 1. Language Settings Section
-      React.createElement("div", {
+      !only && React.createElement("div", {
         className: "card shadow-sm",
         style: {
           marginBottom: '1.5rem',
@@ -579,7 +582,7 @@ export const SettingsPage = ({
       ),
 
       // 2. Process Settings Section (Admin Only)
-      currentUser?.role === 'Admin' && React.createElement("div", {
+      currentUser?.role === 'Admin' && (!only || only === 'workflow') && React.createElement("div", {
         className: "card shadow-sm",
         style: {
           marginBottom: '1.5rem',
@@ -756,7 +759,7 @@ export const SettingsPage = ({
       ),
 
       // 3. Access & Visibility Settings Section (Admin Only)
-      currentUser?.role === 'Admin' && visibilitySettings && React.createElement("div", {
+      currentUser?.role === 'Admin' && (!only || only === 'visibility') && React.createElement("div", {
         className: "card shadow-sm",
         style: {
           marginBottom: '1.5rem',
@@ -919,7 +922,7 @@ export const SettingsPage = ({
       ),
 
       // 4. Other Settings Section
-      React.createElement("div", {
+      !only && React.createElement("div", {
         className: "card shadow-sm",
         style: {
           marginBottom: '1.5rem',
