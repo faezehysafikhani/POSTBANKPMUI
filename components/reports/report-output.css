@@ -1,0 +1,41 @@
+/* The print / PDF sheet of a report (reportOutput.ts). Plain hex colours only: html2canvas reads them. */
+.rp-sheet{position:relative;box-sizing:border-box;background:#fff;color:#1f2a24;font-family:'Vazirmatn',Tahoma,sans-serif;direction:rtl;text-align:right}
+.rp-sheet *{box-sizing:border-box}
+.rp-head{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:0 0 12px;border-bottom:3px solid #0a8a46}
+.rp-logo{width:70px;height:70px;object-fit:contain}
+.rp-title{display:grid;gap:1px}
+.rp-title strong{font-size:16px;color:#0a6b38}
+.rp-title span{font-size:11px;color:#5b6470}
+.rp-title h1{margin:4px 0 0;font-size:20px;color:#1f2a24;border:0;padding:0}
+.rp-title small{font-size:11px;color:#5b6470}
+.rp-meta{display:grid;gap:4px;margin:0;padding:8px 14px;border:1px solid #d7dbe0;border-radius:10px;background:#f7f9f8;min-width:240px}
+.rp-meta div{display:flex;justify-content:space-between;gap:14px;font-size:12px}
+.rp-meta dt{color:#5b6470;font-weight:600}
+.rp-meta dd{margin:0;font-weight:700;color:#1f2a24}
+.rp-filters{position:relative;z-index:1;margin:8px 0 10px;padding:6px 10px;border-radius:8px;background:#f3f6f4;font-size:11px;color:#3b4550;line-height:1.8}
+.rp-body{position:relative;z-index:1}
+.rp-body .par-card,.rp-body .par-kpi,.rp-body .par-table-wrap{box-shadow:none!important;border:1px solid #dfe3e6!important;background:#fff!important}
+.rp-body .par-kpis{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.rp-body .par-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.rp-watermark{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.rp-watermark img{width:46%;max-width:520px;opacity:.05}
+.rp-foot{display:none}
+
+/* PDF: rendered off screen at a fixed width; jsPDF draws the faint logo and the footer on every page itself. */
+.rp-offscreen{position:fixed;left:-20000px;top:0;width:1400px;z-index:-1}
+.rp-for-pdf{width:1400px;padding:4px}
+.rp-for-pdf .rp-watermark{display:none}
+
+/* Print: only the sheet is printed; the faint logo and the footer line are fixed, so they repeat on every page. */
+.rp-print-root{display:none}
+@media print{
+  body.rp-printing>*:not(.rp-print-root){display:none!important}
+  body.rp-printing .rp-print-root{display:block!important;width:100%;padding:0 0 26px}
+  body.rp-printing .rp-watermark{position:fixed}
+  body.rp-printing .rp-foot{display:block;position:fixed;left:0;right:0;bottom:0;padding:4px 0;border-top:1px solid #d7dbe0;background:#fff;font-size:9px;color:#5b6470;text-align:center}
+  body.rp-printing .par-card,body.rp-printing .par-kpi,body.rp-printing tr{break-inside:avoid}
+  body.rp-printing .rp-body .par-table-wrap{max-height:none!important;overflow:visible!important}
+}
+/* PDF copy: delayed / due-soon rows keep a flat tint (their on-screen gradient prints as a grey band). */
+.rp-for-pdf .par-row.delayed{background:#fdecef!important}
+.rp-for-pdf .par-row.dueSoon{background:#fff5e6!important}

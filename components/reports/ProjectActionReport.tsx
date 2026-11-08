@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { ActionItem, Project, User, WorkStatus } from '../../types';
 import { ShamsiDatePicker } from '../ShamsiDatePicker';
-import { toPersianDigits, exportDashboardToLandscapePdf } from '../../utils';
+import { toPersianDigits } from '../../utils';
+import { pdfReport, printReport } from './reportOutput';
 import { buildXlsx, jalaliStamp, saveBlob } from '../../tmpb/utils/reportExport';
 import {
   APPROVAL_LABEL, APPROVALS, DATE_BASIS_LABEL, DUE_SOON_DAYS, EMPTY_FILTERS, GROUP_LABEL, KIND_LABEL, KINDS, PERSON_ROLE_LABEL,
@@ -209,7 +210,6 @@ function ListTab({ rows, users, onOpen, storageKey }: { rows: ReportRow[]; users
       </div>
       <span className="par-spacer" />
       <button type="button" className="export-btn" onClick={exportExcel} disabled={!rows.length}><span className="material-symbols-outlined" aria-hidden="true">table_view</span>خروجی Excel</button>
-      <button type="button" className="print-btn" onClick={() => exportDashboardToLandscapePdf('گزارش پروژه‌ها و اقدامات')}><span className="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>PDF / چاپ</button>
     </div>
     {rows.length === 0 ? <div className="par-nothing"><span className="material-symbols-outlined" aria-hidden="true">search_off</span>موردی با این فیلترها پیدا نشد.</div> :
       <div className="par-table-wrap">
@@ -393,6 +393,22 @@ export function ProjectActionReport({ projects, actions, users, owningUnits = []
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [views, setViews] = useState<SavedView[]>(() => store.getList<SavedView>(`${keyBase}:views`));
   const [naming, setNaming] = useState(false); const [viewName, setViewName] = useState('');
+  const content = useRef<HTMLDivElement | null>(null); const root = useRef<HTMLElement | null>(null);
+  const [busy, setBusy] = useState<'' | 'pdf' | 'print'>('');
+  /** Print or PDF of the shown tab, with the active filters written on top. */
+  async function output(kind: 'pdf' | 'print') {
+    if (!content.current || busy) return;
+    const filters = Array.from(root.current?.querySelectorAll<HTMLElement>('.par-chip') ?? []).map((c: HTMLElement) => (c.textContent || '').replace(/close$/, '').trim());
+    const meta = { title: 'گزارش پروژه‌ها و اقدامات', kind: tab === 'list' ? 'نمای لیستی' : 'نمای داشبوردی', filters };
+    setBusy(kind);
+    try {
+      if (kind === 'print') await printReport(content.current, meta);
+      else await pdfReport(content.current, meta, `projects-actions-report-${jalaliStamp()}.pdf`);
+    } catch (err) {
+      window.alert('ساخت خروجی انجام نشد. دوباره تلاش کنید.');
+      console.error(err);
+    } finally { setBusy(''); }
+  }
   useEffect(() => { store.set(`${keyBase}:filters`, filters); }, [filters, keyBase]);
   useEffect(() => { store.set(`${keyBase}:ui`, { tab }); }, [tab, keyBase]);
   useEffect(() => { store.set(`${keyBase}:views`, views); }, [views, keyBase]);
@@ -415,7 +431,7 @@ export function ProjectActionReport({ projects, actions, users, owningUnits = []
     setViews(v => [...v.filter(x => x.name !== name), { name, filters }]); setNaming(false); setViewName('');
   }
 
-  return <section className="par" dir="rtl" aria-label="گزارش پروژه‌ها و اقدامات">
+  return <section className="par" dir="rtl" aria-label="گزارش پروژه‌ها و اقدامات" ref={root}>
     <div className="par-head">
       <div className="par-tabs no-print" role="tablist" aria-label="نوع نمایش">
         <button type="button" role="tab" aria-selected={tab === 'dashboard'} className={tab === 'dashboard' ? 'on' : ''} onClick={() => setTab('dashboard')}><span className="material-symbols-outlined" aria-hidden="true">monitoring</span>داشبوردی</button>
@@ -432,12 +448,20 @@ export function ProjectActionReport({ projects, actions, users, owningUnits = []
         {views.length > 0 && !naming && <button type="button" className="action-icon" title="حذف گزارش‌های ذخیره‌شده" aria-label="حذف گزارش‌های ذخیره‌شده" onClick={() => { if (window.confirm('همه گزارش‌های ذخیره‌شده حذف شوند؟')) setViews([]); }}><span className="material-symbols-outlined" aria-hidden="true">bookmark_remove</span></button>}
       </div>
       <p className="par-count-line">{fa(rows.length)} از {fa(allRows.length)} مورد</p>
+      <div className="par-output no-print">
+        <button type="button" className="cancel-btn" onClick={() => output('print')} disabled={!!busy || allRows.length === 0} title="چاپ گزارش با سربرگ، تاریخ، ساعت و IP">
+          <span className="material-symbols-outlined" aria-hidden="true">print</span>{busy === 'print' ? 'آماده‌سازی…' : 'چاپ'}</button>
+        <button type="button" className="save-btn" onClick={() => output('pdf')} disabled={!!busy || allRows.length === 0} title="دریافت فایل PDF با سربرگ، تاریخ، ساعت و IP">
+          <span className="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>{busy === 'pdf' ? 'در حال ساخت PDF…' : 'PDF'}</button>
+      </div>
     </div>
     <FilterBar filters={filters} setFilters={setFilters} unitOptions={unitOptions} peopleOptions={peopleOptions} projectOptions={projectOptions} open={filtersOpen} setOpen={setFiltersOpen} />
+    <div ref={content} className="par-content">
     {allRows.length === 0 ? <div className="par-first-run"><span className="material-symbols-outlined" aria-hidden="true">query_stats</span>
       <strong>هنوز پروژه یا اقدامی ثبت نشده است.</strong>با ثبت اولین پروژه یا اقدام، گزارش و نمودارها همین‌جا ساخته می‌شوند.</div>
     : tab === 'list'
       ? <ListTab rows={rows} users={users} onOpen={open} storageKey={`${keyBase}:list`} />
       : <DashboardTab rows={rows} previous={previous} users={users} filters={filters} setFilters={setFilters} onOpen={open} />}
+    </div>
   </section>;
 }

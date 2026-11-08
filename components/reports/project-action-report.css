@@ -205,3 +205,6 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 .par-name-view input{height:34px!important;width:160px;border-radius:999px!important}
 .par-count-line{flex-shrink:0;padding:4px 12px;border-radius:999px;background:var(--par-soft);color:var(--par-head);font-size:.74rem}
 @media(max-width:900px){.par-head{flex-wrap:wrap;border-radius:18px}.par .par-views select{width:170px}}
+.par-output{display:flex;gap:6px;flex-shrink:0}
+.par .par-output :is(.cancel-btn,.save-btn){display:inline-flex;align-items:center;gap:5px;height:34px!important;min-height:0!important;padding:0 14px!important;font-size:.76rem!important;white-space:nowrap}
+.par-content{display:grid;gap:14px}

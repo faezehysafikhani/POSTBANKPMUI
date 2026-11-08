@@ -59,7 +59,7 @@ export const i18nStrings = {
 
     // Header & Footer
     welcomeUser: 'Welcome, {{username}}!',
-    footerText: '© 2024 All rights reserved for Pars Project Management Company.',
+    footerText: '© {{year}} All rights reserved for Pars Project Management Company.',
 
     // Login Page
     loginErrorInactive: 'This account is inactive. Please contact an administrator.',
@@ -544,7 +544,7 @@ export const i18nStrings = {
 
     // Header & Footer
     welcomeUser: 'خوش آمدید، {{username}}!',
-    footerText: '© ۱۴۰۳ تمام حقوق برای شرکت مدیریت پروژه پارس محفوظ است.',
+    footerText: '© {{year}} تمام حقوق برای شرکت مدیریت پروژه پارس محفوظ است.',
 
     // Login Page
     loginErrorInactive: 'این حساب کاربری غیرفعال است. لطفاً با مدیر سیستم تماس بگیرید.',

@@ -9,6 +9,16 @@ async function startServer() {
   const port = Number(process.env.PORT || 3000);
   app.use(express.json({ limit: '5mb' }));
   const BACKEND_TARGET = (process.env.BACKEND_URL || "http://localhost:5251").replace(/\/+$/, "");
+  // The address of the computer asking, for the header of printed / PDF reports (a browser cannot read its own IP).
+  // Behind a reverse proxy the first X-Forwarded-For entry is the client; IPv4-mapped and loopback forms are tidied.
+  app.get("/__client-info", (req, res) => {
+    const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+    let ip = forwarded || req.socket.remoteAddress || "";
+    ip = ip.replace(/^::ffff:/, "");
+    if (ip === "::1") ip = "127.0.0.1";
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ ip });
+  });
   app.use("/api", async (req, res) => {
     const target = `${BACKEND_TARGET}/api${req.url}`;
     try {

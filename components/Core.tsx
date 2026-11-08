@@ -24,10 +24,14 @@ export const Header = ({ user, onNavigate }: { user: User, onLogout?: () => void
   );
 };
 
+const toJalaliYear = (date: Date) => Number(new Intl.DateTimeFormat('en-US-u-ca-persian', { year: 'numeric', timeZone: 'Asia/Tehran' }).format(date).replace(/\D/g, ''));
 export const Footer = (): ReactElement => {
-  const { t } = useContext(LocalizationContext);
+  const { t, language } = useContext(LocalizationContext);
   return React.createElement("footer", null,
-    React.createElement("p", null, t('footerText'))
+    // The year follows today's date: Shamsi in Persian, Gregorian in English.
+    React.createElement("p", null, t('footerText', { year: language === 'fa'
+      ? toPersianDigits(String(toJalaliYear(new Date())))
+      : String(new Date().getFullYear()) }))
   );
 };
 
