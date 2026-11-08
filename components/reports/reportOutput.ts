@@ -6,7 +6,8 @@
 import './report-output.css';
 
 const LOGO = '/post-bank-iran-logo.png';
-export interface OutputMeta { title: string; filters: string[]; kind: string }
+/** filters: shown as a «فیلترها» line (reports); leave it out for a form. */
+export interface OutputMeta { title: string; filters?: string[]; kind: string }
 interface Stamp { date: string; time: string; ip: string }
 
 async function clientIp(): Promise<string> {
@@ -41,14 +42,42 @@ function buildSheet(content: HTMLElement, meta: OutputMeta, s: Stamp, forPdf: bo
         <div><dt>IP سیستم</dt><dd dir="ltr">${esc(s.ip)}</dd></div>
       </dl>
     </div>
-    <p class="rp-filters"><b>فیلترها:</b> ${meta.filters.length ? meta.filters.map(esc).join(' · ') : 'بدون فیلتر (همه موارد)'}</p>
+    ${meta.filters ? `<p class="rp-filters"><b>فیلترها:</b> ${meta.filters.length ? meta.filters.map(esc).join(' · ') : 'بدون فیلتر (همه موارد)'}</p>` : ''}
     <div class="rp-body par"></div>
     <div class="rp-foot">تهیه‌شده در ${esc(s.date)} ساعت <span dir="ltr">${esc(s.time)}</span> · IP: <span dir="ltr">${esc(s.ip)}</span></div>`;
   const copy = content.cloneNode(true) as HTMLElement;
-  copy.querySelectorAll('.no-print, .par-hint, .par-popover').forEach(el => el.remove());
+  freezeFields(content, copy);
+  copy.querySelectorAll('.no-print, .par-hint, .par-popover, .page-header-actions, .creation-dialog-close, .pb-output-buttons, .shamsi-datepicker-popover').forEach(el => el.remove());
   copy.querySelectorAll<HTMLElement>('.par-table-wrap').forEach(el => { el.style.maxHeight = 'none'; el.style.overflow = 'visible'; });
   sheet.querySelector('.rp-body')!.appendChild(copy);
   return sheet;
+}
+
+/**
+ * A copied form loses what was typed (cloneNode keeps attributes, not live values). Each field of the copy is
+ * replaced by its current value as plain text, which also reads better on paper than empty-looking controls.
+ */
+function freezeFields(source: HTMLElement, copy: HTMLElement) {
+  const live = Array.from(source.querySelectorAll<HTMLElement>('input, select, textarea'));
+  const copied = Array.from(copy.querySelectorAll<HTMLElement>('input, select, textarea'));
+  live.forEach((field, i) => {
+    const target = copied[i]; if (!target) return;
+    let text = '';
+    if (field instanceof HTMLSelectElement) text = field.multiple ? Array.from(field.selectedOptions).map(o => o.text).join('، ') : (field.selectedOptions[0]?.text ?? '');
+    else if (field instanceof HTMLTextAreaElement) text = field.value;
+    else if (field instanceof HTMLInputElement) {
+      if (field.type === 'hidden' || field.type === 'file') { target.remove(); return; }
+      if (field.type === 'checkbox' || field.type === 'radio') {
+        const mark = document.createElement('span'); mark.className = 'rp-check'; mark.textContent = field.checked ? '☑' : '☐';
+        target.replaceWith(mark); return;
+      }
+      text = field.value;
+    }
+    const box = document.createElement('div');
+    box.className = `rp-field${field instanceof HTMLTextAreaElement ? ' rp-field-long' : ''}`;
+    box.textContent = text.trim() || '—';
+    target.replaceWith(box);
+  });
 }
 
 const waitImages = (root: HTMLElement) => Promise.all(Array.from(root.querySelectorAll('img')).map(img =>

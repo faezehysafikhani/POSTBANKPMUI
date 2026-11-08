@@ -1,4 +1,5 @@
 import { CreationDialog } from './components/CreationDialog';
+import { OutputButtons } from './components/OutputButtons';
 import { SettingsProfilePage } from './pages/SettingsProfilePage';
 import { ManagementDashboard } from './pages/ManagementDashboard';
 import React, { useState, useContext, useEffect, useMemo } from 'react';
@@ -616,6 +617,7 @@ const AppContent = () => {
     const creationKind = page === 'define_action' && !pageContext?.action ? 'action'
         : page === 'create_waterfall_details' && !pageContext?.project ? 'waterfall'
         : page === 'create_agile_details' && !pageContext?.project ? 'agile' : null;
+    const FORM_PAGES = ['create_waterfall_details', 'create_agile_details', 'define_action', 'project_dashboard_details'];
     const closeCreation = () => {
         const sourceProject = pageContext?.fromProject && projects.find(project => project.id === pageContext.fromProject);
         if (sourceProject) handleNavigate(`create_${sourceProject.type}_details`, { project: sourceProject, type: sourceProject.type, initialTab: 'actions', from: 'portfolio' });
@@ -632,7 +634,16 @@ const AppContent = () => {
                             {renderPage()}
                             {infoModal && <InfoModal title={infoModal.title} message={infoModal.message} onClose={() => setInfoModal(null)}/>}
                         </CreationDialog>
-                    </> : renderPage()}
+                    </> : <>
+                        {/* Editing an existing project or action is a page of its own: it gets the same print / PDF. */}
+                        {currentUser && FORM_PAGES.includes(page) && <div className="page-output-bar">
+                            <OutputButtons fileBase={page === 'define_action' ? 'action-form' : 'project-form'}
+                                target={() => document.querySelector<HTMLElement>('.main-content > .content-container') ?? document.querySelector<HTMLElement>('.main-content')}
+                                title={() => document.querySelector('.main-content .page-header h2')?.textContent?.trim() || 'فرم'}
+                                kind={() => { const tab = document.querySelector('.main-content .tabs-nav .tab-item.active')?.textContent?.trim(); return tab ? `بخش: ${tab}` : ''; }} />
+                        </div>}
+                        {renderPage()}
+                    </>}
                 </main>
             </div>
             <Footer />

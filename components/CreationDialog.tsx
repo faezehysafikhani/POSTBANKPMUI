@@ -1,4 +1,5 @@
 import React, { useEffect, useId, useRef } from 'react';
+import { OutputButtons } from './OutputButtons';
 
 type CreationKind = 'waterfall' | 'agile' | 'action';
 const content = {
@@ -31,6 +32,12 @@ export function CreationDialog({ kind, onClose, children }: { kind: CreationKind
       <h2 id={titleId} className="creation-dialog-sr-title">{details.title}</h2>
       <p id={descriptionId} className="creation-dialog-sr-title">{details.description}</p>
       <button type="button" className="creation-dialog-close creation-dialog-close-floating" onClick={onClose} aria-label="بستن فرم" autoFocus><span className="material-symbols-outlined" aria-hidden="true">close</span></button>
+      <div className="creation-dialog-output">
+        <OutputButtons compact fileBase={kind === 'action' ? 'action-form' : `${kind}-project-form`}
+          target={() => dialog.current?.querySelector<HTMLElement>('.creation-dialog-form') ?? null}
+          title={() => dialog.current?.querySelector('.creation-dialog-form .page-header h2')?.textContent?.trim() || details.title}
+          kind={() => { const tab = dialog.current?.querySelector('.tabs-nav .tab-item.active, [role="tab"][aria-selected="true"]')?.textContent?.trim(); return tab ? `بخش: ${tab}` : ''; }} />
+      </div>
       <div className="creation-dialog-form">{children}</div>
     </div>
     <div data-creation-modal-root />

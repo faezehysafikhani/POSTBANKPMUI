@@ -52,20 +52,68 @@ html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.save-btn,.submi
 html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:16px!important;border:3px solid transparent!important;color:#7f1d1d!important;background:linear-gradient(150deg,#fff,#fbf1f1) padding-box,linear-gradient(135deg,#fb7185,#dc2626 50%,#7f1d1d) border-box!important;box-shadow:0 5px 12px #7f1d1d26,inset 2px 2px 3px #fff,inset -2px -3px 5px #7f1d1d14!important}
 html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn){border-width:4px!important;border-radius:17px!important}
 
-/* Header title: raised 3D letters and a wave every 20 seconds (word by word); the logo spins once at the start
-   of every wave. Turned off for people who ask for less motion. */
-html .app-container>header .pb-wave-title{perspective:600px}
-html .app-container>header .pb-wave-word{display:inline-block;transform-origin:50% 100%;
-  text-shadow:0 1px 0 #ffffffcc,0 2px 0 color-mix(in srgb,var(--pb-heading,#0d5f34) 35%,transparent),0 3px 0 color-mix(in srgb,var(--pb-heading,#0d5f34) 22%,transparent),0 5px 7px #00000033;
-  animation:pb-title-wave 20s ease-in-out infinite;animation-delay:calc(var(--i) * .14s)}
-html[data-pb-theme="black"] .app-container>header .pb-wave-word{text-shadow:0 1px 0 #00000099,0 2px 0 #d4af3766,0 3px 0 #d4af3740,0 6px 8px #000a}
-@keyframes pb-title-wave{
-  0%,7%,100%{transform:translateY(0) rotateX(0) scale(1)}
-  2%{transform:translateY(-7px) rotateX(18deg) scale(1.08)}
-  4%{transform:translateY(1px) rotateX(-6deg) scale(.98)}
+/* Header title: bigger, raised 3D letters, and a 30-second show in three acts, each with its logo move:
+   0-10s  a flare of light sweeps across the words  · logo glows
+   10-20s a Mexican wave runs through the words      · logo spins like a coin
+   20-30s the words flip over one after another      · logo bounces and wobbles
+   The letters are filled with a gradient (so the flare can run through them); depth comes from drop-shadows,
+   which follow the letter shapes. Everything stops for people who ask for less motion. */
+html .app-container>header .pb-wave-title{font-size:1.5rem!important;font-weight:800!important;perspective:700px;line-height:1.5}
+html .app-container>header .pb-wave-word{display:inline-block;transform-origin:50% 80%;
+  --pb-title-ink:var(--pb-header-text,#1f4d33);
+  color:transparent!important;-webkit-text-fill-color:transparent;
+  background:linear-gradient(105deg,var(--pb-title-ink) 0 40%,#ffffff 48%,#fff8c8 50%,#ffffff 52%,var(--pb-title-ink) 60% 100%);
+  background-size:320% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 1px 0 #ffffffd9) drop-shadow(0 2px 0 color-mix(in srgb,var(--pb-title-ink) 30%,transparent)) drop-shadow(0 4px 5px #00000030);
+  animation:pb-title-flare 30s ease-in-out infinite,pb-title-motion 30s ease-in-out infinite;
+  animation-delay:calc(var(--i) * .16s)}
+html[data-pb-theme="black"] .app-container>header .pb-wave-word{--pb-title-ink:#f6efdc;
+  background:linear-gradient(105deg,#f6efdc 0 40%,#fff 46%,#f6e27a 50%,#fff 54%,#f6efdc 60% 100%);background-size:320% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 1px 0 #000000b3) drop-shadow(0 2px 0 #d4af3780) drop-shadow(0 5px 7px #000000a0)}
+@keyframes pb-title-flare{0%{background-position:100% 0}9%{background-position:0 0}9.01%,100%{background-position:100% 0}}
+@keyframes pb-title-motion{
+  0%,33.3%{transform:none}
+  /* act 2: Mexican wave */
+  35%{transform:translateY(-9px) rotateX(20deg) scale(1.1)}
+  37%{transform:translateY(2px) rotateX(-8deg) scale(.97)}
+  39%,66.6%{transform:none}
+  /* act 3: flip over, one word after another */
+  68%{transform:rotateX(0) scale(1.06)}
+  72%{transform:rotateX(360deg) scale(1.06)}
+  74%,100%{transform:rotateX(360deg) scale(1)}
 }
-html .app-container>header .header-title-group{perspective:500px}
-html .app-container>header .header-logo{animation:pb-logo-spin 20s cubic-bezier(.45,.05,.3,1) infinite}
-@keyframes pb-logo-spin{0%,8%,100%{transform:rotateY(0)}6%{transform:rotateY(360deg)}}
+html .app-container>header .header-title-group{perspective:520px;gap:12px}
+html .app-container>header .header-logo{height:52px!important;width:52px!important;animation:pb-logo-show 30s cubic-bezier(.45,.05,.3,1) infinite}
+@keyframes pb-logo-show{
+  /* act 1: glow */
+  0%{transform:none;filter:drop-shadow(0 1px 1px #00431f33)}
+  3%{transform:scale(1.08);filter:drop-shadow(0 0 10px var(--pb-glow,#22b06a)) drop-shadow(0 0 4px #fff)}
+  7%,33.3%{transform:none;filter:drop-shadow(0 1px 1px #00431f33)}
+  /* act 2: coin spin */
+  39%{transform:rotateY(360deg);filter:drop-shadow(0 1px 1px #00431f33)}
+  39.01%,66.6%{transform:none}
+  /* act 3: bounce and wobble */
+  68%{transform:translateY(-8px) scale(1.06)}
+  70%{transform:translateY(0) rotate(-12deg)}
+  72%{transform:rotate(10deg)}
+  74%{transform:rotate(-5deg)}
+  76%,100%{transform:none;filter:drop-shadow(0 1px 1px #00431f33)}
+}
 html .app-container>header .header-logo:hover{animation-play-state:paused}
+@media(max-width:1250px){html .app-container>header .pb-wave-title{font-size:1.15rem!important}}
+@media(max-width:700px){html .app-container>header .pb-wave-title{font-size:.85rem!important}html .app-container>header .header-logo{height:30px!important;width:30px!important}}
 @media(prefers-reduced-motion:reduce){html .app-container>header :is(.pb-wave-word,.header-logo){animation:none!important}}
+@media print{html .app-container>header .pb-wave-word{color:#1f2a24!important;-webkit-text-fill-color:#1f2a24;background:none;filter:none}}
+
+/* Print / PDF buttons (OutputButtons): round icon tiles in the theme rim; with labels on report pages. */
+.pb-output-buttons{display:inline-flex;gap:6px}
+.pb-output-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:36px;min-width:36px;padding:0 12px;border:2.5px solid transparent;border-radius:13px;background:linear-gradient(150deg,#fff,#f1f2f4) padding-box,var(--pb-rim,linear-gradient(135deg,#5fe09a,#0a7a40)) border-box;color:var(--pb-icon-color,#0b8a48);font:700 .76rem 'Vazirmatn',Tahoma,sans-serif;cursor:pointer;box-shadow:0 4px 10px var(--pb-shadow,#00632d2e),inset 1px 1px 2px #fff;transition:transform .15s}
+.pb-output-btn:hover:not(:disabled){transform:translateY(-2px)}
+.pb-output-btn:disabled{opacity:.6;cursor:wait}
+.pb-output-btn .material-symbols-outlined{font-size:19px}
+.pb-output-btn.pdf{color:#c0394f}
+.pb-output-buttons.compact .pb-output-btn{padding:0;width:38px;height:38px}
+.creation-dialog-output{position:absolute;top:24px;left:72px;z-index:20}
+.creation-dialog .page-header-actions{margin-inline-end:160px!important}
+.page-output-bar{display:flex;justify-content:flex-end;margin:0 0 -6px;position:relative;z-index:3}
+@media print{.page-output-bar{display:none!important}}

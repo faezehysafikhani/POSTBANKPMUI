@@ -39,3 +39,9 @@
 /* PDF copy: delayed / due-soon rows keep a flat tint (their on-screen gradient prints as a grey band). */
 .rp-for-pdf .par-row.delayed{background:#fdecef!important}
 .rp-for-pdf .par-row.dueSoon{background:#fff5e6!important}
+/* Form fields frozen to their values (print / PDF of a form). */
+.rp-field{min-height:30px;padding:6px 10px;border:1px solid #d7dbe0;border-radius:8px;background:#fafbfb;font-size:12px;color:#1f2a24;line-height:1.7;white-space:pre-wrap}
+.rp-field-long{min-height:54px}
+.rp-check{font-size:15px;margin-inline-end:4px}
+.rp-body .tabs-nav,.rp-body .creation-dialog-facts{display:none!important}
+.rp-body :is(.form-section,.content-container){box-shadow:none!important;background:#fff!important;border:1px solid #e1e5e8!important}
