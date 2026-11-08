@@ -47,7 +47,7 @@ function buildSheet(content: HTMLElement, meta: OutputMeta, s: Stamp, forPdf: bo
     <div class="rp-foot">تهیه‌شده در ${esc(s.date)} ساعت <span dir="ltr">${esc(s.time)}</span> · IP: <span dir="ltr">${esc(s.ip)}</span></div>`;
   const copy = content.cloneNode(true) as HTMLElement;
   freezeFields(content, copy);
-  copy.querySelectorAll('.no-print, .par-hint, .par-popover, .page-header-actions, .creation-dialog-close, .pb-output-buttons, .shamsi-datepicker-popover').forEach(el => el.remove());
+  copy.querySelectorAll('.no-print, .par-hint, .par-popover, .page-header-actions, .page-header, .creation-dialog-close, .pb-output-buttons, .shamsi-datepicker-popover, .shamsi-datepicker-icon').forEach(el => el.remove());
   copy.querySelectorAll<HTMLElement>('.par-table-wrap').forEach(el => { el.style.maxHeight = 'none'; el.style.overflow = 'visible'; });
   sheet.querySelector('.rp-body')!.appendChild(copy);
   return sheet;

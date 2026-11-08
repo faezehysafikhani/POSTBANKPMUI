@@ -45,3 +45,13 @@
 .rp-check{font-size:15px;margin-inline-end:4px}
 .rp-body .tabs-nav,.rp-body .creation-dialog-facts{display:none!important}
 .rp-body :is(.form-section,.content-container){box-shadow:none!important;background:#fff!important;border:1px solid #e1e5e8!important}
+
+/* Forms on paper: no forced page breaks (a tall section used to jump whole to page 2, leaving page 1 empty);
+   only a single field or table row is kept in one piece. Fixed heights from the screen layout are dropped. */
+.rp-body :is(.content-container,.form-section,.creation-dialog-form,.tab-content,.project-details-form){min-height:0!important;height:auto!important;max-height:none!important;overflow:visible!important}
+.rp-body .shamsi-datepicker-container,.rp-body .shamsi-datepicker-input-wrapper{display:block!important;width:100%!important}
+@media print{
+  body.rp-printing .rp-body *{break-before:auto!important;page-break-before:auto!important;break-after:auto!important;page-break-after:auto!important;break-inside:auto!important;page-break-inside:auto!important}
+  body.rp-printing .rp-body :is(.form-group,.rp-field,tr,.par-kpi){break-inside:avoid!important;page-break-inside:avoid!important}
+  body.rp-printing .rp-head{break-after:avoid!important}
+}

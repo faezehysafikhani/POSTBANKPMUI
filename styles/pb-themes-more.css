@@ -117,3 +117,5 @@ html .app-container>header .header-logo:hover{animation-play-state:paused}
 .creation-dialog .page-header-actions{margin-inline-end:160px!important}
 .page-output-bar{display:flex;justify-content:flex-end;margin:0 0 -6px;position:relative;z-index:3}
 @media print{.page-output-bar{display:none!important}}
+/* Forms with the new print / PDF buttons: the old plain PDF button of the toolbar is hidden (one PDF button only). */
+html[data-pb-theme] .app-container:not(.login-layout) :is(.creation-dialog,.main-content:has(> .page-output-bar)) .page-header-actions button:is([title="خروجی PDF"],[title="Export to PDF"]):is(:has(>.material-symbols-outlined),*){display:none!important}
