@@ -19,7 +19,7 @@ async function startServer() {
       // Sessions: the refresh token is the backend's HttpOnly cookie (scoped to /api/identity/auth); a browser asks for that mode
       // with X-Nexus-Session and proves it is not a cross-site form with X-Requested-With. The backend also decides from the
       // client address and device (kept as the browser's own user agent and, behind this server, the forwarded address).
-      for (const name of ["cookie", "x-nexus-session", "x-requested-with", "user-agent"]) {
+      for (const name of ["cookie", "x-nexus-session", "x-requested-with", "user-agent", "x-active-posts", "x-nexus-activity"]) {
         if (req.headers[name]) headers[name] = String(req.headers[name]);
       }
       const clientAddress = req.socket.remoteAddress;
