@@ -21,7 +21,6 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
   onRefreshCaptcha?: () => void
 }): ReactElement => {
   const { t, language, setLanguage } = useContext(LocalizationContext);
-  const { theme, setTheme } = useContext(ThemeContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
@@ -29,7 +28,6 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFa = language === 'fa';
-  const isDark = theme === 'dark';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -46,9 +44,6 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
     setLanguage(language === 'en' ? 'fa' : 'en');
   };
 
-  const toggleTheme = () => {
-    setTheme(isDark ? 'light' : 'dark');
-  };
 
   return (
     <div className="pb-login" id="login-container-root"><svg className="pb-flowing-background" viewBox="0 0 1744 920" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="pb-flow-green" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#b7e6d2"/><stop offset=".55" stopColor="#21a975"/><stop offset="1" stopColor="#00633d"/></linearGradient><linearGradient id="pb-flow-mint" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#f5fcf8" stopOpacity=".95"/><stop offset="1" stopColor="#94d7bb" stopOpacity=".65"/></linearGradient></defs><path d="M1120 0H1744V920H0V850C460 560 790 1130 1240 480C1400 250 1460 110 1520 0Z" fill="url(#pb-flow-green)"/><g stroke="#effff6" strokeOpacity=".8" strokeWidth="1.2"><path d="M0 750C440 400 780 890 1320 0H1460C1100 570 1000 900 520 850C270 820 170 760 0 860Z" fill="url(#pb-flow-mint)"/><path d="M0 870C370 650 650 990 1120 700C1390 530 1430 240 1744 100V320C1460 390 1400 700 1050 840C600 1020 390 700 0 920Z" fill="url(#pb-flow-mint)"/><path d="M0 920C380 680 640 1060 1160 800C1410 680 1510 510 1744 480" fill="none"/><path d="M0 670C440 350 760 590 1060 0" fill="none" strokeOpacity=".35"/></g></svg><img className="pb-brand-watermark" src="/post-bank-iran-logo.png" alt="" aria-hidden="true" /><section className="pb-brand"><img className="pb-brand-mark" src="/post-bank-iran-logo.png" alt="نشان پست بانک ایران" width="160" height="160" /><h1>پست بانک ایران</h1><p>POST BANK IRAN</p><LoginPortalClock /><div className="pb-features">{[['task_alt','اقدامات پروژه'],['layers','مدیریت پروژه'],['calendar_month','پایش و پیگیری'],['bar_chart','گزارش‌ها و داشبوردها']].map(([icon,label])=><div key={icon}><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</div>)}</div></section>
@@ -174,20 +169,6 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
           </button>
 
           <div className="login-actions-row">
-            {/* Dark/Light Mode Switcher */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="login-pill-btn"
-              id="login-theme-toggle"
-              title={isDark ? (isFa ? 'تغییر به حالت روشن' : 'Switch to Light mode') : (isFa ? 'تغییر به حالت تاریک' : 'Switch to Dark mode')}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>
-                {isDark ? 'light_mode' : 'dark_mode'}
-              </span>
-              <span>{isDark ? (isFa ? 'حالت روشن' : 'Light Mode') : (isFa ? 'حالت تاریک' : 'Dark Mode')}</span>
-            </button>
-
             {/* Language Switcher */}
             <button
               type="button"
@@ -521,7 +502,7 @@ export const SettingsPage = ({
         style: {
           marginBottom: '1.5rem',
           borderRadius: '12px',
-          border: '1px solid var(--border-color, #e2e8f0)',
+          border: '1px solid var(--border-color, #e2f0e8)',
           overflow: 'hidden',
           background: 'var(--card-bg-color, #ffffff)'
         }
@@ -534,8 +515,8 @@ export const SettingsPage = ({
             justifyContent: 'space-between',
             padding: '1.25rem 1.5rem',
             cursor: 'pointer',
-            borderBottom: expandedSections.language ? '1px solid var(--border-color, #e2e8f0)' : 'none',
-            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc'
+            borderBottom: expandedSections.language ? '1px solid var(--border-color, #e2f0e8)' : 'none',
+            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fcfa'
           }
         },
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.85rem' } },
@@ -544,16 +525,16 @@ export const SettingsPage = ({
                 width: '40px',
                 height: '40px',
                 borderRadius: '10px',
-                backgroundColor: 'rgba(37, 99, 235, 0.12)',
-                color: '#2563eb',
+                backgroundColor: 'rgba(37, 235, 119, 0.12)',
+                color: '#25eb77',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }
             }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.4rem' } }, "translate")),
             React.createElement("div", null,
-              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' } }, language === 'fa' ? 'تنظیمات زبان سیستم' : 'System Language'),
-              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)' } },
+              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' } }, language === 'fa' ? 'تنظیمات زبان سیستم' : 'System Language'),
+              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)' } },
                 language === 'fa' ? 'زبان نمایش رابط کاربری نرم‌افزار (فارسی / English)' : 'Interface display language'
               )
             )
@@ -565,11 +546,11 @@ export const SettingsPage = ({
                 fontWeight: 600,
                 padding: '3px 10px',
                 borderRadius: '20px',
-                background: 'var(--primary-color, #2563eb)',
+                background: 'var(--primary-color, #25eb77)',
                 color: '#ffffff'
               }
             }, language === 'fa' ? 'فارسی' : 'English'),
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #64748b)' } },
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
               expandedSections.language ? 'expand_less' : 'expand_more'
             )
           )
@@ -603,7 +584,7 @@ export const SettingsPage = ({
         style: {
           marginBottom: '1.5rem',
           borderRadius: '12px',
-          border: '1px solid var(--border-color, #e2e8f0)',
+          border: '1px solid var(--border-color, #e2f0e8)',
           overflow: 'hidden',
           background: 'var(--card-bg-color, #ffffff)'
         }
@@ -616,8 +597,8 @@ export const SettingsPage = ({
             justifyContent: 'space-between',
             padding: '1.25rem 1.5rem',
             cursor: 'pointer',
-            borderBottom: expandedSections.process ? '1px solid var(--border-color, #e2e8f0)' : 'none',
-            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc'
+            borderBottom: expandedSections.process ? '1px solid var(--border-color, #e2f0e8)' : 'none',
+            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fcfa'
           }
         },
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.85rem' } },
@@ -634,14 +615,14 @@ export const SettingsPage = ({
               }
             }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.4rem' } }, "account_tree")),
             React.createElement("div", null,
-              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' } }, language === 'fa' ? 'تنظیمات گردش کار' : 'Workflow Settings'),
-              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)' } },
+              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' } }, language === 'fa' ? 'تنظیمات گردش کار' : 'Workflow Settings'),
+              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)' } },
                 language === 'fa' ? 'مدیریت و داینامیک‌سازی مراحل و فازهای تایید منشور، پیشرفت، ریسک‌ها، ذینفعان، آخرین وضعیت، دلایل تاخیر و اسناد' : 'Manage dynamic approval workflow stages across project aspects'
               )
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #64748b)' } },
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
               expandedSections.process ? 'expand_less' : 'expand_more'
             )
           )
@@ -664,9 +645,9 @@ export const SettingsPage = ({
               React.createElement("label", {
                 htmlFor: "project-workflow-checkbox",
                 onClick: (e) => e.stopPropagation(),
-                style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' }
+                style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' }
               }, language === 'fa' ? 'فعال سازی گردش کار زمان ایجاد پروژه جدید (ارسال به کارتابل تاییدات)' : 'Activate workflow on new project creation'),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'با فعال شدن این گزینه، پروژه‌های جدید قبل از ثبت نهایی باید به تایید مدیر سیستم برسند.' : 'When enabled, new projects require admin approval before final creation.'
               )
             )
@@ -676,9 +657,9 @@ export const SettingsPage = ({
           isProjectWorkflowEnabled && React.createElement("div", {
             style: {
               padding: '1rem',
-              backgroundColor: isDark ? 'rgba(0, 0, 0, 0.25)' : '#f8fafc',
+              backgroundColor: isDark ? 'rgba(0, 0, 0, 0.25)' : '#f8fcfa',
               borderRadius: '8px',
-              border: '1px solid var(--border-color, #e2e8f0)',
+              border: '1px solid var(--border-color, #e2f0e8)',
               display: 'flex',
               flexDirection: 'column',
               gap: '0.5rem',
@@ -688,7 +669,7 @@ export const SettingsPage = ({
           },
             React.createElement("label", {
               htmlFor: "default-project-approver-select",
-              style: { fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-color, #1e293b)' }
+              style: { fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-color, #1e3b2a)' }
             }, language === 'fa' ? 'مدیر سیستم تایید‌کننده پروژه‌های جدید:' : 'Default Admin Approver for New Projects:'),
             React.createElement("select", {
               id: "default-project-approver-select",
@@ -697,7 +678,7 @@ export const SettingsPage = ({
                 setDefaultProjectApproverId(e.target.value || null);
               },
               className: "form-control",
-              style: { maxWidth: '350px', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbd5e1)', backgroundColor: 'var(--card-bg-color, #ffffff)', color: 'var(--text-color, #1e293b)' }
+              style: { maxWidth: '350px', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbe1d4)', backgroundColor: 'var(--card-bg-color, #ffffff)', color: 'var(--text-color, #1e3b2a)' }
             },
               adminUsers.length === 0 && React.createElement("option", { value: "" }, language === 'fa' ? 'هیچ کاربر مدیر سیستمی یافت نشد' : 'No Admin user found'),
               adminUsers.map(admin => (
@@ -708,7 +689,7 @@ export const SettingsPage = ({
 
           // Checkbox 2: Confirmed progress upon rejection
           React.createElement("div", {
-            style: { display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '1rem' },
+            style: { display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', borderTop: '1px solid var(--border-color, #e2f0e8)', paddingTop: '1rem' },
             onClick: () => setAllowApprovedProgress(!allowApprovedProgress)
           },
             React.createElement("input", {
@@ -722,9 +703,9 @@ export const SettingsPage = ({
               React.createElement("label", {
                 htmlFor: "allow-approved-progress-checkbox",
                 onClick: (e) => e.stopPropagation(),
-                style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' }
+                style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' }
               }, language === 'fa' ? 'امکان ثبت درصد پیشرفت تاییدی' : 'Enable recording confirmed progress upon rejection'),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa'
                   ? 'در صورت فعال بودن، تاییدکننده در صورت رد درصد پیشرفت اعلامی، می‌تواند درصد پیشرفت تاییدی خود را ثبت کند که ملاک محاسبات قرار می‌گیرد.'
                   : 'When enabled, approvers can specify a confirmed progress percentage upon rejecting a submission, which will be used for project calculations.'
@@ -733,14 +714,14 @@ export const SettingsPage = ({
           ),
 
           // Dynamic Workflow Settings Grid for all project modules
-          React.createElement("div", { style: { borderTop: '1px solid var(--border-color, #e2e8f0)', paddingTop: '1rem' } },
+          React.createElement("div", { style: { borderTop: '1px solid var(--border-color, #e2f0e8)', paddingTop: '1rem' } },
             React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' } },
               React.createElement("span", { className: "material-symbols-outlined", style: { color: '#059669', fontSize: '1.2rem' } }, "hub"),
-              React.createElement("h4", { style: { margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' } },
+              React.createElement("h4", { style: { margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'تعریف مراحل و فازهای گردش کار داینامیک' : 'Define Dynamic Workflow Approval Stages'
               )
             ),
-            React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0 0 0.75rem 0' } },
+            React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0 0 0.75rem 0' } },
               language === 'fa'
                 ? 'در این بخش می‌توانید برای هر یک از بخش‌های منشور، پیشرفت، ریسک‌ها، ذینفعان، آخرین وضعیت، دلایل تاخیر و اسناد پروژه، مراحل تایید چندسطحی تعریف نمایید. پیش‌فرض تایید کننده در تمامی مراحل مدیر پروژه مربوطه است.'
                 : 'Configure multi-level approval stages for charter, progress, risks, stakeholders, status, delays, and documents. The default approver is the Project Manager.'
@@ -780,7 +761,7 @@ export const SettingsPage = ({
         style: {
           marginBottom: '1.5rem',
           borderRadius: '12px',
-          border: '1px solid var(--border-color, #e2e8f0)',
+          border: '1px solid var(--border-color, #e2f0e8)',
           overflow: 'hidden',
           background: 'var(--card-bg-color, #ffffff)'
         }
@@ -793,8 +774,8 @@ export const SettingsPage = ({
             justifyContent: 'space-between',
             padding: '1.25rem 1.5rem',
             cursor: 'pointer',
-            borderBottom: expandedSections.visibility ? '1px solid var(--border-color, #e2e8f0)' : 'none',
-            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc'
+            borderBottom: expandedSections.visibility ? '1px solid var(--border-color, #e2f0e8)' : 'none',
+            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fcfa'
           }
         },
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.85rem' } },
@@ -811,14 +792,14 @@ export const SettingsPage = ({
               }
             }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.4rem' } }, "admin_panel_settings")),
             React.createElement("div", null,
-              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' } }, language === 'fa' ? 'سطوح دسترسی و مشاهده در سبد پروژه / اقدام' : 'Portfolio Visibility & Access Control'),
-              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)' } },
+              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' } }, language === 'fa' ? 'سطوح دسترسی و مشاهده در سبد پروژه / اقدام' : 'Portfolio Visibility & Access Control'),
+              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)' } },
                 language === 'fa' ? 'تنظیم قوانین مشاهده پروژه‌ها و اقدامات بر اساس نقش‌ها و ساختار سازمانی' : 'Visibility and access permissions for portfolio items'
               )
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #64748b)' } },
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
               expandedSections.visibility ? 'expand_less' : 'expand_more'
             )
           )
@@ -838,10 +819,10 @@ export const SettingsPage = ({
               style: { width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer' }
             }),
             React.createElement("div", null,
-              React.createElement("label", { htmlFor: "chk-viewByOwner", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' } },
+              React.createElement("label", { htmlFor: "chk-viewByOwner", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'مشاهده پروژه / اقدام توسط مالک مربوطه' : 'View project / action by owner'
               ),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'اگر تیک خورد، مالک در سبد پروژه / اقدام موارد خود را ببیند.' : 'If enabled, owner can see their projects / actions in the portfolio.'
               )
             )
@@ -860,10 +841,10 @@ export const SettingsPage = ({
               style: { width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer' }
             }),
             React.createElement("div", null,
-              React.createElement("label", { htmlFor: "chk-viewByManagerOrResponsible", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' } },
+              React.createElement("label", { htmlFor: "chk-viewByManagerOrResponsible", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'مشاهده پروژه / اقدام توسط مدیر پروژه یا مسئول مربوطه' : 'View project / action by project manager or responsible person'
               ),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'اگر تیک خورد، مدیر پروژه یا مسئول اقدام در سبد پروژه / اقدام موارد را ببیند.' : 'If enabled, PM or Action Responsible can see items in the portfolio.'
               )
             )
@@ -882,10 +863,10 @@ export const SettingsPage = ({
               style: { width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer' }
             }),
             React.createElement("div", null,
-              React.createElement("label", { htmlFor: "chk-viewByApprovers", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' } },
+              React.createElement("label", { htmlFor: "chk-viewByApprovers", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'مشاهده پروژه / اقدام توسط هریک از تاییدکنندگان' : 'View project / action by approvers'
               ),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'اگر تیک خورد، تاییدکنندگان پروژه (حتی یک فعالیت) یا اقدام در سبد پروژه / اقدام موارد را ببینند.' : 'If enabled, approvers (even for a single task) can view items in the portfolio.'
               )
             )
@@ -904,10 +885,10 @@ export const SettingsPage = ({
               style: { width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer' }
             }),
             React.createElement("div", null,
-              React.createElement("label", { htmlFor: "chk-viewByResources", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' } },
+              React.createElement("label", { htmlFor: "chk-viewByResources", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'مشاهده پروژه توسط هریک از منابع' : 'View project by team resources'
               ),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'اگر تیک خورد، منابع (تیم پروژه یا تخصیص‌یافته به حداقل یک فعالیت) پروژه را در سبد پروژه ببیند.' : 'If enabled, assigned resources can view the project in the portfolio.'
               )
             )
@@ -926,10 +907,10 @@ export const SettingsPage = ({
               style: { width: '1.2rem', height: '1.2rem', marginTop: '0.15rem', cursor: 'pointer' }
             }),
             React.createElement("div", null,
-              React.createElement("label", { htmlFor: "chk-viewByOrgHeads", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e293b)' } },
+              React.createElement("label", { htmlFor: "chk-viewByOrgHeads", style: { fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-color, #1e3b2a)' } },
                 language === 'fa' ? 'مشاهده پروژه / اقدام توسط روسای سازمانی (بر اساس ساختار سازمانی)' : 'View project / action by organizational heads'
               ),
-              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)', margin: '0.15rem 0 0 0' } },
+              React.createElement("p", { style: { fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)', margin: '0.15rem 0 0 0' } },
                 language === 'fa' ? 'اگر تیک خورد، چنانچه ساختار سازمانی کاربر از ساختار سازمانی مالک، مدیر، مسئول یا تاییدکنندگان بالاتر بود، آن پروژه و اقدام را ببیند.' : 'If enabled, users with higher unit in the org hierarchy can view projects / actions of subordinate units.'
               )
             )
@@ -943,7 +924,7 @@ export const SettingsPage = ({
         style: {
           marginBottom: '1.5rem',
           borderRadius: '12px',
-          border: '1px solid var(--border-color, #e2e8f0)',
+          border: '1px solid var(--border-color, #e2f0e8)',
           overflow: 'hidden',
           background: 'var(--card-bg-color, #ffffff)'
         }
@@ -956,8 +937,8 @@ export const SettingsPage = ({
             justifyContent: 'space-between',
             padding: '1.25rem 1.5rem',
             cursor: 'pointer',
-            borderBottom: expandedSections.other ? '1px solid var(--border-color, #e2e8f0)' : 'none',
-            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fafc'
+            borderBottom: expandedSections.other ? '1px solid var(--border-color, #e2f0e8)' : 'none',
+            background: isDark ? 'rgba(255, 255, 255, 0.04)' : '#f8fcfa'
           }
         },
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.85rem' } },
@@ -974,14 +955,14 @@ export const SettingsPage = ({
               }
             }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.4rem' } }, "tune")),
             React.createElement("div", null,
-              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' } }, language === 'fa' ? 'سایر تنظیمات و جداول مرجع' : 'Other Settings & Reference Tables'),
-              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #64748b)' } },
+              React.createElement("h3", { style: { margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' } }, language === 'fa' ? 'سایر تنظیمات و جداول مرجع' : 'Other Settings & Reference Tables'),
+              React.createElement("p", { style: { margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--inactive-color, #648b74)' } },
                 language === 'fa' ? 'تعریف جداول اطلاعاتی پایه، تقویم کاری، قالب رنگی و کتابچه امکانات' : 'Define basic reference tables, calendar, theme colors, and user handbook'
               )
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #64748b)' } },
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
               expandedSections.other ? 'expand_less' : 'expand_more'
             )
           )

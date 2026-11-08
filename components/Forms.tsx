@@ -74,9 +74,9 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
                 cursor: disabled ? 'not-allowed' : 'pointer',
                 borderRadius: '6px',
                 backgroundColor: isSelected
-                    ? (isDark ? 'rgba(37, 99, 235, 0.25)' : 'rgba(37, 99, 235, 0.12)')
+                    ? (isDark ? 'rgba(37, 235, 119, 0.25)' : 'rgba(37, 235, 119, 0.12)')
                     : 'transparent',
-                color: isSelected ? (isDark ? '#60a5fa' : '#2563eb') : (isDark ? '#f8fafc' : '#1e293b'),
+                color: isSelected ? (isDark ? '#60faa0' : '#25eb77') : (isDark ? '#f8fcfa' : '#1e3b2a'),
                 fontWeight: isSelected ? 700 : (level === 0 ? 600 : 400),
                 fontSize: '0.85rem',
                 transition: 'background-color 0.15s ease'
@@ -91,9 +91,9 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
                 width: '20px',
                 height: '20px',
                 borderRadius: '4px',
-                border: isDark ? '1px solid #475569' : '1px solid #cbd5e1',
-                background: isDark ? '#334155' : '#f8fafc',
-                color: isDark ? '#f8fafc' : '#334155',
+                border: isDark ? '1px solid #476955' : '1px solid #cbe1d4',
+                background: isDark ? '#335541' : '#f8fcfa',
+                color: isDark ? '#f8fcfa' : '#335541',
                 fontSize: '0.9rem',
                 fontWeight: 800,
                 cursor: 'pointer',
@@ -101,17 +101,17 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
                 lineHeight: 1
             },
             title: isExpanded ? "بستن زیرگروه" : "باز کردن زیرگروه"
-        }, isExpanded ? '−' : '+')) : (React.createElement("span", { style: { width: '20px', display: 'inline-block', textAlign: 'center', color: isDark ? '#64748b' : '#94a3b8', fontSize: '0.75rem' } }, '•')), React.createElement("span", {
+        }, isExpanded ? '−' : '+')) : (React.createElement("span", { style: { width: '20px', display: 'inline-block', textAlign: 'center', color: isDark ? '#648b74' : '#94b8a3', fontSize: '0.75rem' } }, '•')), React.createElement("span", {
             className: "material-symbols-outlined",
             style: {
                 fontSize: '1.1rem',
-                color: isSelected ? (isDark ? '#60a5fa' : '#2563eb') : (hasChildren ? (isDark ? '#3b82f6' : '#2563eb') : (isDark ? '#94a3b8' : '#64748b'))
+                color: isSelected ? (isDark ? '#60faa0' : '#25eb77') : (hasChildren ? (isDark ? '#3bf689' : '#25eb77') : (isDark ? '#94b8a3' : '#648b74'))
             }
         }, hasChildren ? 'domain' : 'subdirectory_arrow_right'), React.createElement("span", { style: { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' } }, node.name)), hasChildren && React.createElement("span", {
             style: {
                 fontSize: '0.7rem',
-                color: isDark ? '#94a3b8' : '#64748b',
-                background: isDark ? '#1e293b' : '#f1f5f9',
+                color: isDark ? '#94b8a3' : '#648b74',
+                background: isDark ? '#1e3b2a' : '#f1f9f4',
                 padding: '1px 6px',
                 borderRadius: '4px'
             }
@@ -119,7 +119,7 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
             style: {
                 display: 'flex',
                 flexDirection: 'column',
-                borderRight: isDark ? '1px dashed #475569' : '1px dashed #cbd5e1',
+                borderRight: isDark ? '1px dashed #476955' : '1px dashed #cbe1d4',
                 marginRight: `${level * 18 + 18}px`,
                 marginTop: '0.15rem'
             }
@@ -134,31 +134,31 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
             justifyContent: 'space-between',
             padding: '0.55rem 0.75rem',
             borderRadius: '8px',
-            border: isDark ? '1px solid #334155' : '1px solid #cbd5e1',
+            border: isDark ? '1px solid #335541' : '1px solid #cbe1d4',
             background: disabled
-                ? (isDark ? '#1e293b' : '#f1f5f9')
-                : (isDark ? '#0f172a' : '#ffffff'),
-            color: isDark ? '#f8fafc' : '#0f172a',
+                ? (isDark ? '#1e3b2a' : '#f1f9f4')
+                : (isDark ? '#0f2a1a' : '#ffffff'),
+            color: isDark ? '#f8fcfa' : '#0f2a1a',
             cursor: disabled ? 'not-allowed' : 'pointer',
             fontSize: '0.88rem',
             minHeight: '38px'
         }
-    }, React.createElement("span", { style: { color: value ? 'inherit' : (isDark ? '#64748b' : '#94a3b8'), fontWeight: value ? 500 : 400 } }, value || placeholder), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.2rem', color: isDark ? '#94a3b8' : '#64748b' } }, isOpen ? 'expand_less' : 'expand_more')), isOpen && React.createElement("div", {
+    }, React.createElement("span", { style: { color: value ? 'inherit' : (isDark ? '#648b74' : '#94b8a3'), fontWeight: value ? 500 : 400 } }, value || placeholder), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.2rem', color: isDark ? '#94b8a3' : '#648b74' } }, isOpen ? 'expand_less' : 'expand_more')), isOpen && React.createElement("div", {
         style: {
             position: 'absolute',
             top: 'calc(100% + 4px)',
             left: 0,
             right: 0,
             zIndex: 1001,
-            background: isDark ? '#0f172a' : '#ffffff',
-            border: isDark ? '1px solid #334155' : '1px solid #cbd5e1',
+            background: isDark ? '#0f2a1a' : '#ffffff',
+            border: isDark ? '1px solid #335541' : '1px solid #cbe1d4',
             borderRadius: '8px',
             boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1)',
             maxHeight: '260px',
             overflowY: 'auto',
             padding: '0.4rem'
         }
-    }, rootNodes.length === 0 ? (React.createElement("div", { style: { padding: '0.75rem', textAlign: 'center', fontSize: '0.82rem', color: isDark ? '#94a3b8' : '#64748b' } }, "هیچ واحد مالکی ثبت نشده است")) : (rootNodes.map(node => renderNode(node, 0)))));
+    }, rootNodes.length === 0 ? (React.createElement("div", { style: { padding: '0.75rem', textAlign: 'center', fontSize: '0.82rem', color: isDark ? '#94b8a3' : '#648b74' } }, "هیچ واحد مالکی ثبت نشده است")) : (rootNodes.map(node => renderNode(node, 0)))));
 };
 export const ProjectCharterForm = ({ projectData, setProjectData, users, calendars, owningUnits, projectStatuses, currentUser, isReadOnly = false, isProjectWorkflowEnabled, isEditing = false }: {
     projectData: Partial<Project>;
@@ -341,7 +341,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             marginBottom: '1.25rem',
             display: 'flex',
             gap: '0.5rem',
-            borderBottom: '1px solid var(--border-color, #e2e8f0)',
+            borderBottom: '1px solid var(--border-color, #e2f0e8)',
             paddingBottom: '0.5rem'
         }
     }, React.createElement("button", {
@@ -378,8 +378,8 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         }
     }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.2rem' } }, "verified_user"), React.createElement("span", null, t('approvers')), React.createElement("span", {
         style: {
-            backgroundColor: currentTab === 'approvers' ? 'var(--primary-color, #2563eb)' : 'var(--bg-card-muted, #e2e8f0)',
-            color: currentTab === 'approvers' ? '#ffffff' : 'var(--text-muted, #64748b)',
+            backgroundColor: currentTab === 'approvers' ? 'var(--primary-color, #25eb77)' : 'var(--bg-card-muted, #e2f0e8)',
+            color: currentTab === 'approvers' ? '#ffffff' : 'var(--text-muted, #648b74)',
             fontSize: '0.72rem',
             padding: '0.1rem 0.5rem',
             borderRadius: '9999px',
@@ -398,23 +398,23 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             padding: '0.85rem 1.1rem',
             marginBottom: '1.25rem',
             borderRadius: '8px',
-            backgroundColor: actionData.sourceInfo.type === 'risk' ? '#fff7ed' : '#eff6ff',
-            border: `1px solid ${actionData.sourceInfo.type === 'risk' ? '#fdba74' : '#93c5fd'}`,
-            color: actionData.sourceInfo.type === 'risk' ? '#9a3412' : '#1e40af'
+            backgroundColor: actionData.sourceInfo.type === 'risk' ? '#fff7ed' : '#effff6',
+            border: `1px solid ${actionData.sourceInfo.type === 'risk' ? '#fdba74' : '#93fdbf'}`,
+            color: actionData.sourceInfo.type === 'risk' ? '#9a3412' : '#1eaf5a'
         }
     }, React.createElement("span", {
         className: "material-symbols-outlined",
-        style: { fontSize: '1.4rem', color: actionData.sourceInfo.type === 'risk' ? '#ea580c' : '#2563eb', flexShrink: 0, marginTop: '2px' }
+        style: { fontSize: '1.4rem', color: actionData.sourceInfo.type === 'risk' ? '#ea580c' : '#25eb77', flexShrink: 0, marginTop: '2px' }
     }, actionData.sourceInfo.type === 'risk' ? 'security' : 'group'), React.createElement("div", { style: { fontSize: '0.88rem', lineHeight: 1.55 } }, React.createElement("div", { style: { fontWeight: 700, marginBottom: '2px' } }, actionData.sourceInfo.type === 'risk'
         ? (isFa ? 'اطلاعیه: ایجاد اقدام از برنامه پاسخ ریسک پروژه' : 'Notice: Created from Project Risk Response Plan')
         : (isFa ? 'اطلاعیه: ایجاد اقدام از استراتژی برخورد با ذینفع پروژه' : 'Notice: Created from Stakeholder Engagement Strategy')), actionData.sourceInfo.type === 'risk' ? (React.createElement("span", null, isFa
         ? `این اقدام بر اساس برنامه پاسخ ریسک «${actionData.sourceInfo.riskPlan || '-'}» (مربوط به ریسک «${actionData.sourceInfo.riskTitle || '-'}») در پروژه «${actionData.sourceInfo.projectName || '-'}» درج گردیده است. فرآیند تایید این اقدام طبق تنظیمات گردش کار ریسک پروژه عمل خواهد کرد.`
         : `This action is generated from the risk response plan "${actionData.sourceInfo.riskPlan || '-'}" in project "${actionData.sourceInfo.projectName || '-'}". Approval will follow project risk workflow rules.`)) : (React.createElement("span", null, isFa
         ? `این اقدام بر اساس استراتژی برخورد با ذینفع «${actionData.sourceInfo.stakeholderName || '-'}» با الگوی استراتژی «${actionData.sourceInfo.stakeholderStrategy || '-'}» در پروژه «${actionData.sourceInfo.projectName || '-'}» ایجاد شده است. فرآیند تایید این اقدام طبق تنظیمات گردش کار ذینفعان پروژه عمل خواهد کرد.`
-        : `This action is generated from the engagement strategy for stakeholder "${actionData.sourceInfo.stakeholderName || '-'}" in project "${actionData.sourceInfo.projectName || '-'}". Approval will follow stakeholder workflow rules.`)))), React.createElement("form", { className: "charter-form", style: { gridTemplateColumns: '1fr 1fr 1fr' } }, React.createElement("div", { className: "form-group full-width", style: { gridColumn: '1 / -1' } }, React.createElement("label", { htmlFor: "title" }, t('actionTitle') + '*'), React.createElement("input", { type: "text", id: "title", name: "title", value: actionData.title || '', onChange: handleChange, required: true, placeholder: isFa ? 'عنوان شفاف اقدام...' : 'Action title...' })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "action-owner" }, isFa ? 'مالک (ایجادکننده)' : 'Owner (Creator)'), React.createElement("input", { type: "text", id: "action-owner", value: ownerDisplayName, disabled: true, style: { backgroundColor: 'var(--bg-card-muted, #f1f5f9)', cursor: 'not-allowed', opacity: 0.85 } })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "projectId" }, t('relatedProject')), React.createElement("select", { id: "projectId", name: "projectId", value: actionData.projectId || '', onChange: handleChange, disabled: isProjectLocked }, React.createElement("option", { value: "" }, t('none')), projects.filter(p => p.approvalStatus === 'Approved').map(project => (React.createElement("option", { key: project.id, value: project.id }, project.name))))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "responsibleUserId" }, t('responsiblePerson') + '*'), React.createElement("select", { id: "responsibleUserId", name: "responsibleUserId", value: actionData.responsibleUserId || '', onChange: handleChange, required: true }, React.createElement("option", { value: "" }, t('selectUser')), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username)))), React.createElement("div", { style: { marginTop: '0.35rem', fontSize: '0.78rem', color: '#0284c7', display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' } }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.95rem' } }, "verified_user"), React.createElement("span", null, isFa ? 'پیش‌فرض تاییدکننده اول همین کاربر است.' : 'Approver 1 defaults to this user.'), React.createElement("button", {
+        : `This action is generated from the engagement strategy for stakeholder "${actionData.sourceInfo.stakeholderName || '-'}" in project "${actionData.sourceInfo.projectName || '-'}". Approval will follow stakeholder workflow rules.`)))), React.createElement("form", { className: "charter-form", style: { gridTemplateColumns: '1fr 1fr 1fr' } }, React.createElement("div", { className: "form-group full-width", style: { gridColumn: '1 / -1' } }, React.createElement("label", { htmlFor: "title" }, t('actionTitle') + '*'), React.createElement("input", { type: "text", id: "title", name: "title", value: actionData.title || '', onChange: handleChange, required: true, placeholder: isFa ? 'عنوان شفاف اقدام...' : 'Action title...' })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "action-owner" }, isFa ? 'مالک (ایجادکننده)' : 'Owner (Creator)'), React.createElement("input", { type: "text", id: "action-owner", value: ownerDisplayName, disabled: true, style: { backgroundColor: 'var(--bg-card-muted, #f1f9f4)', cursor: 'not-allowed', opacity: 0.85 } })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "projectId" }, t('relatedProject')), React.createElement("select", { id: "projectId", name: "projectId", value: actionData.projectId || '', onChange: handleChange, disabled: isProjectLocked }, React.createElement("option", { value: "" }, t('none')), projects.filter(p => p.approvalStatus === 'Approved').map(project => (React.createElement("option", { key: project.id, value: project.id }, project.name))))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "responsibleUserId" }, t('responsiblePerson') + '*'), React.createElement("select", { id: "responsibleUserId", name: "responsibleUserId", value: actionData.responsibleUserId || '', onChange: handleChange, required: true }, React.createElement("option", { value: "" }, t('selectUser')), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username)))), React.createElement("div", { style: { marginTop: '0.35rem', fontSize: '0.78rem', color: '#02c754', display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' } }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.95rem' } }, "verified_user"), React.createElement("span", null, isFa ? 'پیش‌فرض تاییدکننده اول همین کاربر است.' : 'Approver 1 defaults to this user.'), React.createElement("button", {
         type: "button",
         onClick: () => handleTabChange('approvers'),
-        style: { background: 'none', border: 'none', color: '#0284c7', textDecoration: 'underline', cursor: 'pointer', padding: 0, fontSize: '0.78rem', fontWeight: 600 }
+        style: { background: 'none', border: 'none', color: '#02c754', textDecoration: 'underline', cursor: 'pointer', padding: 0, fontSize: '0.78rem', fontWeight: 600 }
     }, isFa ? 'تنظیم در تب تاییدکنندگان' : 'Configure in Approvers Tab'))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "status" }, t('status')), React.createElement("select", { id: "status", name: "status", value: actionData.status || 'Planning', disabled: true }, Object.keys(workStatusTranslations).map(s => React.createElement("option", { key: s, value: s }, t(workStatusTranslations[s as WorkStatus]))))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "calendarId" }, t('actionCalendar') + '*'), React.createElement("select", { id: "calendarId", name: "calendarId", value: actionData.calendarId || '', onChange: handleChange, required: true }, calendars.map(c => (React.createElement("option", { key: c.id, value: c.id }, getCalendarDisplayName(c.name, language)))))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "owningUnit" }, t('owningUnit') + '*'), React.createElement(OwningUnitTreeSelect, {
         id: "owningUnit",
         value: actionData.owningUnit || '',
@@ -427,8 +427,8 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         className: "form-group full-width",
         style: {
             gridColumn: '1 / -1',
-            backgroundColor: recurrence.isRecurring ? 'rgba(79, 70, 229, 0.04)' : 'var(--bg-card-muted, #f8fafc)',
-            border: recurrence.isRecurring ? '1px solid #c7d2fe' : '1px dashed var(--border-color, #cbd5e1)',
+            backgroundColor: recurrence.isRecurring ? 'rgba(70, 229, 136, 0.04)' : 'var(--bg-card-muted, #f8fcfa)',
+            border: recurrence.isRecurring ? '1px solid #c7fede' : '1px dashed var(--border-color, #cbe1d4)',
             borderRadius: '10px',
             padding: '1.1rem',
             marginTop: '0.5rem',
@@ -442,17 +442,17 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             cursor: 'pointer',
             fontWeight: 700,
             fontSize: '0.95rem',
-            color: recurrence.isRecurring ? '#4338ca' : 'var(--text-color, #1e293b)',
+            color: recurrence.isRecurring ? '#38ca75' : 'var(--text-color, #1e3b2a)',
             margin: 0
         }
     }, React.createElement("input", {
         type: "checkbox",
         checked: !!recurrence.isRecurring,
         onChange: (e: ChangeEvent<HTMLInputElement>) => handleRecurrenceChange({ isRecurring: e.target.checked }),
-        style: { width: '1.15rem', height: '1.15rem', accentColor: '#4f46e5', cursor: 'pointer' }
-    }), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: recurrence.isRecurring ? '#4f46e5' : '#64748b' } }, "event_repeat"), React.createElement("span", null, isFa ? 'تعریف به عنوان اقدام تکرارشونده (Recurrence)' : 'Recurring Action Item')), recurrence.isRecurring && React.createElement("span", {
+        style: { width: '1.15rem', height: '1.15rem', accentColor: '#46e588', cursor: 'pointer' }
+    }), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: recurrence.isRecurring ? '#46e588' : '#648b74' } }, "event_repeat"), React.createElement("span", null, isFa ? 'تعریف به عنوان اقدام تکرارشونده (Recurrence)' : 'Recurring Action Item')), recurrence.isRecurring && React.createElement("span", {
         className: "badge badge-info",
-        style: { backgroundColor: '#e0e7ff', color: '#3730a3', fontSize: '0.78rem', padding: '3px 10px', borderRadius: '9999px', fontWeight: 600 }
+        style: { backgroundColor: '#e0ffed', color: '#30a360', fontSize: '0.78rem', padding: '3px 10px', borderRadius: '9999px', fontWeight: 600 }
     }, isFa ? 'حالت تکرار فعال' : 'Recurrence Enabled')), recurrence.isRecurring && React.createElement("div", { className: "recurrence-settings-grid", style: { display: 'flex', flexDirection: 'column', gap: '1rem' } }, React.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'flex-start' } },
     /* Duration in Hours */
     React.createElement("div", { className: "form-group", style: { margin: 0 } }, React.createElement("label", { style: { fontSize: '0.85rem', fontWeight: 600 } }, isFa ? 'مدت زمان هر نوبت (ساعت)*' : 'Duration per Occurrence (Hours)*'), React.createElement("input", {
@@ -487,10 +487,10 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         style: {
             padding: '0.75rem',
             backgroundColor: 'var(--bg-card, #ffffff)',
-            border: '1px solid var(--border-color, #e2e8f0)',
+            border: '1px solid var(--border-color, #e2f0e8)',
             borderRadius: '8px'
         }
-    }, React.createElement("div", { style: { fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-color, #334155)' } }, isFa ? 'انتخاب روزهای هفته جهت اجرای اقدام:' : 'Select days of week for task execution:'), React.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' } }, [6, 0, 1, 2, 3, 4, 5].map(dayNum => {
+    }, React.createElement("div", { style: { fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-color, #335541)' } }, isFa ? 'انتخاب روزهای هفته جهت اجرای اقدام:' : 'Select days of week for task execution:'), React.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '0.5rem' } }, [6, 0, 1, 2, 3, 4, 5].map(dayNum => {
         const isSelected = (recurrence.daysOfWeek || []).includes(dayNum);
         const label = isFa ? PERSIAN_WEEKDAY_NAMES[dayNum] : (dayNum === 6 ? 'Sat' : dayNum === 0 ? 'Sun' : dayNum === 1 ? 'Mon' : dayNum === 2 ? 'Tue' : dayNum === 3 ? 'Wed' : dayNum === 4 ? 'Thu' : 'Fri');
         return React.createElement("button", {
@@ -500,9 +500,9 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             style: {
                 padding: '0.35rem 0.75rem',
                 borderRadius: '6px',
-                border: isSelected ? '1px solid #4f46e5' : '1px solid var(--border-color, #cbd5e1)',
-                backgroundColor: isSelected ? '#4f46e5' : 'var(--bg-card-muted, #f8fafc)',
-                color: isSelected ? '#ffffff' : 'var(--text-color, #334155)',
+                border: isSelected ? '1px solid #46e588' : '1px solid var(--border-color, #cbe1d4)',
+                backgroundColor: isSelected ? '#46e588' : 'var(--bg-card-muted, #f8fcfa)',
+                color: isSelected ? '#ffffff' : 'var(--text-color, #335541)',
                 fontWeight: isSelected ? 600 : 400,
                 fontSize: '0.82rem',
                 cursor: 'pointer',
@@ -515,7 +515,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         style: {
             padding: '0.75rem',
             backgroundColor: 'var(--bg-card, #ffffff)',
-            border: '1px solid var(--border-color, #e2e8f0)',
+            border: '1px solid var(--border-color, #e2f0e8)',
             borderRadius: '8px',
             display: 'flex',
             flexDirection: 'column',
@@ -535,12 +535,12 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             padding: '0.3rem 0.65rem',
             fontSize: '0.8rem',
             borderRadius: '6px',
-            border: '1px solid #93c5fd',
-            backgroundColor: recurrence.allMonths ? '#eff6ff' : 'transparent',
-            color: '#1d4ed8',
+            border: '1px solid #93fdbf',
+            backgroundColor: recurrence.allMonths ? '#effff6' : 'transparent',
+            color: '#1dd86b',
             cursor: 'pointer'
         }
-    }, recurrence.allMonths ? (isFa ? '✓ تمام ۱۲ ماه سال' : '✓ All 12 Months') : (isFa ? 'انتخاب ماه‌های خاص' : 'Select Specific Months'))), !recurrence.allMonths && React.createElement("div", null, React.createElement("div", { style: { fontSize: '0.8rem', color: '#64748b', marginBottom: '0.4rem' } }, isFa ? 'ماه‌های فعال جهت اجرای اقدام:' : 'Active months for recurrence:'), React.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '0.4rem' } }, Array.from({ length: 12 }, (_, i) => i + 1).map(mNum => {
+    }, recurrence.allMonths ? (isFa ? '✓ تمام ۱۲ ماه سال' : '✓ All 12 Months') : (isFa ? 'انتخاب ماه‌های خاص' : 'Select Specific Months'))), !recurrence.allMonths && React.createElement("div", null, React.createElement("div", { style: { fontSize: '0.8rem', color: '#648b74', marginBottom: '0.4rem' } }, isFa ? 'ماه‌های فعال جهت اجرای اقدام:' : 'Active months for recurrence:'), React.createElement("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '0.4rem' } }, Array.from({ length: 12 }, (_, i) => i + 1).map(mNum => {
         const isSelected = (recurrence.monthsOfYear || []).includes(mNum);
         const mName = isFa ? PERSIAN_MONTH_NAMES[mNum - 1] : `M${mNum}`;
         return React.createElement("button", {
@@ -550,9 +550,9 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             style: {
                 padding: '0.25rem 0.6rem',
                 borderRadius: '5px',
-                border: isSelected ? '1px solid #2563eb' : '1px solid var(--border-color, #cbd5e1)',
-                backgroundColor: isSelected ? '#2563eb' : 'var(--bg-card-muted, #f8fafc)',
-                color: isSelected ? '#ffffff' : 'var(--text-color, #334155)',
+                border: isSelected ? '1px solid #25eb77' : '1px solid var(--border-color, #cbe1d4)',
+                backgroundColor: isSelected ? '#25eb77' : 'var(--bg-card-muted, #f8fcfa)',
+                color: isSelected ? '#ffffff' : 'var(--text-color, #335541)',
                 fontSize: '0.78rem',
                 cursor: 'pointer'
             }
@@ -598,14 +598,14 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             gap: '0.85rem',
             padding: '1rem 1.25rem',
             borderRadius: '10px',
-            backgroundColor: 'rgba(2, 132, 199, 0.08)',
-            border: '1px solid rgba(2, 132, 199, 0.25)',
-            color: 'var(--text-color, #0f172a)'
+            backgroundColor: 'rgba(2, 199, 84, 0.08)',
+            border: '1px solid rgba(2, 199, 84, 0.25)',
+            color: 'var(--text-color, #0f2a1a)'
         }
     }, React.createElement("span", {
         className: "material-symbols-outlined",
-        style: { fontSize: '1.75rem', color: '#0284c7', flexShrink: 0, marginTop: '2px' }
-    }, "verified_user"), React.createElement("div", null, React.createElement("div", { style: { fontWeight: 700, fontSize: '0.98rem', marginBottom: '0.3rem', color: '#0369a1' } }, isFa ? 'پیکربندی تاییدکنندگان اقدام (گردش کار ۳ مرحله‌ای)' : 'Action Approvers Configuration (3-Stage Workflow)'), React.createElement("div", { style: { fontSize: '0.86rem', color: 'var(--text-muted, #475569)', lineHeight: 1.6 } }, isFa
+        style: { fontSize: '1.75rem', color: '#02c754', flexShrink: 0, marginTop: '2px' }
+    }, "verified_user"), React.createElement("div", null, React.createElement("div", { style: { fontWeight: 700, fontSize: '0.98rem', marginBottom: '0.3rem', color: '#03a145' } }, isFa ? 'پیکربندی تاییدکنندگان اقدام (گردش کار ۳ مرحله‌ای)' : 'Action Approvers Configuration (3-Stage Workflow)'), React.createElement("div", { style: { fontSize: '0.86rem', color: 'var(--text-muted, #476955)', lineHeight: 1.6 } }, isFa
         ? 'برای این اقدام می‌توانید تا ۳ مرحله تاییدکننده تعریف نمایید. تاییدکننده اول به صورت پیش‌فرض همان مسئول اقدام است. پس از ثبت تغییر وضعیت در کارتابل وظایف، درخواست تایید به ترتیب مراحل بین تاییدکنندگان مشخص‌شده به گردش درمی‌آید.'
         : 'You can define up to 3 approvers for this action. Approver 1 defaults to the action responsible person. Status updates submitted in the Cartable will route sequentially through these approvers.'))),
     /* 3 Approvers Cards Grid */
@@ -621,8 +621,8 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         style: {
             padding: '1.1rem',
             borderRadius: '10px',
-            border: '1px solid #93c5fd',
-            backgroundColor: 'rgba(239, 246, 255, 0.6)',
+            border: '1px solid #93fdbf',
+            backgroundColor: 'rgba(239, 255, 246, 0.6)',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.75rem'
@@ -632,7 +632,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: '#0284c7',
+            backgroundColor: '#02c754',
             color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
@@ -640,14 +640,14 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             fontSize: '0.82rem',
             fontWeight: 700
         }
-    }, "۱"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: '#0369a1' } }, t('approver1') + '*')), React.createElement("span", {
+    }, "۱"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: '#03a145' } }, t('approver1') + '*')), React.createElement("span", {
         style: {
             fontSize: '0.72rem',
             fontWeight: 600,
             padding: '0.15rem 0.5rem',
             borderRadius: '9999px',
-            backgroundColor: (actionData.approver1Id ?? actionData.responsibleUserId) === actionData.responsibleUserId ? '#dbeafe' : '#f1f5f9',
-            color: (actionData.approver1Id ?? actionData.responsibleUserId) === actionData.responsibleUserId ? '#1d4ed8' : '#475569'
+            backgroundColor: (actionData.approver1Id ?? actionData.responsibleUserId) === actionData.responsibleUserId ? '#dbfeea' : '#f1f9f4',
+            color: (actionData.approver1Id ?? actionData.responsibleUserId) === actionData.responsibleUserId ? '#1dd86b' : '#476955'
         }
     }, isFa ? ((actionData.approver1Id ?? actionData.responsibleUserId) === actionData.responsibleUserId ? 'پیش‌فرض: مسئول اقدام' : 'سفارشی') : 'Default: Responsible')), React.createElement("div", { className: "form-group", style: { margin: 0 } }, React.createElement("label", { htmlFor: "approver1Id", style: { fontSize: '0.84rem', fontWeight: 600, marginBottom: '0.35rem' } }, isFa ? 'انتخاب تاییدکننده اول:' : 'Select Approver 1:'), React.createElement("select", {
         id: "approver1Id",
@@ -655,8 +655,8 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         value: actionData.approver1Id ?? actionData.responsibleUserId ?? '',
         onChange: handleChange,
         required: true,
-        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid #93c5fd', backgroundColor: '#ffffff' }
-    }, React.createElement("option", { value: "" }, t('selectUser')), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, `${user.name ? `${user.name} (${user.username})` : user.username}${String(user.id) === String(actionData.responsibleUserId) ? (isFa ? ' - (مسئول اقدام)' : ' - (Responsible)') : ''}`))))), React.createElement("div", { style: { fontSize: '0.78rem', color: '#475569', lineHeight: 1.5 } }, isFa
+        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid #93fdbf', backgroundColor: '#ffffff' }
+    }, React.createElement("option", { value: "" }, t('selectUser')), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, `${user.name ? `${user.name} (${user.username})` : user.username}${String(user.id) === String(actionData.responsibleUserId) ? (isFa ? ' - (مسئول اقدام)' : ' - (Responsible)') : ''}`))))), React.createElement("div", { style: { fontSize: '0.78rem', color: '#476955', lineHeight: 1.5 } }, isFa
         ? 'درخواست اولیه تغییر وضعیت اقدام در کارتابل به این کاربر ارسال می‌گردد.'
         : 'Initial status change request routes directly to this user.')),
     /* Approver 2 Card */
@@ -664,7 +664,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         style: {
             padding: '1.1rem',
             borderRadius: '10px',
-            border: '1px solid var(--border-color, #cbd5e1)',
+            border: '1px solid var(--border-color, #cbe1d4)',
             backgroundColor: actionData.approver2Id ? 'rgba(240, 253, 244, 0.6)' : 'var(--bg-card, #ffffff)',
             display: 'flex',
             flexDirection: 'column',
@@ -675,7 +675,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: actionData.approver2Id ? '#16a34a' : '#64748b',
+            backgroundColor: actionData.approver2Id ? '#16a34a' : '#648b74',
             color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
@@ -683,22 +683,22 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             fontSize: '0.82rem',
             fontWeight: 700
         }
-    }, "۲"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #0f172a)' } }, t('approver2'))), React.createElement("span", {
+    }, "۲"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #0f2a1a)' } }, t('approver2'))), React.createElement("span", {
         style: {
             fontSize: '0.72rem',
             fontWeight: 600,
             padding: '0.15rem 0.5rem',
             borderRadius: '9999px',
-            backgroundColor: actionData.approver2Id ? '#dcfce7' : '#f1f5f9',
-            color: actionData.approver2Id ? '#15803d' : '#64748b'
+            backgroundColor: actionData.approver2Id ? '#dcfce7' : '#f1f9f4',
+            color: actionData.approver2Id ? '#15803d' : '#648b74'
         }
     }, actionData.approver2Id ? (isFa ? 'فعال' : 'Active') : (isFa ? 'اختیاری' : 'Optional'))), React.createElement("div", { className: "form-group", style: { margin: 0 } }, React.createElement("label", { htmlFor: "approver2Id", style: { fontSize: '0.84rem', fontWeight: 600, marginBottom: '0.35rem' } }, isFa ? 'انتخاب تاییدکننده دوم:' : 'Select Approver 2:'), React.createElement("select", {
         id: "approver2Id",
         name: "approver2Id",
         value: actionData.approver2Id || '',
         onChange: handleChange,
-        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbd5e1)', backgroundColor: '#ffffff' }
-    }, React.createElement("option", { value: "" }, isFa ? 'هیچ‌کدام (بدون تاییدکننده دوم)' : 'None (No Approver 2)'), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username))))), React.createElement("div", { style: { fontSize: '0.78rem', color: 'var(--text-muted, #64748b)', lineHeight: 1.5 } }, isFa
+        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbe1d4)', backgroundColor: '#ffffff' }
+    }, React.createElement("option", { value: "" }, isFa ? 'هیچ‌کدام (بدون تاییدکننده دوم)' : 'None (No Approver 2)'), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username))))), React.createElement("div", { style: { fontSize: '0.78rem', color: 'var(--text-muted, #648b74)', lineHeight: 1.5 } }, isFa
         ? 'در صورت تعیین، پس از تایید توسط تاییدکننده اول، درخواست جهت تایید مرحله ۲ به این کاربر ارجاع خواهد شد.'
         : 'If specified, routes to this user after Approver 1 approves.')),
     /* Approver 3 Card */
@@ -706,7 +706,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         style: {
             padding: '1.1rem',
             borderRadius: '10px',
-            border: '1px solid var(--border-color, #cbd5e1)',
+            border: '1px solid var(--border-color, #cbe1d4)',
             backgroundColor: actionData.approver3Id ? 'rgba(250, 245, 255, 0.6)' : 'var(--bg-card, #ffffff)',
             display: 'flex',
             flexDirection: 'column',
@@ -717,7 +717,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             width: '24px',
             height: '24px',
             borderRadius: '50%',
-            backgroundColor: actionData.approver3Id ? '#9333ea' : '#64748b',
+            backgroundColor: actionData.approver3Id ? '#9333ea' : '#648b74',
             color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
@@ -725,33 +725,33 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             fontSize: '0.82rem',
             fontWeight: 700
         }
-    }, "۳"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #0f172a)' } }, t('approver3'))), React.createElement("span", {
+    }, "۳"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #0f2a1a)' } }, t('approver3'))), React.createElement("span", {
         style: {
             fontSize: '0.72rem',
             fontWeight: 600,
             padding: '0.15rem 0.5rem',
             borderRadius: '9999px',
-            backgroundColor: actionData.approver3Id ? '#f3e8ff' : '#f1f5f9',
-            color: actionData.approver3Id ? '#7e22ce' : '#64748b'
+            backgroundColor: actionData.approver3Id ? '#f3e8ff' : '#f1f9f4',
+            color: actionData.approver3Id ? '#7e22ce' : '#648b74'
         }
     }, actionData.approver3Id ? (isFa ? 'تایید نهایی' : 'Final Approver') : (isFa ? 'اختیاری' : 'Optional'))), React.createElement("div", { className: "form-group", style: { margin: 0 } }, React.createElement("label", { htmlFor: "approver3Id", style: { fontSize: '0.84rem', fontWeight: 600, marginBottom: '0.35rem' } }, isFa ? 'انتخاب تاییدکننده سوم:' : 'Select Approver 3:'), React.createElement("select", {
         id: "approver3Id",
         name: "approver3Id",
         value: actionData.approver3Id || '',
         onChange: handleChange,
-        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbd5e1)', backgroundColor: '#ffffff' }
-    }, React.createElement("option", { value: "" }, isFa ? 'هیچ‌کدام (بدون تاییدکننده سوم)' : 'None (No Approver 3)'), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username))))), React.createElement("div", { style: { fontSize: '0.78rem', color: 'var(--text-muted, #64748b)', lineHeight: 1.5 } }, isFa
+        style: { width: '100%', padding: '0.55rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color, #cbe1d4)', backgroundColor: '#ffffff' }
+    }, React.createElement("option", { value: "" }, isFa ? 'هیچ‌کدام (بدون تاییدکننده سوم)' : 'None (No Approver 3)'), users.map(user => (React.createElement("option", { key: user.id, value: user.id }, user.name ? `${user.name} (${user.username})` : user.username))))), React.createElement("div", { style: { fontSize: '0.78rem', color: 'var(--text-muted, #648b74)', lineHeight: 1.5 } }, isFa
         ? 'در صورت تعیین، تایید نهایی و اعمال وضعیت اقدام پس از تایید توسط این کاربر انجام می‌گیرد.'
         : 'If specified, final status approval completes after this user reviews.'))),
     /* Visual Sequential Workflow Preview */
     React.createElement("div", {
         style: {
             padding: '1.1rem',
-            backgroundColor: 'var(--bg-card-muted, #f8fafc)',
-            border: '1px solid var(--border-color, #e2e8f0)',
+            backgroundColor: 'var(--bg-card-muted, #f8fcfa)',
+            border: '1px solid var(--border-color, #e2f0e8)',
             borderRadius: '10px'
         }
-    }, React.createElement("div", { style: { fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.85rem', color: 'var(--text-color, #0f172a)', display: 'flex', alignItems: 'center', gap: '0.4rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.2rem', color: '#0284c7' } }, "alt_route"), React.createElement("span", null, isFa ? 'پیش‌نمایش مسیر گردش کار تایید تغییر وضعیت اقدام:' : 'Action Status Approval Route Preview:')), React.createElement("div", {
+    }, React.createElement("div", { style: { fontWeight: 700, fontSize: '0.88rem', marginBottom: '0.85rem', color: 'var(--text-color, #0f2a1a)', display: 'flex', alignItems: 'center', gap: '0.4rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.2rem', color: '#02c754' } }, "alt_route"), React.createElement("span", null, isFa ? 'پیش‌نمایش مسیر گردش کار تایید تغییر وضعیت اقدام:' : 'Action Status Approval Route Preview:')), React.createElement("div", {
         style: {
             display: 'flex',
             alignItems: 'center',
@@ -768,11 +768,11 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             gap: '0.4rem',
             padding: '0.45rem 0.75rem',
             backgroundColor: '#ffffff',
-            border: '1px solid #cbd5e1',
+            border: '1px solid #cbe1d4',
             borderRadius: '8px',
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
         }
-    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#475569' } }, "person"), React.createElement("span", null, isFa ? `ثبت در کارتابل: ${getUserDisplayName(respUser)}` : `Submitter: ${getUserDisplayName(respUser)}`)), React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94a3b8', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"),
+    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#476955' } }, "person"), React.createElement("span", null, isFa ? `ثبت در کارتابل: ${getUserDisplayName(respUser)}` : `Submitter: ${getUserDisplayName(respUser)}`)), React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94b8a3', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"),
     /* Step 1: Approver 1 */
     React.createElement("div", {
         style: {
@@ -780,16 +780,16 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             alignItems: 'center',
             gap: '0.4rem',
             padding: '0.45rem 0.75rem',
-            backgroundColor: '#eff6ff',
-            border: '1px solid #93c5fd',
+            backgroundColor: '#effff6',
+            border: '1px solid #93fdbf',
             borderRadius: '8px',
-            color: '#1d4ed8',
+            color: '#1dd86b',
             fontWeight: 600,
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
         }
-    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#2563eb' } }, "looks_one"), React.createElement("span", null, isFa ? `تاییدکننده ۱: ${getUserDisplayName(appr1User)}` : `Approver 1: ${getUserDisplayName(appr1User)}`)),
+    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#25eb77' } }, "looks_one"), React.createElement("span", null, isFa ? `تاییدکننده ۱: ${getUserDisplayName(appr1User)}` : `Approver 1: ${getUserDisplayName(appr1User)}`)),
     /* Step 2: Approver 2 (if present) */
-    actionData.approver2Id ? React.createElement(React.Fragment, null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94a3b8', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"), React.createElement("div", {
+    actionData.approver2Id ? React.createElement(React.Fragment, null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94b8a3', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"), React.createElement("div", {
         style: {
             display: 'inline-flex',
             alignItems: 'center',
@@ -804,7 +804,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
         }
     }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#16a34a' } }, "looks_two"), React.createElement("span", null, isFa ? `تاییدکننده ۲: ${getUserDisplayName(appr2User)}` : `Approver 2: ${getUserDisplayName(appr2User)}`))) : null,
     /* Step 3: Approver 3 (if present) */
-    actionData.approver3Id ? React.createElement(React.Fragment, null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94a3b8', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"), React.createElement("div", {
+    actionData.approver3Id ? React.createElement(React.Fragment, null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94b8a3', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"), React.createElement("div", {
         style: {
             display: 'inline-flex',
             alignItems: 'center',
@@ -817,7 +817,7 @@ export const ActionForm = ({ actionData, setActionData, users, calendars, projec
             fontWeight: 600,
             boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
         }
-    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#9333ea' } }, "looks_3"), React.createElement("span", null, isFa ? `تاییدکننده ۳: ${getUserDisplayName(appr3User)}` : `Approver 3: ${getUserDisplayName(appr3User)}`))) : null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94a3b8', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"),
+    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', color: '#9333ea' } }, "looks_3"), React.createElement("span", null, isFa ? `تاییدکننده ۳: ${getUserDisplayName(appr3User)}` : `Approver 3: ${getUserDisplayName(appr3User)}`))) : null, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#94b8a3', fontSize: '1.2rem' } }, isFa ? "arrow_back" : "arrow_forward"),
     /* Final: Approved */
     React.createElement("div", {
         style: {

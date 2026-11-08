@@ -29,7 +29,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
     {label:'اقدامات باز',value:openActions,hint:'نیازمند پیگیری',icon:'inbox',color:'orange'},
   ];
   const chart = [
-    {label:'در حال انجام',value:active,color:'#35a7bb'}, {label:'برنامه‌ریزی',value:projects.filter(p=>p.status==='Planning').length,color:'#e9b16b'},
+    {label:'در حال انجام',value:active,color:'#35bb6d'}, {label:'برنامه‌ریزی',value:projects.filter(p=>p.status==='Planning').length,color:'#e9b16b'},
     {label:'تکمیل شده',value:projects.filter(p=>p.status==='Completed').length,color:'#5fb89e'}, {label:'متوقف شده',value:projects.filter(p=>p.status==='On Hold').length,color:'#db8994'},
   ];
   useEffect(()=>{

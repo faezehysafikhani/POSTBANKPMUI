@@ -711,7 +711,7 @@ export const TaskCenterPage = ({ projects, actions, users, currentUser, progress
                     riskId: item.rawItem.riskId
                 } as any),
                 className: "action-button",
-                style: { background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', color: '#fff', border: 'none', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' },
+                style: { background: 'linear-gradient(135deg, #02c754 0%, #03a145 100%)', color: '#fff', border: 'none', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer' },
                 disabled: item.rawItem.isPending || item.rawItem.status === 'Completed'
             } as React.HTMLAttributes<HTMLButtonElement>, language === 'fa' ? 'ثبت وضعیت و ارسال به صحه‌گذاری' : 'Update & Submit for Verification')) : (React.createElement("button", {
                 onClick: () => setActionStatusUpdateModal(item.rawItem),

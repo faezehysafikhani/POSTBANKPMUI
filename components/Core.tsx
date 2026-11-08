@@ -1,32 +1,18 @@
 import React, { useContext, ReactElement, useState, useMemo, useEffect } from 'react';
-import { LocalizationContext, ThemeContext } from '../context';
+import { LocalizationContext } from '../context';
 import { User } from '../types';
 import { toPersianDigits, appLogoUrl } from '../utils';
 
 export const Header = ({ user, onLogout }: { user: User, onLogout: () => void }): ReactElement => {
   const { t } = useContext(LocalizationContext);
-  const { theme, setTheme } = useContext(ThemeContext);
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
   return React.createElement("header", null,
     React.createElement("div", { className: "header-content" },
       React.createElement("div", { className: "header-title-group" },
-        React.createElement("img", { src: appLogoUrl, alt: "Company Logo", className: "header-logo" }),
+        React.createElement("img", { src: "/post-bank-iran-logo.png", alt: "پست بانک ایران", className: "header-logo" }),
         React.createElement("h1", null, t('mainTitle'))
       ),
       React.createElement("div", { className: "user-info" },
         React.createElement("span", null, t('welcomeUser', { username: user.username })),
-        React.createElement("button", {
-          onClick: toggleTheme,
-          className: "logout-button theme-toggle-button",
-          "aria-label": theme === 'dark' ? 'حالت روشن' : 'حالت تاریک',
-          title: theme === 'dark' ? 'تغییر به حالت روشن' : 'تغییر به حالت تاریک'
-        },
-          React.createElement("span", { className: "material-symbols-outlined" }, theme === 'dark' ? "light_mode" : "dark_mode")
-        ),
         React.createElement("button", { onClick: onLogout, className: "logout-button", "aria-label": t('logout'), title: t('logout') },
           React.createElement("span", { className: "material-symbols-outlined" }, "logout")
         )

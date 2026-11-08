@@ -17,15 +17,15 @@ interface ReportsDashboardPageProps {
 }
 
 const VIBRANT_BAR_GRADIENTS = [
-  'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+  'linear-gradient(135deg, #3bf689, #1dd86b)',
   'linear-gradient(135deg, #10B981, #047857)',
   'linear-gradient(135deg, #F59E0B, #B45309)',
   'linear-gradient(135deg, #8B5CF6, #6D28D9)',
   'linear-gradient(135deg, #EC4899, #BE185D)',
-  'linear-gradient(135deg, #06B6D4, #0E7490)',
+  'linear-gradient(135deg, #06d45c, #0e9044)',
   'linear-gradient(135deg, #F97316, #C2410C)',
-  'linear-gradient(135deg, #14B8A6, #0F766E)',
-  'linear-gradient(135deg, #6366F1, #4338CA)',
+  'linear-gradient(135deg, #14B8A6, #0f763a)',
+  'linear-gradient(135deg, #63f19e, #38ca75)',
   'linear-gradient(135deg, #E11D48, #9F1239)',
   'linear-gradient(135deg, #84CC16, #4D7C0F)',
   'linear-gradient(135deg, #A855F7, #7E22CE)',
@@ -221,14 +221,14 @@ export const ReportsDashboardPage = ({
   return (
     <div className="content-container reports-hub-container" style={{ paddingBottom: '3rem' }}>
       {/* PAGE HEADER */}
-      <div className="page-header" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="page-header" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color, #e2f0e8)', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem', color: 'var(--primary-color, #2563eb)' }}>analytics</span>
+          <span className="material-symbols-outlined" style={{ fontSize: '1.5rem', color: 'var(--primary-color, #25eb77)' }}>analytics</span>
           <div>
-            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)' }}>
+            <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary, #1e3b2a)' }}>
               {language === 'fa' ? 'گزارشات پروژه‌ها و اقدامات' : 'Dashboards & Performance Reports'}
             </h2>
-            <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-muted, #64748b)' }}>
+            <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-muted, #648b74)' }}>
               {language === 'fa'
                 ? 'تحلیل جامع عملکرد واحدها، ارزیابی خروجی مدیران پروژه و ماتریس توزیع وضعیت پروژه‌ها'
                 : 'Comprehensive analysis of department performance, project managers evaluation, and project distribution matrix'}
@@ -266,13 +266,13 @@ export const ReportsDashboardPage = ({
         <div id="reports-error" style={{ padding: '0.75rem 1rem', marginBottom: '1rem', borderRadius: '8px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '0.85rem' }}>{reportError}</div>
       )}
       {reportsLoading && !reportError && (
-        <div style={{ padding: '0.5rem 0', color: 'var(--text-muted, #64748b)', fontSize: '0.85rem' }}>...</div>
+        <div style={{ padding: '0.5rem 0', color: 'var(--text-muted, #648b74)', fontSize: '0.85rem' }}>...</div>
       )}
 
       {/* TABS SELECTOR */}
       <div className="reports-tab-bar" style={{
         display: 'flex',
-        borderBottom: '1px solid var(--border-color, #e2e8f0)',
+        borderBottom: '1px solid var(--border-color, #e2f0e8)',
         marginBottom: '2rem',
         gap: '0.5rem',
         overflowX: 'auto',
@@ -289,8 +289,8 @@ export const ReportsDashboardPage = ({
             borderRadius: '10px 10px 0 0',
             border: 'none',
             borderBottom: activeTab === 'units' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
-            color: activeTab === 'units' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'units' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            color: activeTab === 'units' ? '#ffffff' : 'var(--text-muted, #648b74)',
+            boxShadow: activeTab === 'units' ? '0 4px 12px var(--shadow-color, rgba(0, 115, 48, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -313,8 +313,8 @@ export const ReportsDashboardPage = ({
             borderRadius: '10px 10px 0 0',
             border: 'none',
             borderBottom: activeTab === 'managers' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
-            color: activeTab === 'managers' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'managers' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            color: activeTab === 'managers' ? '#ffffff' : 'var(--text-muted, #648b74)',
+            boxShadow: activeTab === 'managers' ? '0 4px 12px var(--shadow-color, rgba(0, 115, 48, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -337,8 +337,8 @@ export const ReportsDashboardPage = ({
             borderRadius: '10px 10px 0 0',
             border: 'none',
             borderBottom: activeTab === 'matrix' ? '3px solid var(--primary-color-dark, rgba(0,0,0,0.2))' : '3px solid transparent',
-            color: activeTab === 'matrix' ? '#ffffff' : 'var(--text-muted, #64748b)',
-            boxShadow: activeTab === 'matrix' ? '0 4px 12px var(--shadow-color, rgba(0, 95, 115, 0.2))' : 'none',
+            color: activeTab === 'matrix' ? '#ffffff' : 'var(--text-muted, #648b74)',
+            boxShadow: activeTab === 'matrix' ? '0 4px 12px var(--shadow-color, rgba(0, 115, 48, 0.2))' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
@@ -364,65 +364,65 @@ export const ReportsDashboardPage = ({
             {/* KPI OVERVIEW CARDS */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4" style={{ marginBottom: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
               {/* Avg Performance */}
-              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px' }}>
+              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #64748b)' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #648b74)' }}>
                     {language === 'fa' ? 'میانگین عملکرد کل سازمان' : 'Org-Wide Performance'}
                   </span>
-                  <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #2563eb)' }}>equalizer</span>
+                  <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #25eb77)' }}>equalizer</span>
                 </div>
-                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e293b)' }}>
+                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e3b2a)' }}>
                   {displayPercent(orgStats.avgPerformance)}
                 </h3>
-                <div style={{ width: '100%', backgroundColor: 'var(--placeholder-bg, #f1f5f9)', height: '6px', borderRadius: '3px', marginTop: '0.5rem', overflow: 'hidden' }}>
-                  <div style={{ width: `${Math.min(100, orgStats.avgPerformance)}%`, height: '100%', backgroundColor: 'var(--primary-color, #2563eb)' }} />
+                <div style={{ width: '100%', backgroundColor: 'var(--placeholder-bg, #f1f9f4)', height: '6px', borderRadius: '3px', marginTop: '0.5rem', overflow: 'hidden' }}>
+                  <div style={{ width: `${Math.min(100, orgStats.avgPerformance)}%`, height: '100%', backgroundColor: 'var(--primary-color, #25eb77)' }} />
                 </div>
               </div>
 
               {/* Best Unit */}
-              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px' }}>
+              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #64748b)' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #648b74)' }}>
                     {language === 'fa' ? 'واحد سازمانی برتر' : 'Top Performing Unit'}
                   </span>
                   <span className="material-symbols-outlined" style={{ color: '#eab308' }}>workspace_premium</span>
                 </div>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e293b)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e3b2a)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {orgStats.topUnit}
                 </h3>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #64748b)' }}>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #648b74)' }}>
                   {language === 'fa' ? 'بیشترین میانگین درصد عملکرد تحقق‌یافته' : 'Highest average completed performance'}
                 </p>
               </div>
 
               {/* Active Projects */}
-              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px' }}>
+              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #64748b)' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #648b74)' }}>
                     {language === 'fa' ? 'پروژه‌های فعال در حال اجرا' : 'Active Projects'}
                   </span>
                   <span className="material-symbols-outlined" style={{ color: 'var(--success-color, #22c55e)' }}>autorenew</span>
                 </div>
-                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e293b)' }}>
+                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: 'var(--text-primary, #1e3b2a)' }}>
                   {displayNum(orgStats.inProgress)}
                 </h3>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #64748b)' }}>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #648b74)' }}>
                   {language === 'fa' ? 'پروژه‌های تایید شده با وضعیت در جریان' : 'Approved projects currently in progress'}
                 </p>
               </div>
 
               {/* Delayed Projects */}
-              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px' }}>
+              <div className="card shadow-sm" style={{ padding: '1.25rem', background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #64748b)' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted, #648b74)' }}>
                     {language === 'fa' ? 'پروژه‌های دارای تاخیر' : 'Delayed Projects'}
                   </span>
                   <span className="material-symbols-outlined" style={{ color: 'var(--warning-color, #ef4444)' }}>error_outline</span>
                 </div>
-                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: orgStats.delayed > 0 ? 'var(--warning-color, #ef4444)' : 'var(--text-primary, #1e293b)' }}>
+                <h3 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0, color: orgStats.delayed > 0 ? 'var(--warning-color, #ef4444)' : 'var(--text-primary, #1e3b2a)' }}>
                   {displayNum(orgStats.delayed)}
                 </h3>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #64748b)' }}>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-muted, #648b74)' }}>
                   {language === 'fa' ? 'پیشرفت واقعی عقب‌تر از برنامه زمان‌بندی' : 'Actual progress behind plan by >5%'}
                 </p>
               </div>
@@ -431,13 +431,13 @@ export const ReportsDashboardPage = ({
             {/* PERFORMANCE ANALYSIS GRID */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem', marginBottom: '2rem' }}>
               {/* TABLE */}
-              <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem', overflow: 'hidden' }}>
+              <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)' }}>
                       {language === 'fa' ? 'گزارش ارزیابی عملکرد واحدهای سازمانی' : 'Organizational Units Performance Evaluation'}
                     </h3>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #25eb77)', background: 'var(--secondary-color, #effff6)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
                       {language === 'fa' ? 'تجمیع براساس واحدهای سازمانی' : 'Aggregated by Owning Units'}
                     </span>
                   </div>
@@ -463,7 +463,7 @@ export const ReportsDashboardPage = ({
                 <div style={{ overflowX: 'auto' }}>
                   <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'fa' ? 'right' : 'left' }}>
                     <thead>
-                      <tr style={{ borderBottom: '2px solid var(--border-color, #e2e8f0)', color: 'var(--text-muted, #64748b)' }}>
+                      <tr style={{ borderBottom: '2px solid var(--border-color, #e2f0e8)', color: 'var(--text-muted, #648b74)' }}>
                         <th style={{ padding: '1rem' }}>{language === 'fa' ? 'نام واحد سازمانی' : 'Unit Name'}</th>
                         <th style={{ padding: '1rem', textAlign: 'center' }}>{language === 'fa' ? 'تعداد پروژه' : 'Projects Count'}</th>
                         <th style={{ padding: '1rem', textAlign: 'center' }}>{language === 'fa' ? 'میانگین پیشرفت برنامه‌ای' : 'Avg Planned'}</th>
@@ -483,8 +483,8 @@ export const ReportsDashboardPage = ({
                           : (item.rating === 'Good' ? (language === 'fa' ? 'قابل قبول' : 'Good') : (language === 'fa' ? 'نیازمند بهبود' : 'Needs Support'));
 
                         return (
-                          <tr key={index} style={{ borderBottom: '1px solid var(--border-color, #e2e8f0)', transition: 'background-color 0.15s' }} className="hover:bg-slate-50">
-                            <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)' }}>{item.unit}</td>
+                          <tr key={index} style={{ borderBottom: '1px solid var(--border-color, #e2f0e8)', transition: 'background-color 0.15s' }} className="hover:bg-slate-50">
+                            <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary, #1e3b2a)' }}>{item.unit}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayNum(item.projectsCount)}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayPercent(item.avgPlanned)}</td>
                             <td style={{ padding: '1rem', textAlign: 'center' }}>{displayPercent(item.avgActual)}</td>
@@ -492,14 +492,14 @@ export const ReportsDashboardPage = ({
                               padding: '1rem',
                               textAlign: 'center',
                               direction: 'ltr',
-                              color: isNeg ? 'var(--warning-color, #ef4444)' : (isPos ? 'var(--success-color, #22c55e)' : 'var(--text-muted, #64748b)'),
+                              color: isNeg ? 'var(--warning-color, #ef4444)' : (isPos ? 'var(--success-color, #22c55e)' : 'var(--text-muted, #648b74)'),
                               fontWeight: 600
                             }}>
                               {item.variance === 0 ? displayPercent(0) : (isPos ? '+' : '') + displayPercent(item.variance)}
                             </td>
                             <td style={{ padding: '1rem' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f5f9)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f9f4)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                                   <div style={{
                                     width: `${Math.min(100, item.avgPerformance)}%`,
                                     height: '100%',
@@ -521,7 +521,7 @@ export const ReportsDashboardPage = ({
                       })}
                       {unitPerformanceData.length === 0 && (
                         <tr>
-                          <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted, #64748b)' }}>
+                          <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted, #648b74)' }}>
                             {language === 'fa' ? 'هیچ پروژه فعالی برای ارزیابی واحدها وجود ندارد.' : 'No approved projects available for unit evaluation.'}
                           </td>
                         </tr>
@@ -533,8 +533,8 @@ export const ReportsDashboardPage = ({
 
               {/* VISUAL CHART */}
               {unitPerformanceData.length > 0 && (
-                <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem' }}>
-                  <h3 style={{ margin: '0 0 1.25rem 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
+                <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem' }}>
+                  <h3 style={{ margin: '0 0 1.25rem 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)' }}>
                     {language === 'fa' ? 'نمودار مقایسه‌ای شاخص عملکرد واحدها' : 'Comparison of Department Performance Scores'}
                   </h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginTop: '1rem' }}>
@@ -542,8 +542,8 @@ export const ReportsDashboardPage = ({
                       const barGradient = VIBRANT_BAR_GRADIENTS[idx % VIBRANT_BAR_GRADIENTS.length];
                       return (
                         <div key={idx} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem' }}>
-                          <div style={{ width: '160px', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary, #1e293b)' }}>{item.unit}</div>
-                          <div style={{ flex: 1, minWidth: '200px', background: 'var(--placeholder-bg, #f1f5f9)', height: '26px', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
+                          <div style={{ width: '160px', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary, #1e3b2a)' }}>{item.unit}</div>
+                          <div style={{ flex: 1, minWidth: '200px', background: 'var(--placeholder-bg, #f1f9f4)', height: '26px', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
                             <div style={{
                               width: `${Math.min(100, item.avgPerformance)}%`,
                               height: '100%',
@@ -560,13 +560,13 @@ export const ReportsDashboardPage = ({
                               transform: 'translateY(-50%)',
                               fontSize: '0.8rem',
                               fontWeight: 700,
-                              color: item.avgPerformance > 35 ? '#ffffff' : 'var(--text-primary, #1e293b)',
+                              color: item.avgPerformance > 35 ? '#ffffff' : 'var(--text-primary, #1e3b2a)',
                               textShadow: item.avgPerformance > 35 ? '0 1px 2px rgba(0,0,0,0.4)' : 'none'
                             }}>
                               {displayPercent(item.avgPerformance)}
                             </span>
                           </div>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted, #64748b)', width: '90px', textAlign: 'center', fontWeight: 600 }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted, #648b74)', width: '90px', textAlign: 'center', fontWeight: 600 }}>
                             {displayNum(item.projectsCount)} {language === 'fa' ? 'پروژه' : 'projects'}
                           </div>
                         </div>
@@ -589,8 +589,8 @@ export const ReportsDashboardPage = ({
           >
             {/* MANAGER LEADERBOARD PODIUM */}
             {managerPerformanceData.length >= 1 && (
-              <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
-                <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)', textAlign: 'center' }}>
+              <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+                <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)', textAlign: 'center' }}>
                   {language === 'fa' ? 'برترین مدیران پروژه بر اساس شاخص تحقق اهداف زمانی' : 'Top Project Managers by Schedule Performance Index'}
                 </h3>
 
@@ -599,14 +599,14 @@ export const ReportsDashboardPage = ({
                   {managerPerformanceData[1] && (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <div style={{ position: 'relative' }}>
-                        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'var(--podium-silver-border, #cbd5e1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--podium-silver-text, #1e293b)', fontSize: '1.25rem', border: '3px solid var(--podium-silver-bg, #e2e8f0)' }}>
+                        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'var(--podium-silver-border, #cbe1d4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--podium-silver-text, #1e3b2a)', fontSize: '1.25rem', border: '3px solid var(--podium-silver-bg, #e2f0e8)' }}>
                           🥈
                         </div>
                       </div>
-                      <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[1].managerName}</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[1].avgPerformance)}</span>
-                      <div style={{ width: '100px', height: '70px', backgroundColor: 'var(--podium-silver-bg, #e2e8f0)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-silver-border, #cbd5e1)', boxShadow: '0 -2px 10px rgba(0,0,0,0.03)' }}>
-                        <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--podium-silver-text, #64748b)' }}>۲</span>
+                      <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e3b2a)' }}>{managerPerformanceData[1].managerName}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #25eb77)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[1].avgPerformance)}</span>
+                      <div style={{ width: '100px', height: '70px', backgroundColor: 'var(--podium-silver-bg, #e2f0e8)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-silver-border, #cbe1d4)', boxShadow: '0 -2px 10px rgba(0,0,0,0.03)' }}>
+                        <span style={{ fontWeight: 800, fontSize: '1.25rem', color: 'var(--podium-silver-text, #648b74)' }}>۲</span>
                       </div>
                     </div>
                   )}
@@ -620,8 +620,8 @@ export const ReportsDashboardPage = ({
                         </div>
                         <span className="material-symbols-outlined" style={{ position: 'absolute', top: '-18px', left: '22px', color: '#eab308', fontSize: '1.5rem' }}>workspace_premium</span>
                       </div>
-                      <span style={{ fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[0].managerName}</span>
-                      <span style={{ fontSize: '0.9rem', color: 'var(--primary-color, #2563eb)', fontWeight: 800 }}>{displayPercent(managerPerformanceData[0].avgPerformance)}</span>
+                      <span style={{ fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e3b2a)' }}>{managerPerformanceData[0].managerName}</span>
+                      <span style={{ fontSize: '0.9rem', color: 'var(--primary-color, #25eb77)', fontWeight: 800 }}>{displayPercent(managerPerformanceData[0].avgPerformance)}</span>
                       <div style={{ width: '110px', height: '100px', backgroundColor: 'var(--podium-gold-bg, #fef9c3)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-gold-border, #fde047)', boxShadow: '0 -4px 15px rgba(234, 179, 8, 0.08)' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--podium-gold-text, #854d0e)' }}>۱</span>
                       </div>
@@ -636,8 +636,8 @@ export const ReportsDashboardPage = ({
                           🥉
                         </div>
                       </div>
-                      <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e293b)' }}>{managerPerformanceData[2].managerName}</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[2].avgPerformance)}</span>
+                      <span style={{ fontWeight: 700, fontSize: '0.9rem', marginTop: '0.5rem', color: 'var(--text-primary, #1e3b2a)' }}>{managerPerformanceData[2].managerName}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #25eb77)', fontWeight: 700 }}>{displayPercent(managerPerformanceData[2].avgPerformance)}</span>
                       <div style={{ width: '100px', height: '50px', backgroundColor: 'var(--podium-bronze-bg, #ffedd5)', borderRadius: '6px 6px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '0.5rem', border: '1px solid var(--podium-bronze-border, #fed7aa)', boxShadow: '0 -2px 10px rgba(0,0,0,0.03)' }}>
                         <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--podium-bronze-text, #9a3412)' }}>۳</span>
                       </div>
@@ -648,9 +648,9 @@ export const ReportsDashboardPage = ({
             )}
 
             {/* MAIN PERFORMANCE LIST / TABLE */}
-            <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+            <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
+                <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)' }}>
                   {language === 'fa' ? 'گزارش تفصیلی عملکرد مدیران پروژه' : 'Detailed Project Managers Performance Table'}
                 </h3>
                 <button
@@ -672,14 +672,14 @@ export const ReportsDashboardPage = ({
                   <span className="material-symbols-outlined" style={{ fontSize: '1.15rem', color: '#fff' }}>picture_as_pdf</span>
                 </button>
               </div>
-              <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.85rem', color: 'var(--text-muted, #64748b)' }}>
+              <p style={{ margin: '0 0 1.25rem 0', fontSize: '0.85rem', color: 'var(--text-muted, #648b74)' }}>
                 {language === 'fa' ? 'جهت مشاهده جزئیات پروژه‌های تحت مدیریت هر مدیر، بر روی نام وی کلیک کنید.' : 'Click on any manager to inspect all their managed projects.'}
               </p>
 
               <div style={{ overflowX: 'auto' }}>
                 <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'fa' ? 'right' : 'left' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid var(--border-color, #e2e8f0)', color: 'var(--text-muted, #64748b)' }}>
+                    <tr style={{ borderBottom: '2px solid var(--border-color, #e2f0e8)', color: 'var(--text-muted, #648b74)' }}>
                       <th style={{ padding: '1rem' }}>{language === 'fa' ? 'مدیر پروژه' : 'Project Manager'}</th>
                       <th style={{ padding: '1rem', textAlign: 'center' }}>{language === 'fa' ? 'تعداد پروژه‌ها' : 'Total Projects'}</th>
                       <th style={{ padding: '1rem', textAlign: 'center' }}>{language === 'fa' ? 'پروژه‌های تکمیل‌شده' : 'Completed'}</th>
@@ -702,19 +702,19 @@ export const ReportsDashboardPage = ({
                           key={idx}
                           onClick={() => setSelectedManagerId(isSelected ? null : item.managerId)}
                           style={{
-                            borderBottom: '1px solid var(--border-color, #e2e8f0)',
+                            borderBottom: '1px solid var(--border-color, #e2f0e8)',
                             cursor: 'pointer',
-                            backgroundColor: isSelected ? 'var(--secondary-bg, #f8fafc)' : 'transparent',
+                            backgroundColor: isSelected ? 'var(--secondary-bg, #f8fcfa)' : 'transparent',
                             fontWeight: isSelected ? 600 : 'normal',
                             transition: 'all 0.2s'
                           }}
                           className="hover:bg-slate-50"
                         >
                           <td style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <span className="material-symbols-outlined" style={{ fontSize: '1.25rem', color: isSelected ? 'var(--primary-color, #2563eb)' : '#94a3b8' }}>
+                            <span className="material-symbols-outlined" style={{ fontSize: '1.25rem', color: isSelected ? 'var(--primary-color, #25eb77)' : '#94b8a3' }}>
                               {isSelected ? 'expand_circle_down' : 'chevron_right'}
                             </span>
-                            <span style={{ color: 'var(--text-primary, #1e293b)', fontWeight: 600 }}>{item.managerName}</span>
+                            <span style={{ color: 'var(--text-primary, #1e3b2a)', fontWeight: 600 }}>{item.managerName}</span>
                           </td>
                           <td style={{ padding: '1rem', textAlign: 'center' }}>{displayNum(item.projectsCount)}</td>
                           <td style={{ padding: '1rem', textAlign: 'center', color: 'var(--success-color, #22c55e)' }}>{displayNum(item.completedCount)}</td>
@@ -722,7 +722,7 @@ export const ReportsDashboardPage = ({
                           <td style={{ padding: '1rem', textAlign: 'center' }}>{displayPercent(item.avgActual)}</td>
                           <td style={{ padding: '1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f5f9)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                              <div style={{ flex: 1, backgroundColor: 'var(--border-color, #f1f9f4)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                                 <div style={{
                                   width: `${Math.min(100, item.avgPerformance)}%`,
                                   height: '100%',
@@ -744,7 +744,7 @@ export const ReportsDashboardPage = ({
                     })}
                     {managerPerformanceData.length === 0 && (
                       <tr>
-                        <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted, #64748b)' }}>
+                        <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted, #648b74)' }}>
                           {language === 'fa' ? 'هیچ پروژه فعالی با مدیر پروژه تعریف شده وجود ندارد.' : 'No active projects with defined project managers.'}
                         </td>
                       </tr>
@@ -764,16 +764,16 @@ export const ReportsDashboardPage = ({
                   transition={{ duration: 0.3 }}
                   style={{ overflow: 'hidden', marginBottom: '2rem' }}
                 >
-                  <div style={{ background: 'var(--body-bg-color, #f8fafc)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem' }}>
+                  <div style={{ background: 'var(--body-bg-color, #f8fcfa)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                      <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
+                      <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)' }}>
                         {language === 'fa'
                           ? `لیست پروژه‌های تحت مدیریت: ${getManagerName(selectedManagerId)}`
                           : `Projects Supervised by: ${getManagerName(selectedManagerId)}`}
                       </h4>
                       <button
                         onClick={() => setSelectedManagerId(null)}
-                        style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-muted, #64748b)' }}
+                        style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-muted, #648b74)' }}
                       >
                         <span className="material-symbols-outlined">close</span>
                       </button>
@@ -782,7 +782,7 @@ export const ReportsDashboardPage = ({
                     <div style={{ overflowX: 'auto' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'fa' ? 'right' : 'left' }}>
                         <thead>
-                          <tr style={{ borderBottom: '1.5px solid var(--border-color, #cbd5e1)', color: 'var(--text-muted, #475569)', fontSize: '0.85rem', fontWeight: 600 }}>
+                          <tr style={{ borderBottom: '1.5px solid var(--border-color, #cbe1d4)', color: 'var(--text-muted, #476955)', fontSize: '0.85rem', fontWeight: 600 }}>
                             <th style={{ padding: '0.75rem' }}>{language === 'fa' ? 'نام پروژه' : 'Project Name'}</th>
                             <th style={{ padding: '0.75rem' }}>{language === 'fa' ? 'واحد مالک' : 'Owning Unit'}</th>
                             <th style={{ padding: '0.75rem', textAlign: 'center' }}>{language === 'fa' ? 'نوع پروژه' : 'Project Type'}</th>
@@ -799,9 +799,9 @@ export const ReportsDashboardPage = ({
                             const hasDelay = delayVal < -5;
 
                             return (
-                              <tr key={idx} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '0.9rem' }}>
-                                <td style={{ padding: '0.75rem', fontWeight: 600, color: '#1e293b' }}>{p.name}</td>
-                                <td style={{ padding: '0.75rem', color: '#475569' }}>{p.owningUnit}</td>
+                              <tr key={idx} style={{ borderBottom: '1px solid #e2f0e8', fontSize: '0.9rem' }}>
+                                <td style={{ padding: '0.75rem', fontWeight: 600, color: '#1e3b2a' }}>{p.name}</td>
+                                <td style={{ padding: '0.75rem', color: '#476955' }}>{p.owningUnit}</td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                                   {p.type === 'waterfall' ? (language === 'fa' ? 'آبشاری' : 'Waterfall') : (language === 'fa' ? 'چابک' : 'Agile')}
                                 </td>
@@ -811,7 +811,7 @@ export const ReportsDashboardPage = ({
                                   padding: '0.75rem',
                                   textAlign: 'center',
                                   direction: 'ltr',
-                                  color: hasDelay ? '#ef4444' : (delayVal > 0 ? '#22c55e' : '#475569'),
+                                  color: hasDelay ? '#ef4444' : (delayVal > 0 ? '#22c55e' : '#476955'),
                                   fontWeight: 600
                                 }}>
                                   {delayVal === 0 ? displayPercent(0) : (delayVal > 0 ? '+' : '') + displayPercent(delayVal)}
@@ -863,13 +863,13 @@ export const ReportsDashboardPage = ({
             </div>
 
             {/* THE MATRIX TABLE CONTAINER */}
-            <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+            <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)' }}>
                     {language === 'fa' ? 'ماتریس توزیع پروژه‌ها: واحد سازمانی / وضعیت' : 'Project Distribution Matrix: Owning Unit vs. Status'}
                   </h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #2563eb)', background: 'var(--secondary-color, #eff6ff)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--primary-color, #25eb77)', background: 'var(--secondary-color, #effff6)', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600 }}>
                     {language === 'fa' ? 'محاسبه براساس واحد سازمانی' : 'Aggregated by Owning Unit'}
                   </span>
                 </div>
@@ -896,7 +896,7 @@ export const ReportsDashboardPage = ({
               <div style={{ overflowX: 'auto' }}>
                 <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid var(--border-color, #e2e8f0)', color: 'var(--text-muted, #64748b)' }}>
+                    <tr style={{ borderBottom: '2px solid var(--border-color, #e2f0e8)', color: 'var(--text-muted, #648b74)' }}>
                       <th style={{ padding: '1rem', textAlign: language === 'fa' ? 'right' : 'left' }}>
                         {language === 'fa' ? 'واحد سازمانی / وضعیت' : 'Owning Unit / Status'}
                       </th>
@@ -905,7 +905,7 @@ export const ReportsDashboardPage = ({
                           {getStatusText(status)}
                         </th>
                       ))}
-                      <th style={{ padding: '1rem', backgroundColor: 'var(--placeholder-bg, #f8fafc)', fontWeight: 800 }}>
+                      <th style={{ padding: '1rem', backgroundColor: 'var(--placeholder-bg, #f8fcfa)', fontWeight: 800 }}>
                         {language === 'fa' ? 'جمع کل واحد' : 'Unit Total'}
                       </th>
                     </tr>
@@ -914,8 +914,8 @@ export const ReportsDashboardPage = ({
                     {matrixData.distinctUnits.map((unit) => {
                       const rowTotal = matrixData.unitTotals[unit] || 0;
                       return (
-                        <tr key={unit} style={{ borderBottom: '1px solid var(--border-color, #e2e8f0)' }} className="hover:bg-slate-50">
-                          <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)', textAlign: language === 'fa' ? 'right' : 'left' }}>
+                        <tr key={unit} style={{ borderBottom: '1px solid var(--border-color, #e2f0e8)' }} className="hover:bg-slate-50">
+                          <td style={{ padding: '1rem', fontWeight: 600, color: 'var(--text-primary, #1e3b2a)', textAlign: language === 'fa' ? 'right' : 'left' }}>
                             {unit}
                           </td>
                           {matrixData.statuses.map((status) => {
@@ -930,11 +930,11 @@ export const ReportsDashboardPage = ({
                                   padding: '1rem',
                                   cursor: 'pointer',
                                   backgroundColor: isCellSelected
-                                    ? 'var(--secondary-color, #dbeafe)'
+                                    ? 'var(--secondary-color, #dbfeea)'
                                     : (count > 0 ? 'var(--status-in-progress-bg, #f0fdf4)' : 'transparent'),
                                   color: isCellSelected
-                                    ? 'var(--primary-color, #1e40af)'
-                                    : (count > 0 ? 'var(--status-in-progress-text, #166534)' : 'var(--text-muted, #64748b)'),
+                                    ? 'var(--primary-color, #1eaf5a)'
+                                    : (count > 0 ? 'var(--status-in-progress-text, #166534)' : 'var(--text-muted, #648b74)'),
                                   fontWeight: count > 0 || isCellSelected ? 700 : 'normal',
                                   transition: 'all 0.15s'
                                 }}
@@ -948,8 +948,8 @@ export const ReportsDashboardPage = ({
                             onClick={() => setSelectedCell({ unit, status: null })}
                             style={{
                               padding: '1rem',
-                              backgroundColor: selectedCell.unit === unit && selectedCell.status === null ? 'var(--secondary-color, #dbeafe)' : 'var(--placeholder-bg, #f8fafc)',
-                              color: selectedCell.unit === unit && selectedCell.status === null ? 'var(--primary-color, #1e40af)' : 'var(--text-color, #1e293b)',
+                              backgroundColor: selectedCell.unit === unit && selectedCell.status === null ? 'var(--secondary-color, #dbfeea)' : 'var(--placeholder-bg, #f8fcfa)',
+                              color: selectedCell.unit === unit && selectedCell.status === null ? 'var(--primary-color, #1eaf5a)' : 'var(--text-color, #1e3b2a)',
                               fontWeight: 800,
                               cursor: 'pointer',
                               transition: 'all 0.15s'
@@ -962,7 +962,7 @@ export const ReportsDashboardPage = ({
                     })}
 
                     {/* COLUMNS TOTAL ROW */}
-                    <tr style={{ backgroundColor: 'var(--placeholder-bg, #f8fafc)', fontWeight: 800 }}>
+                    <tr style={{ backgroundColor: 'var(--placeholder-bg, #f8fcfa)', fontWeight: 800 }}>
                       <td style={{ padding: '1rem', textAlign: language === 'fa' ? 'right' : 'left' }}>
                         {language === 'fa' ? 'جمع کل وضعیت' : 'Status Total'}
                       </td>
@@ -977,8 +977,8 @@ export const ReportsDashboardPage = ({
                             style={{
                               padding: '1rem',
                               cursor: 'pointer',
-                              backgroundColor: isColSelected ? 'var(--secondary-color, #dbeafe)' : 'transparent',
-                              color: isColSelected ? 'var(--primary-color, #1e40af)' : 'inherit',
+                              backgroundColor: isColSelected ? 'var(--secondary-color, #dbfeea)' : 'transparent',
+                              color: isColSelected ? 'var(--primary-color, #1eaf5a)' : 'inherit',
                               transition: 'all 0.15s'
                             }}
                           >
@@ -990,8 +990,8 @@ export const ReportsDashboardPage = ({
                         onClick={() => setSelectedCell({ unit: null, status: null })}
                         style={{
                           padding: '1rem',
-                          backgroundColor: selectedCell.unit === null && selectedCell.status === null ? 'var(--secondary-color, #bfdbfe)' : 'var(--placeholder-bg, #f1f5f9)',
-                          color: selectedCell.unit === null && selectedCell.status === null ? 'var(--primary-color, #1e40af)' : 'var(--text-color, #0f172a)',
+                          backgroundColor: selectedCell.unit === null && selectedCell.status === null ? 'var(--secondary-color, #bffed9)' : 'var(--placeholder-bg, #f1f9f4)',
+                          color: selectedCell.unit === null && selectedCell.status === null ? 'var(--primary-color, #1eaf5a)' : 'var(--text-color, #0f2a1a)',
                           fontWeight: 900,
                           cursor: 'pointer',
                           transition: 'all 0.15s'
@@ -1016,18 +1016,18 @@ export const ReportsDashboardPage = ({
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2e8f0)', borderRadius: '12px', padding: '1.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '0.75rem' }}>
-                      <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e293b)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #2563eb)' }}>format_list_bulleted</span>
+                  <div className="card shadow-sm" style={{ background: 'var(--card-bg-color, #ffffff)', border: '1px solid var(--border-color, #e2f0e8)', borderRadius: '12px', padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color, #e2f0e8)', paddingBottom: '0.75rem' }}>
+                      <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary, #1e3b2a)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span className="material-symbols-outlined" style={{ color: 'var(--primary-color, #25eb77)' }}>format_list_bulleted</span>
                         {language === 'fa' ? 'لیست پروژه‌های فیلتر شده بر اساس ماتریس انتخاب شده' : 'Filtered Projects List from Selection'}
-                        <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted, #64748b)', background: 'var(--placeholder-bg, #f1f5f9)', padding: '0.1rem 0.6rem', borderRadius: '4px', margin: `0 ${language === 'fa' ? '0.75rem' : '0'} 0 ${language === 'fa' ? '0' : '0.75rem'}` }}>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-muted, #648b74)', background: 'var(--placeholder-bg, #f1f9f4)', padding: '0.1rem 0.6rem', borderRadius: '4px', margin: `0 ${language === 'fa' ? '0.75rem' : '0'} 0 ${language === 'fa' ? '0' : '0.75rem'}` }}>
                           {selectedCell.unit ? selectedCell.unit : (language === 'fa' ? 'همه واحدها' : 'All Units')}
                           {' / '}
                           {selectedCell.status ? getStatusText(selectedCell.status) : (language === 'fa' ? 'همه وضعیت‌ها' : 'All Statuses')}
                         </span>
                       </h4>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted, #64748b)' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted, #648b74)' }}>
                         {displayNum(matrixSelectedProjects.length)} {language === 'fa' ? 'پروژه یافت شد' : 'projects found'}
                       </span>
                     </div>
@@ -1035,7 +1035,7 @@ export const ReportsDashboardPage = ({
                     <div style={{ overflowX: 'auto' }}>
                       <table className="pms-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: language === 'fa' ? 'right' : 'left' }}>
                         <thead>
-                          <tr style={{ borderBottom: '1.5px solid var(--border-color, #cbd5e1)', color: 'var(--text-muted, #64748b)' }}>
+                          <tr style={{ borderBottom: '1.5px solid var(--border-color, #cbe1d4)', color: 'var(--text-muted, #648b74)' }}>
                             <th style={{ padding: '0.75rem' }}>{language === 'fa' ? 'نام پروژه' : 'Project Name'}</th>
                             <th style={{ padding: '0.75rem' }}>{language === 'fa' ? 'واحد سازمانی' : 'Owning Unit'}</th>
                             <th style={{ padding: '0.75rem' }}>{language === 'fa' ? 'مدیر پروژه' : 'Project Manager'}</th>
@@ -1053,8 +1053,8 @@ export const ReportsDashboardPage = ({
                             const hasDelay = delayVal < -5;
 
                             return (
-                              <tr key={idx} style={{ borderBottom: '1px solid var(--border-color, #e2e8f0)', transition: 'background-color 0.1s' }} className="hover:bg-slate-50">
-                                <td style={{ padding: '0.75rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)' }}>{p.name}</td>
+                              <tr key={idx} style={{ borderBottom: '1px solid var(--border-color, #e2f0e8)', transition: 'background-color 0.1s' }} className="hover:bg-slate-50">
+                                <td style={{ padding: '0.75rem', fontWeight: 600, color: 'var(--text-primary, #1e3b2a)' }}>{p.name}</td>
                                 <td style={{ padding: '0.75rem' }} title={p.owningUnit}>{getUnitLevel2(p.owningUnit) || p.owningUnit}</td>
                                 <td style={{ padding: '0.75rem' }}>{getManagerName(p.projectManagerId)}</td>
                                 <td style={{ padding: '0.75rem', textAlign: 'center' }}>
@@ -1091,7 +1091,7 @@ export const ReportsDashboardPage = ({
                           })}
                           {matrixSelectedProjects.length === 0 && (
                             <tr>
-                              <td colSpan={9} style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-muted, #64748b)' }}>
+                              <td colSpan={9} style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-muted, #648b74)' }}>
                                 {language === 'fa' ? 'هیچ پروژه‌ای مطابق فیلتر ماتریس انتخاب شده یافت نشد.' : 'No projects correspond to the selected matrix coordinates.'}
                               </td>
                             </tr>

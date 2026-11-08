@@ -52,14 +52,14 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
     }
   };
 
-  const entityDefinitions: { 
-    id: WorkflowEntityType; 
+  const entityDefinitions: {
+    id: WorkflowEntityType;
     tabKey: string;
-    titleFa: string; 
-    titleEn: string; 
-    icon: string; 
-    descFa: string; 
-    descEn: string 
+    titleFa: string;
+    titleEn: string;
+    icon: string;
+    descFa: string;
+    descEn: string
   }[] = [
     {
       id: 'charter',
@@ -148,8 +148,8 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
   const activeDef = entityDefinitions.find(e => e.id === activeEntityType) || entityDefinitions[0];
 
   // Project-specific workflow state for active entity
-  const isCustomWorkflowActive = projectContext?.tabWorkflows 
-    ? projectContext.tabWorkflows[activeDef.tabKey] === false 
+  const isCustomWorkflowActive = projectContext?.tabWorkflows
+    ? projectContext.tabWorkflows[activeDef.tabKey] === false
     : false;
 
   const handleStageTitleChange = (stageIndex: number, newTitle: string) => {
@@ -240,7 +240,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
           display: 'flex',
           flexWrap: 'wrap',
           gap: '0.5rem',
-          borderBottom: '1px solid var(--border-color, #e2e8f0)',
+          borderBottom: '1px solid var(--border-color, #e2f0e8)',
           paddingBottom: '0.85rem'
         }}>
           {entityDefinitions.map((entity) => {
@@ -261,22 +261,22 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                   borderRadius: '8px',
                   fontSize: '0.82rem',
                   fontWeight: isActive ? 700 : 500,
-                  border: isActive 
-                    ? (isEntityCustom ? (isDark ? '2px solid #a78bfa' : '2px solid #7c3aed') : (isDark ? '2px solid #34d399' : '2px solid #059669')) 
-                    : (isEntityCustom ? (isDark ? '1px solid #7c3aed' : '1px solid #c4b5fd') : (isDark ? '1px solid #334155' : '1px solid var(--border-color, #e2e8f0)')),
-                  backgroundColor: isActive 
-                    ? (isEntityCustom ? (isDark ? 'rgba(124, 58, 237, 0.25)' : 'rgba(124, 58, 237, 0.12)') : (isDark ? 'rgba(5, 150, 105, 0.25)' : 'rgba(5, 150, 105, 0.12)')) 
+                  border: isActive
+                    ? (isEntityCustom ? (isDark ? '2px solid #a78bfa' : '2px solid #7c3aed') : (isDark ? '2px solid #34d399' : '2px solid #059669'))
+                    : (isEntityCustom ? (isDark ? '1px solid #7c3aed' : '1px solid #c4b5fd') : (isDark ? '1px solid #335541' : '1px solid var(--border-color, #e2f0e8)')),
+                  backgroundColor: isActive
+                    ? (isEntityCustom ? (isDark ? 'rgba(124, 58, 237, 0.25)' : 'rgba(124, 58, 237, 0.12)') : (isDark ? 'rgba(5, 150, 105, 0.25)' : 'rgba(5, 150, 105, 0.12)'))
                     : (isEntityCustom ? (isDark ? 'rgba(124, 58, 237, 0.1)' : 'rgba(124, 58, 237, 0.04)') : (isDark ? 'rgba(255,255,255,0.03)' : '#ffffff')),
-                  color: isActive 
-                    ? (isEntityCustom ? (isDark ? '#c4b5fd' : '#6d28d9') : (isDark ? '#6ee7b7' : '#059669')) 
-                    : (isDark ? '#e2e8f0' : 'var(--text-color, #334155)'),
+                  color: isActive
+                    ? (isEntityCustom ? (isDark ? '#c4b5fd' : '#6d28d9') : (isDark ? '#6ee7b7' : '#059669'))
+                    : (isDark ? '#e2f0e8' : 'var(--text-color, #335541)'),
                   cursor: 'pointer',
                   transition: 'all 0.15s ease'
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '1.15rem' }}>{entity.icon}</span>
                 <span>{isFa ? entity.titleFa : entity.titleEn}</span>
-                
+
                 {/* Custom Workflow Badge if in project context */}
                 {projectContext?.tabWorkflows && (
                   <span style={{
@@ -284,8 +284,8 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                     padding: '0.1rem 0.4rem',
                     borderRadius: '6px',
                     fontWeight: 600,
-                    backgroundColor: isEntityCustom ? '#7c3aed' : (isDark ? '#334155' : '#e2e8f0'),
-                    color: isEntityCustom ? '#ffffff' : (isDark ? '#cbd5e1' : '#64748b')
+                    backgroundColor: isEntityCustom ? '#7c3aed' : (isDark ? '#335541' : '#e2f0e8'),
+                    color: isEntityCustom ? '#ffffff' : (isDark ? '#cbe1d4' : '#648b74')
                   }}>
                     {isEntityCustom ? (isFa ? 'منحصربفرد' : 'Custom') : (isFa ? 'عمومی' : 'Global')}
                   </span>
@@ -296,10 +296,10 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                   fontSize: '0.68rem',
                   padding: '0.1rem 0.4rem',
                   borderRadius: '10px',
-                  backgroundColor: isActive 
-                    ? (isEntityCustom ? '#7c3aed' : '#059669') 
-                    : (isDark ? '#334155' : 'var(--border-color, #cbd5e1)'),
-                  color: isActive ? '#ffffff' : (isDark ? '#cbd5e1' : 'var(--text-color, #475569)')
+                  backgroundColor: isActive
+                    ? (isEntityCustom ? '#7c3aed' : '#059669')
+                    : (isDark ? '#335541' : 'var(--border-color, #cbe1d4)'),
+                  color: isActive ? '#ffffff' : (isDark ? '#cbe1d4' : 'var(--text-color, #476955)')
                 }}>
                   {isFa ? `${toPersianDigits(stageCount)} مرحله` : `${stageCount} stage${stageCount > 1 ? 's' : ''}`}
                 </span>
@@ -313,11 +313,11 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
       {showHeaderBanner && (
         <div style={{
           padding: '0.85rem 1.1rem',
-          backgroundColor: isCustomWorkflowActive 
-            ? (isDark ? 'rgba(124, 58, 237, 0.18)' : '#f5f3ff')
+          backgroundColor: isCustomWorkflowActive
+            ? (isDark ? 'rgba(124, 58, 237, 0.18)' : '#f3fff8')
             : (isDark ? 'rgba(5, 150, 105, 0.14)' : '#f0fdf4'),
-          border: isCustomWorkflowActive 
-            ? (isDark ? '1px solid rgba(167, 139, 250, 0.35)' : '1px solid #ddd6fe') 
+          border: isCustomWorkflowActive
+            ? (isDark ? '1px solid rgba(167, 139, 250, 0.35)' : '1px solid #ddd6fe')
             : (isDark ? '1px solid rgba(52, 211, 153, 0.35)' : '1px solid #bbf7d0'),
           borderRadius: '8px',
           display: 'flex',
@@ -327,20 +327,20 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
           gap: '0.75rem'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: '1 1 300px' }}>
-            <span className="material-symbols-outlined" style={{ 
-              color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669'), 
-              fontSize: '1.6rem' 
+            <span className="material-symbols-outlined" style={{
+              color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669'),
+              fontSize: '1.6rem'
             }}>
               {activeDef.icon}
             </span>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ 
-                  fontWeight: 800, 
-                  fontSize: '0.92rem', 
-                  color: isCustomWorkflowActive 
-                    ? (isDark ? '#f5f3ff' : '#5b21b6') 
-                    : (isDark ? '#f0fdf4' : '#166534') 
+                <span style={{
+                  fontWeight: 800,
+                  fontSize: '0.92rem',
+                  color: isCustomWorkflowActive
+                    ? (isDark ? '#f3fff8' : '#5b21b6')
+                    : (isDark ? '#f0fdf4' : '#166534')
                 }}>
                   {isFa ? `مراحل گردش کار: ${activeDef.titleFa}` : `${activeDef.titleEn} Workflow Stages`}
                 </span>
@@ -355,25 +355,25 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                     color: '#ffffff',
                     border: isDark ? '1px solid rgba(255,255,255,0.2)' : 'none'
                   }}>
-                    {isCustomWorkflowActive 
-                      ? (isFa ? '✨ گردش کار منحصربفرد این پروژه' : '✨ Custom Project Workflow') 
+                    {isCustomWorkflowActive
+                      ? (isFa ? '✨ گردش کار منحصربفرد این پروژه' : '✨ Custom Project Workflow')
                       : (isFa ? '🌐 گردش کار عمومی سیستم' : '🌐 Global System Workflow')}
                   </span>
                 )}
               </div>
 
-              <div style={{ 
-                fontSize: '0.78rem', 
-                color: isCustomWorkflowActive 
-                  ? (isDark ? '#ddd6fe' : '#6d28d9') 
-                  : (isDark ? '#a7f3d0' : '#15803d'), 
-                marginTop: '0.2rem' 
+              <div style={{
+                fontSize: '0.78rem',
+                color: isCustomWorkflowActive
+                  ? (isDark ? '#ddd6fe' : '#6d28d9')
+                  : (isDark ? '#a7f3d0' : '#15803d'),
+                marginTop: '0.2rem'
               }}>
                 {isFa ? activeDef.descFa : activeDef.descEn}
                 {projectContext && isCustomWorkflowActive && (
-                  <span style={{ 
-                    display: 'block', 
-                    marginTop: '0.15rem', 
+                  <span style={{
+                    display: 'block',
+                    marginTop: '0.15rem',
                     fontWeight: 600,
                     color: isDark ? '#f5d0fe' : '#581c87'
                   }}>
@@ -399,14 +399,14 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   borderRadius: '6px',
-                  backgroundColor: isCustomWorkflowActive 
-                    ? (isDark ? 'rgba(124, 58, 237, 0.25)' : '#ffffff') 
+                  backgroundColor: isCustomWorkflowActive
+                    ? (isDark ? 'rgba(124, 58, 237, 0.25)' : '#ffffff')
                     : '#7c3aed',
-                  color: isCustomWorkflowActive 
-                    ? (isDark ? '#e9d5ff' : '#7c3aed') 
+                  color: isCustomWorkflowActive
+                    ? (isDark ? '#e9d5ff' : '#7c3aed')
                     : '#ffffff',
-                  border: isCustomWorkflowActive 
-                    ? (isDark ? '1px solid #a78bfa' : '1px solid #7c3aed') 
+                  border: isCustomWorkflowActive
+                    ? (isDark ? '1px solid #a78bfa' : '1px solid #7c3aed')
                     : 'none',
                   cursor: 'pointer'
                 }}
@@ -414,8 +414,8 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                 <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>
                   {isCustomWorkflowActive ? 'sync' : 'tune'}
                 </span>
-                {isCustomWorkflowActive 
-                  ? (isFa ? 'تغییر به گردش کار عمومی سیستم' : 'Switch to Global Workflow') 
+                {isCustomWorkflowActive
+                  ? (isFa ? 'تغییر به گردش کار عمومی سیستم' : 'Switch to Global Workflow')
                   : (isFa ? 'فعال‌سازی گردش کار منحصربفرد' : 'Make Workflow Unique')}
               </button>
             )}
@@ -453,9 +453,9 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                 padding: '0.4rem 0.7rem',
                 fontSize: '0.78rem',
                 borderRadius: '6px',
-                border: '1px solid var(--border-color, #cbd5e1)',
+                border: '1px solid var(--border-color, #cbe1d4)',
                 backgroundColor: 'transparent',
-                color: 'var(--text-color, #64748b)',
+                color: 'var(--text-color, #648b74)',
                 cursor: 'pointer'
               }}
             >
@@ -476,9 +476,9 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                   padding: '0.4rem 0.7rem',
                   fontSize: '0.78rem',
                   borderRadius: '6px',
-                  border: isDark ? '1px solid #475569' : '1px solid #cbd5e1',
+                  border: isDark ? '1px solid #476955' : '1px solid #cbe1d4',
                   backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : '#ffffff',
-                  color: isDark ? '#e2e8f0' : '#475569',
+                  color: isDark ? '#e2f0e8' : '#476955',
                   cursor: 'pointer'
                 }}
               >
@@ -492,14 +492,14 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
 
       {/* Grid of Workflow Stages */}
       <div className="table-responsive" style={{
-        border: '1px solid var(--border-color, #e2e8f0)',
+        border: '1px solid var(--border-color, #e2f0e8)',
         borderRadius: '8px',
         overflow: 'hidden',
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
         <table className="users-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
           <thead>
-            <tr style={{ background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc', color: 'var(--text-color, #334155)' }}>
+            <tr style={{ background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fcfa', color: 'var(--text-color, #335541)' }}>
               <th style={{ width: '60px', textAlign: 'center', padding: '0.65rem' }}>{isFa ? 'ردیف' : '#'}</th>
               <th style={{ padding: '0.65rem' }}>{isFa ? 'عنوان فاز تایید' : 'Stage Title'}</th>
               <th style={{ padding: '0.65rem', width: '360px' }}>{isFa ? 'تایید کننده این مرحله' : 'Stage Approver'}</th>
@@ -508,11 +508,11 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
           </thead>
           <tbody>
             {currentStages.map((stage, idx) => (
-              <tr key={stage.id || idx} style={{ borderBottom: '1px solid var(--border-color, #f1f5f9)' }}>
-                <td style={{ 
-                  textAlign: 'center', 
-                  fontWeight: 700, 
-                  color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669') 
+              <tr key={stage.id || idx} style={{ borderBottom: '1px solid var(--border-color, #f1f9f4)' }}>
+                <td style={{
+                  textAlign: 'center',
+                  fontWeight: 700,
+                  color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669')
                 }}>
                   {isFa ? toPersianDigits(idx + 1) : idx + 1}
                 </td>
@@ -527,10 +527,10 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                       width: '100%',
                       padding: '0.45rem 0.65rem',
                       borderRadius: '6px',
-                      border: isDark ? '1px solid #475569' : '1px solid var(--border-color, #cbd5e1)',
+                      border: isDark ? '1px solid #476955' : '1px solid var(--border-color, #cbe1d4)',
                       fontSize: '0.82rem',
                       backgroundColor: 'var(--card-bg-color, #ffffff)',
-                      color: 'var(--text-color, #1e293b)'
+                      color: 'var(--text-color, #1e3b2a)'
                     }}
                   />
                 </td>
@@ -550,20 +550,20 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                       width: '100%',
                       padding: '0.45rem 0.65rem',
                       borderRadius: '6px',
-                      border: isDark ? '1px solid #475569' : '1px solid var(--border-color, #cbd5e1)',
+                      border: isDark ? '1px solid #476955' : '1px solid var(--border-color, #cbe1d4)',
                       fontSize: '0.82rem',
                       backgroundColor: 'var(--card-bg-color, #ffffff)',
-                      color: 'var(--text-color, #1e293b)'
+                      color: 'var(--text-color, #1e3b2a)'
                     }}
                   >
                     <optgroup label={isFa ? 'نقش‌های داینامیک' : 'Dynamic Roles'}>
                       <option value="ROLE_PM">
-                        {projectContext?.pmName 
+                        {projectContext?.pmName
                           ? (isFa ? `⭐ مدیر پروژه: ${projectContext.pmName}` : `⭐ Project Manager: ${projectContext.pmName}`)
                           : (isFa ? '⭐ مدیر پروژه / مسئول اقدام (پیش‌فرض)' : '⭐ Project Manager / Action Responsible (Default)')}
                       </option>
                       <option value="ROLE_OWNER">
-                        {projectContext?.ownerName 
+                        {projectContext?.ownerName
                           ? (isFa ? `⭐ مالک پروژه: ${projectContext.ownerName}` : `⭐ Project Owner: ${projectContext.ownerName}`)
                           : (isFa ? '⭐ مالک پروژه / اقدام' : '⭐ Project Owner / Action Owner')}
                       </option>
@@ -586,12 +586,12 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                       title={isFa ? 'انتقال به مرحله قبل' : 'Move Up'}
                       style={{
                         background: 'none',
-                        border: '1px solid var(--border-color, #cbd5e1)',
+                        border: '1px solid var(--border-color, #cbe1d4)',
                         borderRadius: '4px',
                         padding: '0.2rem',
                         cursor: idx === 0 ? 'not-allowed' : 'pointer',
                         opacity: idx === 0 ? 0.3 : 1,
-                        color: 'var(--text-color, #64748b)'
+                        color: 'var(--text-color, #648b74)'
                       }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>arrow_upward</span>
@@ -603,12 +603,12 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                       title={isFa ? 'انتقال به مرحله بعد' : 'Move Down'}
                       style={{
                         background: 'none',
-                        border: '1px solid var(--border-color, #cbd5e1)',
+                        border: '1px solid var(--border-color, #cbe1d4)',
                         borderRadius: '4px',
                         padding: '0.2rem',
                         cursor: idx === currentStages.length - 1 ? 'not-allowed' : 'pointer',
                         opacity: idx === currentStages.length - 1 ? 0.3 : 1,
-                        color: 'var(--text-color, #64748b)'
+                        color: 'var(--text-color, #648b74)'
                       }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>arrow_downward</span>
@@ -640,15 +640,15 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
 
       <div style={{
         fontSize: '0.76rem',
-        color: isDark ? '#94a3b8' : 'var(--inactive-color, #64748b)',
+        color: isDark ? '#94b8a3' : 'var(--inactive-color, #648b74)',
         display: 'flex',
         alignItems: 'center',
         gap: '0.4rem',
         marginTop: '0.25rem'
       }}>
-        <span className="material-symbols-outlined" style={{ 
-          fontSize: '1rem', 
-          color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669') 
+        <span className="material-symbols-outlined" style={{
+          fontSize: '1rem',
+          color: isCustomWorkflowActive ? (isDark ? '#c4b5fd' : '#7c3aed') : (isDark ? '#6ee7b7' : '#059669')
         }}>
           check_circle
         </span>

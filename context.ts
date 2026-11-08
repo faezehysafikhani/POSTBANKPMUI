@@ -36,32 +36,18 @@ export type ColorScheme = 'teal' | 'blue' | 'emerald' | 'purple' | 'crimson';
 export const ThemeContext = React.createContext({
   theme: 'light' as 'light' | 'dark',
   setTheme: (theme: 'light' | 'dark') => {},
-  colorScheme: 'blue' as ColorScheme,
+  colorScheme: 'emerald' as ColorScheme,
   setColorScheme: (scheme: ColorScheme) => {},
 });
 
+// A fixed light identity also migrates previously saved dark preferences.
 export const ThemeProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
-  const [theme, setTheme] = React.useState<'light' | 'dark'>(() => {
-    return localStorage.getItem('pms_sky_theme_version') === '1'
-      ? (localStorage.getItem('pms_theme') as 'light' | 'dark') || 'light' : 'light';
-  });
-  const [colorScheme, setColorScheme] = React.useState<ColorScheme>(() => {
-    return localStorage.getItem('pms_sky_theme_version') === '1'
-      ? (localStorage.getItem('pms_color_scheme') as ColorScheme) || 'blue' : 'blue';
-  });
-
   React.useEffect(() => {
-    localStorage.setItem('pms_theme', theme);
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  React.useEffect(() => {
-    localStorage.setItem('pms_color_scheme', colorScheme);
-    localStorage.setItem('pms_sky_theme_version', '1');
-    document.documentElement.setAttribute('data-color-scheme', colorScheme);
-  }, [colorScheme]);
-
-  const value = React.useMemo(() => ({ theme, setTheme, colorScheme, setColorScheme }), [theme, colorScheme]);
-
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.setAttribute('data-color-scheme', 'emerald');
+    document.body.classList.remove('dark-theme');
+    try { localStorage.setItem('pms_theme', 'light'); localStorage.setItem('pms_color_scheme', 'emerald'); } catch {}
+  }, []);
+  const value = React.useMemo(() => ({ theme: 'light' as 'light' | 'dark', setTheme: (_theme: 'light' | 'dark') => {}, colorScheme: 'emerald' as ColorScheme, setColorScheme: (_scheme: ColorScheme) => {} }), []);
   return React.createElement(ThemeContext.Provider, { value }, children);
 };

@@ -260,7 +260,7 @@ export const ContractModal = ({
                                     required: true,
                                     style: { fontFamily: 'Vazirmatn, Tahoma, sans-serif' }
                                 }),
-                                amount !== '' && React.createElement("span", { style: { fontSize: '0.75rem', color: '#0284c7', marginTop: '0.2rem', display: 'block' } },
+                                amount !== '' && React.createElement("span", { style: { fontSize: '0.75rem', color: '#02c754', marginTop: '0.2rem', display: 'block' } },
                                     `${isFa ? 'مبلغ با جداکننده سه‌رقمی:' : 'Formatted Amount:'} ${formatCurrencyAmount(amount, isFa)}`
                                 )
                             ),
@@ -318,8 +318,8 @@ export const ContractModal = ({
                             style: {
                                 marginTop: '0.5rem',
                                 padding: '1rem',
-                                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#f8fafc',
-                                border: '1px solid var(--border-color, #e2e8f0)',
+                                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : '#f8fcfa',
+                                border: '1px solid var(--border-color, #e2f0e8)',
                                 borderRadius: '10px'
                             }
                         },
@@ -357,7 +357,7 @@ export const ContractModal = ({
                                         alignItems: 'center',
                                         gap: '0.35rem',
                                         padding: '0.35rem 0.75rem',
-                                        backgroundColor: '#0284c7',
+                                        backgroundColor: '#02c754',
                                         color: '#ffffff',
                                         border: 'none',
                                         borderRadius: '6px',
@@ -390,7 +390,7 @@ export const ContractModal = ({
                                     React.createElement("button", {
                                         type: "button",
                                         onClick: () => setIsAddingAmendment(false),
-                                        style: { background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }
+                                        style: { background: 'none', border: 'none', cursor: 'pointer', color: '#648b74' }
                                     }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))
                                 ),
                                 React.createElement("div", { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' } },
@@ -441,7 +441,7 @@ export const ContractModal = ({
                                     React.createElement("button", {
                                         type: "button",
                                         onClick: () => setIsAddingAmendment(false),
-                                        style: { padding: '0.35rem 0.75rem', backgroundColor: 'transparent', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }
+                                        style: { padding: '0.35rem 0.75rem', backgroundColor: 'transparent', border: '1px solid #cbe1d4', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }
                                     }, isFa ? 'انصراف' : 'Cancel'),
                                     React.createElement("button", {
                                         type: "button",
@@ -453,7 +453,7 @@ export const ContractModal = ({
 
                             // Amendments Table
                             amendments.length === 0 ? (
-                                React.createElement("p", { style: { margin: 0, fontSize: '0.82rem', color: '#64748b', textAlign: 'center', padding: '0.75rem' } },
+                                React.createElement("p", { style: { margin: 0, fontSize: '0.82rem', color: '#648b74', textAlign: 'center', padding: '0.75rem' } },
                                     isFa ? 'تاکنون هیچ الحاقیه‌ای برای این قرارداد ثبت نشده است.' : 'No amendments registered for this contract yet.'
                                 )
                             ) : (
@@ -507,8 +507,8 @@ export const ContractModal = ({
                                 style: {
                                     marginTop: '0.75rem',
                                     padding: '0.75rem',
-                                    backgroundColor: isDark ? 'rgba(2, 132, 199, 0.12)' : '#f0f9ff',
-                                    border: '1px solid #bae6fd',
+                                    backgroundColor: isDark ? 'rgba(2, 199, 84, 0.12)' : '#f0fff6',
+                                    border: '1px solid #bafdd6',
                                     borderRadius: '8px',
                                     display: 'flex',
                                     justifyContent: 'space-between',
@@ -519,15 +519,15 @@ export const ContractModal = ({
                                 }
                             },
                                 React.createElement("div", null,
-                                    React.createElement("span", { style: { color: '#64748b' } }, isFa ? 'مبلغ اولیه قرارداد: ' : 'Base Contract: '),
+                                    React.createElement("span", { style: { color: '#648b74' } }, isFa ? 'مبلغ اولیه قرارداد: ' : 'Base Contract: '),
                                     React.createElement("strong", null, formatCurrencyAmount(baseAmountNum, isFa)),
-                                    React.createElement("span", { style: { margin: '0 0.5rem', color: '#cbd5e1' } }, '|'),
-                                    React.createElement("span", { style: { color: '#64748b' } }, isFa ? 'مجموع الحاقیه‌ها: ' : 'Amendments: '),
+                                    React.createElement("span", { style: { margin: '0 0.5rem', color: '#cbe1d4' } }, '|'),
+                                    React.createElement("span", { style: { color: '#648b74' } }, isFa ? 'مجموع الحاقیه‌ها: ' : 'Amendments: '),
                                     React.createElement("strong", { style: { color: '#f59e0b' } }, formatCurrencyAmount(totalAmendmentsAmount, isFa))
                                 ),
                                 React.createElement("div", null,
                                     React.createElement("span", { style: { fontWeight: 600 } }, isFa ? 'مبلغ کل نهایی قرارداد: ' : 'Grand Total: '),
-                                    React.createElement("strong", { style: { fontSize: '1rem', color: '#0284c7' } }, formatCurrencyAmount(grandTotalAmount, isFa))
+                                    React.createElement("strong", { style: { fontSize: '1rem', color: '#02c754' } }, formatCurrencyAmount(grandTotalAmount, isFa))
                                 )
                             )
                         )
@@ -872,23 +872,23 @@ export const ProjectContractsTab = ({
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'مجموع مبالغ اولیه قراردادها' : 'Total Base Contracts'}
                         </div>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: isDark ? '#38bdf8' : '#0284c7' }}>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: isDark ? '#38f888' : '#02c754' }}>
                             {formatCurrencyAmount(totalBaseAmount, isFa)}
                         </div>
                     </div>
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'مجموع مبالغ الحاقیه‌ها' : 'Total Amendments'}
                         </div>
                         <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f59e0b' }}>
@@ -898,10 +898,10 @@ export const ProjectContractsTab = ({
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'مجموع کل نهایی تعهدات' : 'Grand Total Commitments'}
                         </div>
                         <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#10b981' }}>
@@ -931,7 +931,7 @@ export const ProjectContractsTab = ({
                         padding: '0.45rem 0.75rem',
                         fontSize: '0.78rem',
                         borderRadius: '6px',
-                        border: '1px solid var(--border-color, #cbd5e1)',
+                        border: '1px solid var(--border-color, #cbe1d4)',
                         backgroundColor: 'var(--card-bg-color, #ffffff)'
                     }}
                 />
@@ -958,7 +958,7 @@ export const ProjectContractsTab = ({
                     <tbody>
                         {filteredContracts.length === 0 ? (
                             <tr>
-                                <td colSpan={11} style={{ textAlign: 'center', padding: '2rem 1rem', color: '#64748b', fontSize: '0.78rem' }}>
+                                <td colSpan={11} style={{ textAlign: 'center', padding: '2rem 1rem', color: '#648b74', fontSize: '0.78rem' }}>
                                     {isFa ? 'هیچ قراردادی برای این پروژه ثبت نشده است.' : 'No contracts recorded for this project yet.'}
                                 </td>
                             </tr>
@@ -972,11 +972,11 @@ export const ProjectContractsTab = ({
                                 return (
                                     <React.Fragment key={c.id}>
                                         <tr style={{
-                                            backgroundColor: isExpanded ? (isDark ? 'rgba(2, 132, 199, 0.1)' : '#f0f9ff') : undefined,
+                                            backgroundColor: isExpanded ? (isDark ? 'rgba(2, 199, 84, 0.1)' : '#f0fff6') : undefined,
                                             fontWeight: isExpanded ? 600 : undefined
                                         }}>
                                             <td style={{ padding: '0.45rem 0.6rem' }}>{isFa ? toPersianDigits(idx + 1) : (idx + 1)}</td>
-                                            <td style={{ fontWeight: 700, color: '#0284c7', padding: '0.45rem 0.6rem' }}>{c.contractNumber}</td>
+                                            <td style={{ fontWeight: 700, color: '#02c754', padding: '0.45rem 0.6rem' }}>{c.contractNumber}</td>
                                             <td style={{ fontWeight: 600, padding: '0.45rem 0.6rem' }}>
                                                 {c.title}
                                                 {statusText && <span style={{ marginInlineStart: '0.4rem', fontSize: '0.7rem', color: c.isRejected ? '#dc2626' : '#d97706', fontWeight: 500 }}>({statusText})</span>}
@@ -1014,15 +1014,15 @@ export const ProjectContractsTab = ({
                                                             <span className="material-symbols-outlined" style={{ fontSize: '0.8rem' }}>post_add</span>
                                                             {isFa ? `${toPersianDigits(cAmendments.length)} الحاقیه` : `${cAmendments.length} Amendments`}
                                                         </span>
-                                                        <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: '#0284c7' }}>
+                                                        <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: '#02c754' }}>
                                                             {isExpanded ? "expand_less" : "expand_more"}
                                                         </span>
                                                     </div>
                                                 ) : (
-                                                    <span style={{ color: '#94a3b8', fontSize: '0.74rem' }}>{isFa ? 'بدون الحاقیه' : 'None'}</span>
+                                                    <span style={{ color: '#94b8a3', fontSize: '0.74rem' }}>{isFa ? 'بدون الحاقیه' : 'None'}</span>
                                                 )}
                                             </td>
-                                            <td style={{ fontWeight: 700, color: '#0369a1', padding: '0.45rem 0.6rem' }}>
+                                            <td style={{ fontWeight: 700, color: '#03a145', padding: '0.45rem 0.6rem' }}>
                                                 {formatCurrencyAmount(contractGrand, isFa)}
                                             </td>
                                             <td style={{ textAlign: 'center', padding: '0.45rem 0.6rem' }}>
@@ -1054,8 +1054,8 @@ export const ProjectContractsTab = ({
                                         </tr>
 
                                         {isExpanded && cAmendments.length > 0 && (
-                                            <tr key={`${c.id}-amendments-detail`} style={{ backgroundColor: isDark ? 'rgba(2, 132, 199, 0.05)' : '#f8fafc' }}>
-                                                <td colSpan={11} style={{ padding: '0.75rem 1rem', borderBottom: '2px solid #bae6fd' }}>
+                                            <tr key={`${c.id}-amendments-detail`} style={{ backgroundColor: isDark ? 'rgba(2, 199, 84, 0.05)' : '#f8fcfa' }}>
+                                                <td colSpan={11} style={{ padding: '0.75rem 1rem', borderBottom: '2px solid #bafdd6' }}>
                                                     <div style={{
                                                         borderRight: isFa ? '3px solid #f59e0b' : undefined,
                                                         borderLeft: !isFa ? '3px solid #f59e0b' : undefined,
@@ -1244,10 +1244,10 @@ export const ProjectInvoicesTab = ({
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'مجموع مبالغ صورتحساب‌ها' : 'Total Invoiced Amount'}
                         </div>
                         <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#10b981' }}>
@@ -1257,23 +1257,23 @@ export const ProjectInvoicesTab = ({
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'مجموع کل تعهدات قراردادها' : 'Total Contracts Value'}
                         </div>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: isDark ? '#38bdf8' : '#0284c7' }}>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: isDark ? '#38f888' : '#02c754' }}>
                             {formatCurrencyAmount(totalContractsGrandAmount, isFa)}
                         </div>
                     </div>
                     <div style={{
                         padding: '0.85rem 1rem',
                         borderRadius: '8px',
-                        backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : '#f8fafc',
-                        border: '1px solid var(--border-color, #e2e8f0)'
+                        backgroundColor: isDark ? 'rgba(30, 59, 42, 0.6)' : '#f8fcfa',
+                        border: '1px solid var(--border-color, #e2f0e8)'
                     }}>
-                        <div style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.78rem', color: '#648b74', marginBottom: '0.25rem' }}>
                             {isFa ? 'درصد پوشش صورت‌وضعیت‌ها' : 'Billing Coverage'}
                         </div>
                         <div style={{ fontSize: '1.1rem', fontWeight: 700, color: invoiceCoveragePercent >= 100 ? '#ef4444' : '#f59e0b' }}>
@@ -1300,7 +1300,7 @@ export const ProjectInvoicesTab = ({
                         maxWidth: '350px',
                         padding: '0.55rem 0.85rem',
                         borderRadius: '8px',
-                        border: '1px solid var(--border-color, #cbd5e1)',
+                        border: '1px solid var(--border-color, #cbe1d4)',
                         backgroundColor: 'var(--card-bg-color, #ffffff)'
                     }}
                 />
@@ -1312,9 +1312,9 @@ export const ProjectInvoicesTab = ({
                             padding: '0.45rem 0.75rem',
                             fontSize: '0.78rem',
                             borderRadius: '6px',
-                            border: '1px solid var(--border-color, #cbd5e1)',
+                            border: '1px solid var(--border-color, #cbe1d4)',
                             backgroundColor: 'var(--card-bg-color, #ffffff)',
-                            color: 'var(--text-color, #1e293b)'
+                            color: 'var(--text-color, #1e3b2a)'
                         }}
                     >
                         <option value="all">{isFa ? 'همه قراردادها' : 'All Contracts'}</option>
@@ -1345,7 +1345,7 @@ export const ProjectInvoicesTab = ({
                     <tbody>
                         {filteredInvoices.length === 0 ? (
                             <tr>
-                                <td colSpan={8} style={{ textAlign: 'center', padding: '2rem 1rem', color: '#64748b', fontSize: '0.78rem' }}>
+                                <td colSpan={8} style={{ textAlign: 'center', padding: '2rem 1rem', color: '#648b74', fontSize: '0.78rem' }}>
                                     {isFa ? 'هیچ صورتحسابی برای این پروژه ثبت نشده است.' : 'No invoices recorded for this project yet.'}
                                 </td>
                             </tr>
@@ -1363,8 +1363,8 @@ export const ProjectInvoicesTab = ({
                                         <td style={{ padding: '0.45rem 0.6rem' }}>
                                             {linkedContract ? (
                                                 <span style={{
-                                                    backgroundColor: isDark ? 'rgba(2, 132, 199, 0.2)' : '#e0f2fe',
-                                                    color: isDark ? '#bae6fd' : '#0369a1',
+                                                    backgroundColor: isDark ? 'rgba(2, 199, 84, 0.2)' : '#e0feed',
+                                                    color: isDark ? '#bafdd6' : '#03a145',
                                                     padding: '2px 6px',
                                                     borderRadius: '4px',
                                                     fontSize: '0.72rem',
@@ -1373,7 +1373,7 @@ export const ProjectInvoicesTab = ({
                                                     {`${linkedContract.contractNumber ? `[${linkedContract.contractNumber}] ` : ''}${linkedContract.title}`}
                                                 </span>
                                             ) : (
-                                                <span style={{ color: '#94a3b8', fontSize: '0.74rem' }}>{inv.contractTitle || '-'}</span>
+                                                <span style={{ color: '#94b8a3', fontSize: '0.74rem' }}>{inv.contractTitle || '-'}</span>
                                             )}
                                         </td>
                                         <td style={{ fontSize: '0.74rem', padding: '0.45rem 0.6rem' }}>
@@ -1382,7 +1382,7 @@ export const ProjectInvoicesTab = ({
                                         <td style={{ fontWeight: 700, color: '#059669', padding: '0.45rem 0.6rem' }}>
                                             {formatCurrencyAmount(inv.amount, isFa)}
                                         </td>
-                                        <td style={{ fontSize: '0.74rem', color: '#64748b', padding: '0.45rem 0.6rem' }}>{inv.description || '-'}</td>
+                                        <td style={{ fontSize: '0.74rem', color: '#648b74', padding: '0.45rem 0.6rem' }}>{inv.description || '-'}</td>
                                         <td style={{ textAlign: 'center', padding: '0.45rem 0.6rem' }}>
                                             <div style={{ display: 'inline-flex', gap: '3px' }}>
                                                 {!isReadOnly && (

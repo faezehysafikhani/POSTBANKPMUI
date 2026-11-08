@@ -2,7 +2,7 @@
 
 import React, { useContext, useState, useMemo, useEffect, useCallback, SetStateAction, Dispatch, FormEvent, ChangeEvent, MouseEvent, ReactElement, Fragment } from 'react';
 import { LocalizationContext, ThemeContext, ColorScheme } from '../context';
-import { 
+import {
     Project, Calendar, Strategy, AlignmentLevel, ProjectStrategyAlignment, TranslationKey, SpecificHoliday, KnowledgeDocument, KnowledgeDocumentType, WorkStatus, OwningUnitTreeNode
 } from '../types';
 import { getISODateString, formatDate, getJalaliInfo, toGregorian, toPersianDigits, getCalendarDisplayName } from '../utils';
@@ -28,7 +28,7 @@ export const CalendarManagementPage = ({ calendars, onNavigate, onDelete }: {
             if (!outcome.ok) alert(outcome.message ?? t('error'));
         }
     };
-    
+
     return (
         React.createElement("div", { className: "content-container" },
             React.createElement("div", { className: "page-header" },
@@ -65,10 +65,10 @@ export const CalendarManagementPage = ({ calendars, onNavigate, onDelete }: {
     );
 };
 
-export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: { 
+export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     onNavigate: (page: string, context?: any) => void,
     onSave: (calendar: Calendar) => Promise<Outcome>,
-    existingCalendar?: Calendar | null 
+    existingCalendar?: Calendar | null
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const [calendar, setCalendar] = useState<Calendar>(
@@ -83,17 +83,17 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     const isShamsi = language === 'fa';
 
     const dayNames = useMemo(() => (
-        isShamsi 
+        isShamsi
             ? [t('Saturday'), t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday')]
             : [t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday'), t('Saturday')]
     ), [t, isShamsi]);
-    
+
     const monthNames = useMemo(() => (
         isShamsi
             ? ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند']
             : [t('January'), t('February'), t('March'), t('April'), t('May'), t('June'), t('July'), t('August'), t('September'), t('October'), t('November'), t('December')]
     ), [t, isShamsi]);
-    
+
     const [saving, setSaving] = useState(false);
     // Official holidays of the month on screen, as the backend knows them.
     const [officialHolidays, setOfficialHolidays] = useState<Map<string, string>>(new Map());
@@ -124,7 +124,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
         }
         onNavigate('calendar_management');
     }
-    
+
     const toggleWorkingDay = (dayIndex: number) => {
         const jsDayIndex = isShamsi ? (dayIndex + 6) % 7 : dayIndex; // Sat=0 -> 6, Sun=1 -> 0
         setCalendar(prev => {
@@ -134,7 +134,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             return { ...prev, workingDays: newWorkingDays.sort() };
         });
     };
-    
+
     const handleDayClick = (date: Date) => {
         const dateString = getISODateString(date);
         const existingHoliday = calendar.specificHolidays.find(h => h.date === dateString);
@@ -149,7 +149,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             setIsReasonModalOpen(true);
         }
     };
-    
+
     const saveSpecificHoliday = (reason: string) => {
         if (selectedDateForHoliday) {
             setCalendar(prev => ({
@@ -283,7 +283,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
             ),
             React.createElement("div", { className: "edit-calendar-container" },
                 React.createElement("div", { className: "calendar-sidebar" },
-                    React.createElement("div", null, 
+                    React.createElement("div", null,
                         React.createElement("div", { className: "form-group" },
                             React.createElement("label", { htmlFor: "calendarName" }, t('calendarName') + '*'),
                             React.createElement("input", { type: "text", id: "calendarName", value: calendar.name, onChange: (e: ChangeEvent<HTMLInputElement>) => setCalendar({...calendar, name: e.target.value}) })
@@ -306,7 +306,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCalendar({ ...calendar, applyOfficialHolidays: e.target.checked }),
                                 style: { width: 'auto', margin: 0, cursor: 'pointer' }
                             }),
-                            React.createElement("label", { htmlFor: "applyOfficialHolidays", style: { margin: 0, fontWeight: '500', cursor: 'pointer' } }, 
+                            React.createElement("label", { htmlFor: "applyOfficialHolidays", style: { margin: 0, fontWeight: '500', cursor: 'pointer' } },
                                 language === 'fa' ? 'اعمال تعطیلات رسمی' : 'Apply Official Holidays'
                             )
                         )
@@ -389,17 +389,17 @@ export const ReferenceTablesPage = ({
 
     // Project Statuses State
 
-    const workStatusTranslations: Record<string, TranslationKey> = { 
-        'Planning': 'planning', 
-        'In Progress': 'inProgress', 
-        'On Hold': 'onHold', 
-        'Completed': 'completed' 
+    const workStatusTranslations: Record<string, TranslationKey> = {
+        'Planning': 'planning',
+        'In Progress': 'inProgress',
+        'On Hold': 'onHold',
+        'Completed': 'completed'
     };
 
     // Calculate flat WBS nodes
     const flatWbsUnits = useMemo(() => {
         const flatList: FlatWbsUnitNode[] = [];
-        
+
         const getChildren = (pId: string | null) => unitNodes.filter(n => n.parentId === pId);
 
         const processNode = (node: OwningUnitTreeNode, parentWbs: string, level: number, parentName?: string, parentPath?: string, indexInSiblings: number = 0) => {
@@ -466,7 +466,7 @@ export const ReferenceTablesPage = ({
         }
     };
 
-    
+
     return (
         React.createElement("div", { className: "content-container" },
             React.createElement("div", { className: "page-header" },
@@ -479,10 +479,10 @@ export const ReferenceTablesPage = ({
                     React.createElement("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' } },
                         React.createElement("div", null,
                             React.createElement("h3", { style: { margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' } },
-                                React.createElement("span", { className: "material-symbols-outlined", style: { color: '#2563eb' } }, "account_tree"),
+                                React.createElement("span", { className: "material-symbols-outlined", style: { color: '#25eb77' } }, "account_tree"),
                                 language === 'fa' ? 'واحد سازمانی (ساختار شکست سازمانی)' : 'Organizational Unit Breakdown Structure'
                             ),
-                            React.createElement("p", { style: { margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: isDark ? '#94a3b8' : '#64748b' } },
+                            React.createElement("p", { style: { margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: isDark ? '#94b8a3' : '#648b74' } },
                                 "در این بخش می‌توانید واحدهای اصلی و زیرگروه‌های تخصصی آن‌ها (سطح ۱ و سطح ۲) را به صورت درختی و ساختار شکست سازمانی مدیریت نمایید."
                             )
                         ),
@@ -491,7 +491,7 @@ export const ReferenceTablesPage = ({
                                 type: "button",
                                 onClick: handleExpandAllUnits,
                                 className: "action-button",
-                                style: { padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: '#3b82f6', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }
+                                style: { padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: '#3bf689', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }
                             },
                                 React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem' } }, "unfold_more"),
                                 language === 'fa' ? 'باز کردن همه' : 'Expand All'
@@ -524,7 +524,7 @@ export const ReferenceTablesPage = ({
 
                     React.createElement("div", { style: { display: 'flex', flexDirection: 'column', gap: '0.5rem' } },
                         flatWbsUnits.length === 0 ? (
-                            React.createElement("div", { style: { padding: '1.5rem', textAlign: 'center', color: isDark ? '#94a3b8' : '#64748b', fontSize: '0.85rem' } },
+                            React.createElement("div", { style: { padding: '1.5rem', textAlign: 'center', color: isDark ? '#94b8a3' : '#648b74', fontSize: '0.85rem' } },
                                 "هیچ واحد سازمانی ثبت نشده است. از فرم بالا واحد اصلی جدید اضافه کنید."
                             )
                         ) : (
@@ -554,14 +554,14 @@ export const ReferenceTablesPage = ({
                                             padding: '0.6rem 0.85rem',
                                             paddingRight: `${(unit.level - 1) * 24 + 12}px`,
                                             borderRadius: '8px',
-                                            background: isDark 
-                                                ? (unit.level === 1 ? '#0f172a' : unit.level === 2 ? '#1e293b' : '#141e2e') 
-                                                : (unit.level === 1 ? '#f8fafc' : unit.level === 2 ? '#f1f5f9' : '#fafafa'),
-                                            border: isDark ? '1px solid #334155' : '1px solid #cbd5e1',
-                                            borderRight: unit.level === 1 
-                                                ? '4px solid #2563eb' 
-                                                : unit.level === 2 
-                                                    ? '4px solid #059669' 
+                                            background: isDark
+                                                ? (unit.level === 1 ? '#0f2a1a' : unit.level === 2 ? '#1e3b2a' : '#142e1f')
+                                                : (unit.level === 1 ? '#f8fcfa' : unit.level === 2 ? '#f1f9f4' : '#fafafa'),
+                                            border: isDark ? '1px solid #335541' : '1px solid #cbe1d4',
+                                            borderRight: unit.level === 1
+                                                ? '4px solid #25eb77'
+                                                : unit.level === 2
+                                                    ? '4px solid #059669'
                                                     : '4px solid #7c3aed'
                                         }
                                     },
@@ -579,10 +579,10 @@ export const ReferenceTablesPage = ({
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
                                                         padding: '2px',
-                                                        border: isDark ? '1px solid #475569' : '1px solid #cbd5e1',
+                                                        border: isDark ? '1px solid #476955' : '1px solid #cbe1d4',
                                                         borderRadius: '4px',
-                                                        background: isDark ? '#1e293b' : '#ffffff',
-                                                        color: isDark ? '#38bdf8' : '#0284c7',
+                                                        background: isDark ? '#1e3b2a' : '#ffffff',
+                                                        color: isDark ? '#38f888' : '#02c754',
                                                         cursor: 'pointer'
                                                     }
                                                 },
@@ -596,7 +596,7 @@ export const ReferenceTablesPage = ({
 
                                             React.createElement("span", {
                                                 style: {
-                                                    background: unit.level === 1 ? '#2563eb' : unit.level === 2 ? '#059669' : '#7c3aed',
+                                                    background: unit.level === 1 ? '#25eb77' : unit.level === 2 ? '#059669' : '#7c3aed',
                                                     color: '#ffffff',
                                                     padding: '2px 8px',
                                                     borderRadius: '6px',
@@ -610,7 +610,7 @@ export const ReferenceTablesPage = ({
                                                 className: "material-symbols-outlined",
                                                 style: {
                                                     fontSize: '1.1rem',
-                                                    color: unit.level === 1 ? '#3b82f6' : unit.level === 2 ? '#10b981' : '#a855f7'
+                                                    color: unit.level === 1 ? '#3bf689' : unit.level === 2 ? '#10b981' : '#a855f7'
                                                 }
                                             }, unit.level === 1 ? 'corporate_fare' : unit.level === 2 ? 'subdirectory_arrow_right' : 'schema'),
 
@@ -622,15 +622,15 @@ export const ReferenceTablesPage = ({
                                                         onChange: (e) => setEditingUnitName(e.target.value),
                                                         autoFocus: true,
                                                         onKeyDown: (e) => e.key === 'Enter' && handleSaveEditUnit(unit.id),
-                                                        style: { padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid #2563eb', fontSize: '0.85rem' }
+                                                        style: { padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid #25eb77', fontSize: '0.85rem' }
                                                     }),
                                                     React.createElement("button", { onClick: () => handleSaveEditUnit(unit.id), className: "action-icon", style: { color: '#059669' } }, React.createElement("span", { className: "material-symbols-outlined" }, "check")),
-                                                    React.createElement("button", { onClick: () => setEditingUnitId(null), className: "action-icon", style: { color: '#64748b' } }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))
+                                                    React.createElement("button", { onClick: () => setEditingUnitId(null), className: "action-icon", style: { color: '#648b74' } }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))
                                                 )
                                             ) : (
-                                                React.createElement("span", { style: { fontWeight: unit.level === 1 ? 700 : 500, fontSize: '0.88rem', color: isDark ? '#f8fafc' : '#1e293b' } },
+                                                React.createElement("span", { style: { fontWeight: unit.level === 1 ? 700 : 500, fontSize: '0.88rem', color: isDark ? '#f8fcfa' : '#1e3b2a' } },
                                                     unit.name,
-                                                    unit.parentName ? React.createElement("span", { style: { fontSize: '0.72rem', color: isDark ? '#94a3b8' : '#64748b', marginRight: '8px' } }, `(زیرمجموعه: ${unit.parentName})`) : null
+                                                    unit.parentName ? React.createElement("span", { style: { fontSize: '0.72rem', color: isDark ? '#94b8a3' : '#648b74', marginRight: '8px' } }, `(زیرمجموعه: ${unit.parentName})`) : null
                                                 )
                                             )
                                         ),
@@ -663,7 +663,7 @@ export const ReferenceTablesPage = ({
                                                 marginRight: `${unit.level * 24 + 12}px`,
                                                 padding: '0.5rem 0.75rem',
                                                 borderRadius: '8px',
-                                                background: isDark ? '#1e293b' : '#f0fdf4',
+                                                background: isDark ? '#1e3b2a' : '#f0fdf4',
                                                 border: isDark ? '1px solid #059669' : '1px solid #86efac',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -688,7 +688,7 @@ export const ReferenceTablesPage = ({
                                             }, "ثبت زیرگروه"),
                                             React.createElement("button", {
                                                 onClick: () => setAddingChildToId(null),
-                                                style: { padding: '0.35rem 0.5rem', borderRadius: '6px', background: 'transparent', color: isDark ? '#cbd5e1' : '#64748b', border: 'none', fontSize: '0.8rem', cursor: 'pointer' }
+                                                style: { padding: '0.35rem 0.5rem', borderRadius: '6px', background: 'transparent', color: isDark ? '#cbe1d4' : '#648b74', border: 'none', fontSize: '0.8rem', cursor: 'pointer' }
                                             }, "انصراف")
                                         )
                                     ) : null
@@ -701,7 +701,7 @@ export const ReferenceTablesPage = ({
                 // Project Statuses Section: the backend's fixed set, shown for reference only
                 React.createElement("div", { className: "form-section", style: { marginTop: 0 } },
                     React.createElement("h3", null, t('projectStatus')),
-                    React.createElement("p", { style: { color: 'var(--text-muted, #64748b)', fontSize: '0.85rem', margin: '0 0 0.5rem' } },
+                    React.createElement("p", { style: { color: 'var(--text-muted, #648b74)', fontSize: '0.85rem', margin: '0 0 0.5rem' } },
                         language === 'fa'
                             ? 'وضعیت‌های کاری پروژه توسط سامانه تعریف شده‌اند و قابل ویرایش نیستند.'
                             : 'Project work statuses are defined by the system and cannot be edited.'),
@@ -753,11 +753,11 @@ export const StrategyManagementHubPage = ({ onNavigate }: { onNavigate: (page: s
     );
 };
 
-export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate, setInfoModal }: { 
-    strategies: Strategy[], 
-    onSaveStrategies: (strategies: Strategy[]) => Promise<{ ok: boolean }>, 
+export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate, setInfoModal }: {
+    strategies: Strategy[],
+    onSaveStrategies: (strategies: Strategy[]) => Promise<{ ok: boolean }>,
     onNavigate: (page: string) => void,
-    setInfoModal: (modal: { title: string, message: string } | null) => void 
+    setInfoModal: (modal: { title: string, message: string } | null) => void
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const backIcon = language === 'fa' ? 'arrow_forward' : 'arrow_back';
@@ -789,7 +789,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
                 }
             });
         };
-        
+
         setLevelsAndCalculateWeights(tree, 0);
         return tree;
     }, [localStrategies]);
@@ -797,7 +797,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
     const totalWeight = useMemo(() => {
         return processedStrategies.reduce((sum, s) => sum + (s.weight || 0), 0);
     }, [processedStrategies]);
-    
+
     const handleUpdate = (id: string, field: 'name' | 'weight' | 'description', value: string | number) => {
         setLocalStrategies(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
     };
@@ -828,7 +828,7 @@ export const DefineStrategiesPage = ({ strategies, onSaveStrategies, onNavigate,
         }
         setLocalStrategies(prev => prev.filter(s => !idsToDelete.has(s.id)));
     };
-    
+
     // Whether the weights add up to 100 is the backend's call: it refuses the tree and the App shows its message.
     const handleSave = async () => {
         const outcome = await onSaveStrategies(localStrategies);
@@ -928,7 +928,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
                 tree.push(strat);
             }
         });
-        
+
         const setLevelsWeightsAndLeafStatus = (nodes: Strategy[], level: number) => {
             nodes.forEach(node => {
                 node.level = level;
@@ -957,7 +957,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
 
         return { strategyTree: tree, leafStrategies: leafStrategiesResult };
     }, [strategies]);
-    
+
     const getLeafCount = useCallback((strategy: Strategy): number => {
         if (strategy.isLeaf) {
             return 1;
@@ -973,12 +973,12 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
         }
         return max;
     }, []);
-    
+
     const maxDepth = useMemo(() => getMaxDepth(strategyTree) || 1, [strategyTree, getMaxDepth]);
 
     const headerRows = useMemo(() => {
         if (maxDepth === 0) return [];
-        
+
         const rows: { label: string, colspan: number, rowspan: number, key: string }[][] = Array.from({ length: maxDepth }, () => []);
 
         const buildHeader = (nodes: Strategy[], level: number) => {
@@ -986,7 +986,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
             nodes.forEach(node => {
                 const colspan = getLeafCount(node);
                 const rowspan = node.isLeaf ? maxDepth - level : 1;
-                
+
                 if (colspan > 0) { // Only add to header if it has leaf nodes
                     rows[level].push({
                         label: `${node.name} (${language === 'fa' ? toPersianDigits(node.weight) : node.weight}%)`,
@@ -995,7 +995,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
                         key: node.id
                     });
                 }
-                
+
                 if (node.children) {
                     buildHeader(node.children, level + 1);
                 }
@@ -1005,7 +1005,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
         buildHeader(strategyTree, 0);
         return rows.filter(row => row.length > 0);
     }, [strategyTree, maxDepth, getLeafCount]);
-    
+
     const projectAlignments = useMemo(() => {
         return projects
             .filter(p => p.approvalStatus === 'Approved')
@@ -1022,7 +1022,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
                 };
             });
     }, [projects, leafStrategies, localAlignments, percentages]);
-    
+
     const alignmentLevels: AlignmentLevel[] = ['None', 'Low', 'Medium', 'High'];
     const levelTranslations: Record<AlignmentLevel, TranslationKey> = {
         'None': 'none', 'Low': 'low', 'Medium': 'medium', 'High': 'high'
@@ -1113,62 +1113,7 @@ export const AlignmentMatrixPage = ({ projects, strategies, alignments, percenta
 
 export const ColorFormatPage = ({ onNavigate }: { onNavigate: (page: string) => void }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
-    const { theme, setTheme, colorScheme, setColorScheme } = useContext(ThemeContext);
-
-    const handleThemeChange = (val: 'light' | 'dark') => {
-        setTheme(val);
-    };
-
-    const schemes: { id: ColorScheme; labelFa: string; labelEn: string; color: string }[] = [
-        { id: 'teal', labelFa: 'تیل (پیش‌فرض)', labelEn: 'Teal (Default)', color: '#005f73' },
-        { id: 'blue', labelFa: 'آبی کلاسیک', labelEn: 'Classic Blue', color: '#1d4ed8' },
-        { id: 'emerald', labelFa: 'زمردی', labelEn: 'Emerald Green', color: '#047857' },
-        { id: 'purple', labelFa: 'بنفش سلطنتی', labelEn: 'Royal Purple', color: '#6d28d9' },
-        { id: 'crimson', labelFa: 'یاقوتی (سرخ)', labelEn: 'Crimson Red', color: '#be123c' },
-    ];
-
-    return (
-        React.createElement("div", { className: "content-container" },
-            React.createElement("div", { className: "page-header" },
-                React.createElement("h2", null, t('colorAndFormat'))
-            ),
-            React.createElement("div", { className: "form-section" },
-                React.createElement("h3", null, language === 'fa' ? 'حالت نمایش (پوسته)' : t('themeSettings')),
-                React.createElement("div", { className: "theme-radio-group" },
-                    React.createElement("div", {
-                        className: `theme-card-option ${theme === 'light' ? 'active' : ''}`,
-                        onClick: () => handleThemeChange('light')
-                    },
-                        React.createElement("span", { className: "material-symbols-outlined" }, "light_mode"),
-                        React.createElement("span", null, t('lightMode'))
-                    ),
-                    React.createElement("div", {
-                        className: `theme-card-option ${theme === 'dark' ? 'active' : ''}`,
-                        onClick: () => handleThemeChange('dark')
-                    },
-                        React.createElement("span", { className: "material-symbols-outlined" }, "dark_mode"),
-                        React.createElement("span", null, t('darkMode'))
-                    )
-                )
-            ),
-            React.createElement("div", { className: "form-section" },
-                React.createElement("h3", null, language === 'fa' ? 'پالت رنگ اصلی سیستم' : 'Primary Color Palette'),
-                React.createElement("div", { className: "color-palettes-grid" },
-                    schemes.map(s => (
-                        React.createElement("div", {
-                            key: s.id,
-                            className: `color-palette-card ${colorScheme === s.id ? 'active' : ''}`,
-                            onClick: () => setColorScheme(s.id)
-                        },
-                            React.createElement("div", { className: "color-circle", style: { backgroundColor: s.color } }),
-                            React.createElement("span", { className: "color-label" }, language === 'fa' ? s.labelFa : s.labelEn),
-                            colorScheme === s.id && React.createElement("span", { className: "material-symbols-outlined check-icon" }, "check_circle")
-                        )
-                    ))
-                )
-            )
-        )
-    );
+    return <div className="content-container"><div className="page-header"><h2>{t('colorAndFormat')}</h2></div><div className="form-section"><h3>{language === 'fa' ? 'ظاهر سامانه پست بانک' : 'Post Bank appearance'}</h3><p>{language === 'fa' ? 'رنگ سبز پست بانک، پس‌زمینه روشن و کارت‌های شیشه‌ای در تمام صفحات سامانه هماهنگ هستند.' : 'Post Bank green, light backgrounds and glass panels are consistent across the application.'}</p></div></div>;
 };
 
 export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave, onDelete, onDownload }: {
@@ -1211,7 +1156,7 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
             fileInputRef.current.value = '';
         }
     };
-    
+
     const handleDelete = (id: string) => {
         if(window.confirm(t('confirmDocDelete'))) {
             onDelete(id);
@@ -1308,8 +1253,8 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
 
                 React.createElement("div", { className: "list-section" },
                     React.createElement("h3", null, t('knowledgeDocsList')),
-                    filteredDocuments.length === 0 
-                    ? React.createElement("p", { style: { padding: '1.5rem', textAlign: 'center', color: '#64748b' } }, language === 'fa' ? 'هیچ سند دانشی با این مشخصات یافت نشد.' : t('noKnowledgeDocs'))
+                    filteredDocuments.length === 0
+                    ? React.createElement("p", { style: { padding: '1.5rem', textAlign: 'center', color: '#648b74' } }, language === 'fa' ? 'هیچ سند دانشی با این مشخصات یافت نشد.' : t('noKnowledgeDocs'))
                     : docTypeOrder.map(type => (
                         groupedDocuments[type] && groupedDocuments[type].length > 0 && (
                             React.createElement(Fragment, { key: type },
@@ -1332,7 +1277,7 @@ export const KnowledgeManagementPage = ({ onNavigate, knowledgeDocuments, onSave
                                                         React.createElement("button", { onClick: () => onDownload(doc), className: "action-icon", "aria-label": language === 'fa' ? 'دانلود' : 'Download' } as React.HTMLAttributes<HTMLButtonElement>,
                                                             React.createElement("span", { className: "material-symbols-outlined" }, "download")
                                                         ),
-                                                        React.createElement("button", { onClick: () => handleDelete(doc.id), className: "action-icon delete", "aria-label": t('delete') } as React.HTMLAttributes<HTMLButtonElement>, 
+                                                        React.createElement("button", { onClick: () => handleDelete(doc.id), className: "action-icon delete", "aria-label": t('delete') } as React.HTMLAttributes<HTMLButtonElement>,
                                                             React.createElement("span", { className: "material-symbols-outlined" }, "delete")
                                                         )
                                                     )

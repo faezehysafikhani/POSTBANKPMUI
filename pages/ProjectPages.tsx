@@ -1222,7 +1222,7 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
             acc[u] = (acc[u] || 0) + 1;
             return acc;
         }, {} as Record<string, number>);
-        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316', '#14B8A6', '#6366F1', '#E11D48', '#84CC16', '#A855F7'];
+        const colors = ['#3bf689', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06d45c', '#F97316', '#14B8A6', '#63f19e', '#E11D48', '#84CC16', '#A855F7'];
         return (Object.entries(counts) as [
             string,
             number
@@ -1239,7 +1239,7 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
             return [];
         const statusColorMap: Record<string, string> = {
             'Planning': '#F59E0B',
-            'In Progress': '#2563EB',
+            'In Progress': '#25eb77',
             'On Hold': '#9333EA',
             'Completed': '#10B981'
         };
@@ -1262,7 +1262,7 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
             acc[key] = (acc[key] || 0) + 1;
             return acc;
         }, {} as Record<string, number>);
-        const colors = ['#6366F1', '#10B981', '#EC4899', '#F59E0B', '#06B6D4', '#8B5CF6', '#F97316', '#14B8A6', '#3B82F6', '#E11D48', '#84CC16', '#A855F7'];
+        const colors = ['#63f19e', '#10B981', '#EC4899', '#F59E0B', '#06d45c', '#8B5CF6', '#F97316', '#14B8A6', '#3bf689', '#E11D48', '#84CC16', '#A855F7'];
         return (Object.entries(counts) as [
             string,
             number
@@ -1531,7 +1531,7 @@ export const ActionDashboardPage = ({ actions, users, onNavigate, owningUnits, p
     const statusChartData = useMemo(() => {
         const statusColorMap: Record<string, string> = {
             'Planning': '#F59E0B',
-            'In Progress': '#2563EB',
+            'In Progress': '#25eb77',
             'On Hold': '#9333EA',
             'Completed': '#10B981'
         };
@@ -1547,7 +1547,7 @@ export const ActionDashboardPage = ({ actions, users, onNavigate, owningUnits, p
             acc[userId] = (acc[userId] || 0) + 1;
             return acc;
         }, {} as Record<number, number>);
-        const colors = ['#6366F1', '#10B981', '#EC4899', '#F59E0B', '#06B6D4', '#8B5CF6', '#F97316', '#14B8A6', '#3B82F6', '#E11D48', '#84CC16', '#A855F7'];
+        const colors = ['#63f19e', '#10B981', '#EC4899', '#F59E0B', '#06d45c', '#8B5CF6', '#F97316', '#14B8A6', '#3bf689', '#E11D48', '#84CC16', '#A855F7'];
         return Object.entries(counts).map(([userId, value], index) => {
             const user = users.find(u => u.id === userId);
             return { name: user?.username || t('unassigned'), value, color: colors[index % colors.length] };
@@ -1559,7 +1559,7 @@ export const ActionDashboardPage = ({ actions, users, onNavigate, owningUnits, p
             acc[u] = (acc[u] || 0) + 1;
             return acc;
         }, {} as Record<string, number>);
-        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316', '#14B8A6', '#6366F1', '#E11D48', '#84CC16', '#A855F7'];
+        const colors = ['#3bf689', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06d45c', '#F97316', '#14B8A6', '#63f19e', '#E11D48', '#84CC16', '#A855F7'];
         return Object.entries(counts).map(([label, value], index) => ({
             name: label,
             value,

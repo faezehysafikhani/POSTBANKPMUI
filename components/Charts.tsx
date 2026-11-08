@@ -10,7 +10,7 @@ export const ProjectCountCard = ({ count, title }: { count: number, title: strin
     useEffect(() => {
         const node = countRef.current;
         if (!node) return;
-        
+
         const controls = animate(0, count, {
             duration: 1,
             ease: "easeOut",
@@ -40,7 +40,7 @@ export const CostStatCard = ({ cost, title }: { cost: number, title: string }): 
     useEffect(() => {
         const node = costRef.current;
         if (!node) return;
-        
+
         const controls = animate(0, cost, {
             duration: 1,
             ease: "easeOut",
@@ -66,19 +66,19 @@ export const CostStatCard = ({ cost, title }: { cost: number, title: string }): 
 };
 
 export const VIBRANT_CHART_COLORS = [
-    '#3B82F6', // Vibrant Royal Blue
+    '#3bf689', // Vibrant Royal Blue
     '#10B981', // Vibrant Emerald Green
     '#F59E0B', // Vibrant Amber Gold
     '#8B5CF6', // Vibrant Vivid Violet
     '#EC4899', // Vibrant Fuchsia Pink
-    '#06B6D4', // Vibrant Cyan
+    '#06d45c', // Vibrant Cyan
     '#F97316', // Vibrant Sunset Orange
     '#14B8A6', // Vibrant Teal
-    '#6366F1', // Vibrant Indigo
+    '#63f19e', // Vibrant Indigo
     '#E11D48', // Vibrant Rose
     '#84CC16', // Vibrant Lime Green
     '#A855F7', // Vibrant Purple
-    '#0284C7', // Vibrant Sky Blue
+    '#02c754', // Vibrant Sky Blue
     '#D97706', // Vibrant Warm Bronze
     '#059669', // Vibrant Jade
     '#7C3AED', // Vibrant Deep Violet
@@ -96,8 +96,8 @@ export const PieDoughnutChart = ({ data, type = 'doughnut' }: { data: { name: st
     const enrichedData = useMemo(() => {
         return data.map((item, idx) => ({
             ...item,
-            color: item.color && item.color !== 'var(--inactive-color)' 
-                ? item.color 
+            color: item.color && item.color !== 'var(--inactive-color)'
+                ? item.color
                 : VIBRANT_CHART_COLORS[idx % VIBRANT_CHART_COLORS.length]
         }));
     }, [data]);
@@ -138,9 +138,9 @@ export const PieDoughnutChart = ({ data, type = 'doughnut' }: { data: { name: st
                                 strokeDasharray: `${circumference} ${circumference}`,
                                 strokeLinecap: type === 'pie' ? "butt" : "round",
                                 transform: `rotate(${rotation} 100 100)`,
-                                style: { 
-                                    cursor: 'pointer', 
-                                    transition: 'stroke-width 0.25s ease, opacity 0.2s ease, filter 0.2s ease', 
+                                style: {
+                                    cursor: 'pointer',
+                                    transition: 'stroke-width 0.25s ease, opacity 0.2s ease, filter 0.2s ease',
                                     opacity: hoveredIndex !== null && !isHovered ? 0.45 : 1,
                                     filter: isHovered ? 'drop-shadow(0 2px 6px rgba(0,0,0,0.25))' : 'none'
                                 },
@@ -169,18 +169,18 @@ export const PieDoughnutChart = ({ data, type = 'doughnut' }: { data: { name: st
                             style: {
                                 fontSize: '1.25rem',
                                 fontWeight: 800,
-                                color: activeItem ? activeItem.color : 'var(--text-primary, #1e293b)',
+                                color: activeItem ? activeItem.color : 'var(--text-primary, #1e3b2a)',
                                 lineHeight: 1.2,
                                 transition: 'color 0.2s ease'
                             }
-                        }, activeItem 
+                        }, activeItem
                             ? (language === 'fa' ? toPersianDigits(activeItem.value) : activeItem.value)
                             : (language === 'fa' ? toPersianDigits(total) : total)
                         ),
                         React.createElement("span", {
                             style: {
                                 fontSize: '0.72rem',
-                                color: 'var(--text-muted, #64748b)',
+                                color: 'var(--text-muted, #648b74)',
                                 fontWeight: 600
                             }
                         }, activeItem ? (language === 'fa' ? 'تعداد' : 'Count') : (language === 'fa' ? 'مجموع' : 'Total'))
@@ -192,8 +192,8 @@ export const PieDoughnutChart = ({ data, type = 'doughnut' }: { data: { name: st
                     React.createElement("div", {
                         key: index,
                         className: "legend-item",
-                        style: { 
-                            cursor: 'pointer', 
+                        style: {
+                            cursor: 'pointer',
                             opacity: hoveredIndex !== null && hoveredIndex !== index ? 0.45 : 1,
                             transform: hoveredIndex === index ? 'scale(1.04)' : 'none',
                             transition: 'all 0.2s ease'
@@ -220,7 +220,7 @@ export interface ChartDataItem {
 export const HorizontalBarChart = ({ data }: { data: { label?: string; name?: string; value: number; color?: string }[] }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const [hoveredIdx, setHoveredIdx] = React.useState<number | null>(null);
-    
+
     const normalized = useMemo(() => data.map((d, idx) => ({
         label: d.label || d.name || '',
         value: d.value,
@@ -244,42 +244,42 @@ export const HorizontalBarChart = ({ data }: { data: { label?: string; name?: st
                     React.createElement("div", {
                         key: `${item.label}-${idx}`,
                         className: "bar-grid-row",
-                        style: { 
-                            cursor: 'pointer', 
-                            opacity: hoveredIdx !== null && hoveredIdx !== idx ? 0.5 : 1, 
+                        style: {
+                            cursor: 'pointer',
+                            opacity: hoveredIdx !== null && hoveredIdx !== idx ? 0.5 : 1,
                             transition: 'opacity 0.2s ease, transform 0.2s ease',
                             transform: hoveredIdx === idx ? 'translateX(2px)' : 'none'
                         },
                         onMouseEnter: () => setHoveredIdx(idx),
                         onMouseLeave: () => setHoveredIdx(null)
                     },
-                         React.createElement("span", { 
-                             className: "bar-label-horizontal", 
+                         React.createElement("span", {
+                             className: "bar-label-horizontal",
                              title: item.label,
-                             style: { fontWeight: hoveredIdx === idx ? 700 : 600, color: hoveredIdx === idx ? 'var(--text-primary, #0f172a)' : 'var(--text-secondary, #334155)' }
+                             style: { fontWeight: hoveredIdx === idx ? 700 : 600, color: hoveredIdx === idx ? 'var(--text-primary, #0f2a1a)' : 'var(--text-secondary, #335541)' }
                          }, item.label),
                          React.createElement("div", { className: "bar-wrapper-horizontal" },
                             React.createElement(motion.div, {
                                 className: "bar-fill-horizontal",
-                                style: { 
+                                style: {
                                     background: `linear-gradient(90deg, ${item.color}, ${item.color}cc)`,
                                     borderRadius: '6px',
                                     boxShadow: hoveredIdx === idx ? `0 0 10px ${item.color}88` : `0 1px 3px ${item.color}44`,
-                                    filter: hoveredIdx === idx ? 'brightness(1.1)' : 'none' 
+                                    filter: hoveredIdx === idx ? 'brightness(1.1)' : 'none'
                                 },
                                 initial: { width: '0%' },
                                 animate: { width: `${Math.max(4, (item.value / maxValue) * 100)}%` },
                                 transition: { duration: 0.8, ease: "easeInOut", delay: idx * 0.05 }
                             })
                          ),
-                         React.createElement("span", { 
+                         React.createElement("span", {
                              className: "bar-value-horizontal",
-                             style: { 
-                                 fontWeight: 700, 
+                             style: {
+                                 fontWeight: 700,
                                  color: item.color,
                                  minWidth: '28px',
                                  textAlign: 'center'
-                             } 
+                             }
                          }, language === 'fa' ? toPersianDigits(item.value) : item.value)
                     )
                 ))
@@ -357,7 +357,7 @@ export const GaugeChart = ({ value, label }: { value: number; label: string }): 
     useEffect(() => {
         const node = valueRef.current;
         if (!node) return;
-        
+
         const controls = animate(0, clampedValue, {
             duration: 1.5,
             ease: "circOut",

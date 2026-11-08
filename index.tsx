@@ -16,3 +16,4 @@ if (rootElement) {
 }
 
 import './styles/postbank-login.css';
+import './styles/postbank-workspace.css';

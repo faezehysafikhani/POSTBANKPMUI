@@ -31,7 +31,7 @@ export const FeaturesHandbook: React.FC<{
             titleFa: '۱. مدیریت پورتفولیو، منشور، ساختار شکست و برنامه‌ریزی پروژه‌ها (Portfolio & Planning)',
             titleEn: '1. Portfolio, Charter, WBS & Project Planning',
             icon: 'account_tree',
-            color: '#0284c7',
+            color: '#02c754',
             features: [
                 {
                     titleFa: 'پشتیبانی دوگانه از متدولوژی‌های Waterfall (آبشاری) و Agile (چابک)',
@@ -363,7 +363,7 @@ export const FeaturesHandbook: React.FC<{
             titleFa: '۶. ساختار شکست سازمانی، امنیت، سطوح دسترسی و تنظیمات پایه (OBS & Settings)',
             titleEn: '6. Organizational Breakdown Structure (OBS), Security & Master Data',
             icon: 'tune',
-            color: '#475569',
+            color: '#476955',
             features: [
                 {
                     titleFa: 'مدیریت درخت ساختار شکست سازمانی (OBS) و تجمیع در سطح ۲',
@@ -532,7 +532,7 @@ export const FeaturesHandbook: React.FC<{
             max-width: 100% !important;
             margin-bottom: 0.85rem !important;
             padding: 0.8rem 1rem !important;
-            background: #0f172a !important;
+            background: #0f2a1a !important;
             color: #ffffff !important;
             border-radius: 8px !important;
             -webkit-print-color-adjust: exact !important;
@@ -546,7 +546,7 @@ export const FeaturesHandbook: React.FC<{
             max-width: 100% !important;
             margin-bottom: 0.9rem !important;
             padding: 0.75rem !important;
-            border: 1px solid #cbd5e1 !important;
+            border: 1px solid #cbe1d4 !important;
             background: #ffffff !important;
             border-radius: 8px !important;
             box-sizing: border-box !important;
@@ -574,8 +574,8 @@ export const FeaturesHandbook: React.FC<{
             page-break-inside: avoid !important;
             width: 100% !important;
             max-width: 100% !important;
-            border: 1px solid #cbd5e1 !important;
-            background: #f8fafc !important;
+            border: 1px solid #cbe1d4 !important;
+            background: #f8fcfa !important;
             box-shadow: none !important;
             padding: 0.65rem 0.8rem !important;
             border-radius: 6px !important;
@@ -584,14 +584,14 @@ export const FeaturesHandbook: React.FC<{
             print-color-adjust: exact !important;
           }
           .feature-card h4 {
-            color: #0f172a !important;
+            color: #0f2a1a !important;
             font-size: 0.88rem !important;
             font-weight: 700 !important;
             margin-bottom: 0.3rem !important;
             line-height: 1.35 !important;
           }
           .feature-card p {
-            color: #334155 !important;
+            color: #335541 !important;
             font-size: 0.76rem !important;
             line-height: 1.45 !important;
           }
@@ -603,7 +603,7 @@ export const FeaturesHandbook: React.FC<{
             line-height: 1.35 !important;
           }
           .feature-keypoints li {
-            color: #1e293b !important;
+            color: #1e3b2a !important;
             margin-bottom: 2px !important;
           }
           .handbook-footer {
@@ -626,7 +626,7 @@ export const FeaturesHandbook: React.FC<{
             gap: '1rem',
             marginBottom: '1.5rem',
             paddingBottom: '1rem',
-            borderBottom: '2px solid var(--border-color, #e2e8f0)'
+            borderBottom: '2px solid var(--border-color, #e2f0e8)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {onBack && (<button onClick={onBack} className="btn btn-secondary" style={{
@@ -643,10 +643,10 @@ export const FeaturesHandbook: React.FC<{
                 {isFa ? 'بازگشت به تنظیمات' : 'Back to Settings'}
               </button>)}
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-color, #0f172a)' }}>
+              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-color, #0f2a1a)' }}>
                 {isFa ? 'کتابچه جامع امکانات و قابلیت‌های سامانه مدیریت پروژه (PM)' : 'Project Management (PM) App Features Guide'}
               </h2>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#648b74' }}>
                 {isFa ? 'راهنمای تفصیلی ماژول‌ها، ابزارهای تخصصی و امکانات پیشرفته سیستم' : 'Comprehensive guide of system modules, specialized tools and advanced capabilities'}
               </p>
             </div>
@@ -658,10 +658,10 @@ export const FeaturesHandbook: React.FC<{
             <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            backgroundColor: 'var(--bg-secondary, #f1f5f9)',
+            backgroundColor: 'var(--bg-secondary, #f1f9f4)',
             padding: '3px',
             borderRadius: '8px',
-            border: '1px solid var(--border-color, #cbd5e1)'
+            border: '1px solid var(--border-color, #cbe1d4)'
         }}>
               <button type="button" onClick={() => setPrintOrientation('landscape')} style={{
             display: 'inline-flex',
@@ -673,8 +673,8 @@ export const FeaturesHandbook: React.FC<{
             fontSize: '0.82rem',
             fontWeight: 600,
             cursor: 'pointer',
-            backgroundColor: printOrientation === 'landscape' ? '#0284c7' : 'transparent',
-            color: printOrientation === 'landscape' ? '#ffffff' : 'var(--text-color, #475569)',
+            backgroundColor: printOrientation === 'landscape' ? '#02c754' : 'transparent',
+            color: printOrientation === 'landscape' ? '#ffffff' : 'var(--text-color, #476955)',
             transition: 'all 0.15s ease'
         }} title={isFa ? 'تنظیم جهت چاپ به صورت صفحه عرضی / افقی' : 'Set print orientation to landscape'}>
                 <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>crop_landscape</span>
@@ -690,8 +690,8 @@ export const FeaturesHandbook: React.FC<{
             fontSize: '0.82rem',
             fontWeight: 600,
             cursor: 'pointer',
-            backgroundColor: printOrientation === 'portrait' ? '#0284c7' : 'transparent',
-            color: printOrientation === 'portrait' ? '#ffffff' : 'var(--text-color, #475569)',
+            backgroundColor: printOrientation === 'portrait' ? '#02c754' : 'transparent',
+            color: printOrientation === 'portrait' ? '#ffffff' : 'var(--text-color, #476955)',
             transition: 'all 0.15s ease'
         }} title={isFa ? 'تنظیم جهت چاپ به صورت صفحه عمودی' : 'Set print orientation to portrait'}>
                 <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>crop_portrait</span>
@@ -723,14 +723,14 @@ export const FeaturesHandbook: React.FC<{
         <div className="handbook-printable-header" style={{
             textAlign: 'center',
             padding: '1.2rem 1.5rem',
-            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            background: 'linear-gradient(135deg, #1e3b2a 0%, #0f2a1a 100%)',
             color: '#ffffff',
             borderRadius: '12px',
             marginBottom: '1.5rem',
-            boxShadow: '0 4px 14px rgba(15,23,42,0.15)'
+            boxShadow: '0 4px 14px rgba(15, 42, 26,0.15)'
         }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '1.8rem', color: '#60a5fa' }}>menu_book</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '1.8rem', color: '#60faa0' }}>menu_book</span>
             <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>
               {isFa ? 'کتابچه جامع راهنمای امکانات و قابلیت‌های سامانه مدیریت پروژه (PM)' : 'Project Management (PM) App Features & Capabilities Handbook'}
             </h1>
@@ -750,9 +750,9 @@ export const FeaturesHandbook: React.FC<{
             alignItems: 'center',
             marginBottom: '1.5rem',
             padding: '1rem',
-            backgroundColor: 'var(--bg-secondary, #f8fafc)',
+            backgroundColor: 'var(--bg-secondary, #f8fcfa)',
             borderRadius: '10px',
-            border: '1px solid var(--border-color, #e2e8f0)'
+            border: '1px solid var(--border-color, #e2f0e8)'
         }}>
           {/* Search Input */}
           <div style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
@@ -762,7 +762,7 @@ export const FeaturesHandbook: React.FC<{
             transform: 'translateY(-50%)',
             right: isFa ? '10px' : 'auto',
             left: isFa ? 'auto' : '10px',
-            color: '#94a3b8'
+            color: '#94b8a3'
         }}>search</span>
             <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={isFa ? 'جستجو در قابلیت‌ها، امکانات و کلیدواژه‌ها...' : 'Search features and keywords...'} className="form-control" style={{
             width: '100%',
@@ -771,7 +771,7 @@ export const FeaturesHandbook: React.FC<{
             paddingTop: '0.5rem',
             paddingBottom: '0.5rem',
             borderRadius: '8px',
-            border: '1px solid #cbd5e1'
+            border: '1px solid #cbe1d4'
         }}/>
           </div>
 
@@ -784,8 +784,8 @@ export const FeaturesHandbook: React.FC<{
             fontWeight: 600,
             border: 'none',
             cursor: 'pointer',
-            backgroundColor: selectedCategory === 'all' ? '#1e293b' : '#e2e8f0',
-            color: selectedCategory === 'all' ? '#ffffff' : '#334155'
+            backgroundColor: selectedCategory === 'all' ? '#1e3b2a' : '#e2f0e8',
+            color: selectedCategory === 'all' ? '#ffffff' : '#335541'
         }}>
               {isFa ? 'همه بخش‌ها' : 'All Sections'}
             </button>
@@ -796,8 +796,8 @@ export const FeaturesHandbook: React.FC<{
                 fontWeight: 600,
                 border: 'none',
                 cursor: 'pointer',
-                backgroundColor: selectedCategory === cat.id ? cat.color : '#e2e8f0',
-                color: selectedCategory === cat.id ? '#ffffff' : '#334155',
+                backgroundColor: selectedCategory === cat.id ? cat.color : '#e2f0e8',
+                color: selectedCategory === cat.id ? '#ffffff' : '#335541',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px'
@@ -810,15 +810,15 @@ export const FeaturesHandbook: React.FC<{
 
         {/* Feature Categories Rendering */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {filteredCategories.length === 0 ? (<div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '3rem', color: '#cbd5e1' }}>search_off</span>
+          {filteredCategories.length === 0 ? (<div style={{ textAlign: 'center', padding: '3rem', color: '#648b74' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '3rem', color: '#cbe1d4' }}>search_off</span>
               <p style={{ marginTop: '0.5rem', fontWeight: 600 }}>
                 {isFa ? 'هیچ قابلیتی با این عبارت جستجو یافت نشد.' : 'No features found matching your search query.'}
               </p>
             </div>) : (filteredCategories.map(cat => (<div key={cat.id} className="handbook-category-section" style={{
                 backgroundColor: 'var(--card-bg-color, #ffffff)',
                 borderRadius: '12px',
-                border: '1px solid var(--border-color, #e2e8f0)',
+                border: '1px solid var(--border-color, #e2f0e8)',
                 padding: '1.25rem',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
             }}>
@@ -844,7 +844,7 @@ export const FeaturesHandbook: React.FC<{
             }}>
                     <span className="material-symbols-outlined" style={{ fontSize: '1.3rem' }}>{cat.icon}</span>
                   </div>
-                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-color, #1e293b)' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-color, #1e3b2a)' }}>
                     {isFa ? cat.titleFa : cat.titleEn}
                   </h3>
                 </div>
@@ -857,17 +857,17 @@ export const FeaturesHandbook: React.FC<{
             }}>
                   {cat.features.map((feat, fIdx) => (<div key={fIdx} className="feature-card" style={{
                     padding: '1rem',
-                    backgroundColor: 'var(--bg-secondary, #f8fafc)',
+                    backgroundColor: 'var(--bg-secondary, #f8fcfa)',
                     borderRadius: '8px',
-                    border: '1px solid var(--border-color, #e2e8f0)',
+                    border: '1px solid var(--border-color, #e2f0e8)',
                     display: 'flex',
                     flexDirection: 'column'
                 }}>
                       <div>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-color, #0f172a)' }}>
+                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-color, #0f2a1a)' }}>
                           {isFa ? feat.titleFa : feat.titleEn}
                         </h4>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted, #475569)', lineHeight: '1.55' }}>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted, #476955)', lineHeight: '1.55' }}>
                           {isFa ? feat.descFa : feat.descEn}
                         </p>
                         {((isFa ? feat.keyPointsFa : feat.keyPointsEn) || []).length > 0 && (<ul className="feature-keypoints" style={{
@@ -875,7 +875,7 @@ export const FeaturesHandbook: React.FC<{
                         paddingRight: isFa ? '1.2rem' : '0',
                         paddingLeft: isFa ? '0' : '1.2rem',
                         fontSize: '0.8rem',
-                        color: 'var(--text-color, #334155)',
+                        color: 'var(--text-color, #335541)',
                         lineHeight: '1.5'
                     }}>
                             {(isFa ? feat.keyPointsFa : feat.keyPointsEn)?.map((kp, kpIdx) => (<li key={kpIdx} style={{ marginBottom: '3px' }}>
@@ -892,10 +892,10 @@ export const FeaturesHandbook: React.FC<{
         <div className="handbook-footer" style={{
             marginTop: '2rem',
             paddingTop: '1rem',
-            borderTop: '1px dashed #cbd5e1',
+            borderTop: '1px dashed #cbe1d4',
             textAlign: 'center',
             fontSize: '0.8rem',
-            color: '#64748b'
+            color: '#648b74'
         }}>
           {isFa
             ? `سامانه یکپارچه مدیریت پروژه (PM) - کتابچه جامع راهنما و مشخصات فنی سیستم - تاریخ نسخه: ${new Date().toLocaleDateString('fa-IR')}`

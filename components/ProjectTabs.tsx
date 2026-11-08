@@ -167,7 +167,7 @@ export const RiskProbabilityImpactMatrix = ({ risks = [], language, cellColors, 
         Medium: isFa ? 'متوسط' : 'Medium',
         Low: isFa ? 'کم' : 'Low'
     };
-    return React.createElement("div", { className: "risk-matrix-card" }, React.createElement("div", { className: "risk-matrix-header" }, React.createElement("h5", { className: "risk-matrix-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#2563eb' } }, "grid_view"), React.createElement("span", null, isFa ? 'ماتریس احتمال و اثر ریسک' : 'Risk Probability & Impact Matrix')), React.createElement("button", {
+    return React.createElement("div", { className: "risk-matrix-card" }, React.createElement("div", { className: "risk-matrix-header" }, React.createElement("h5", { className: "risk-matrix-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#25eb77' } }, "grid_view"), React.createElement("span", null, isFa ? 'ماتریس احتمال و اثر ریسک' : 'Risk Probability & Impact Matrix')), React.createElement("button", {
         type: "button",
         className: "risk-matrix-reset-btn",
         onClick: onResetAllToRed,
@@ -180,8 +180,8 @@ export const RiskProbabilityImpactMatrix = ({ risks = [], language, cellColors, 
             justifyContent: 'flex-end',
             alignItems: 'center',
             padding: '0.5rem 1rem',
-            backgroundColor: 'var(--card-bg-color, #f8fafc)',
-            borderBottom: '1px solid var(--border-color, #e2e8f0)',
+            backgroundColor: 'var(--card-bg-color, #f8fcfa)',
+            borderBottom: '1px solid var(--border-color, #e2f0e8)',
             flexWrap: 'wrap',
             gap: '0.5rem',
             fontSize: '0.8rem'
@@ -300,7 +300,7 @@ export const RiskDefinitionsCard = ({ definitions, onSaveDefinitions, language, 
         const item = labels[lvl];
         return React.createElement("span", { className: `risk-def-level-badge ${item.cls}` }, isFa ? item.fa : item.en);
     };
-    return React.createElement("div", { className: "risk-definitions-card" }, React.createElement("div", { className: "risk-def-header" }, React.createElement("h5", { className: "risk-def-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#0284c7' } }, "tune"), React.createElement("span", null, isFa ? 'جدول تعاریف احتمال و اثر' : 'Probability & Impact Definitions')), React.createElement("div", { className: "risk-def-actions" }, React.createElement("div", { className: "risk-def-switch-tabs" }, React.createElement("button", {
+    return React.createElement("div", { className: "risk-definitions-card" }, React.createElement("div", { className: "risk-def-header" }, React.createElement("h5", { className: "risk-def-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#02c754' } }, "tune"), React.createElement("span", null, isFa ? 'جدول تعاریف احتمال و اثر' : 'Probability & Impact Definitions')), React.createElement("div", { className: "risk-def-actions" }, React.createElement("div", { className: "risk-def-switch-tabs" }, React.createElement("button", {
         type: "button",
         className: `risk-def-tab-btn ${activeType === 'probability' ? 'active' : ''}`,
         onClick: () => setActiveType('probability')
@@ -322,7 +322,7 @@ export const RiskDefinitionsCard = ({ definitions, onSaveDefinitions, language, 
             value: item.description || '',
             placeholder: isFa ? 'شرح معیار...' : 'Description...',
             onChange: (e: ChangeEvent<HTMLInputElement>) => handleThresholdChange(lvl, 'description', e.target.value)
-        }) : React.createElement("span", { style: { color: 'var(--text-color, #334155)', lineHeight: 1.4 } }, item.description || '-')));
+        }) : React.createElement("span", { style: { color: 'var(--text-color, #335541)', lineHeight: 1.4 } }, item.description || '-')));
     })))));
 };
 export const ProjectRisksTab = ({ risks, users = [], onEdit, onDelete, isReadOnly = false, isPMOrAdmin = false, onApprove, onReject, currentUserId, requiresWorkflow = true, hideApprovalStatus = false, project, onUpdateRisks, onUpdateRiskDefinitions, onUpdateRiskMatrixColors, onSaveAction, calendars = [], projects = [], owningUnits = [], currentUser }: {
@@ -510,7 +510,7 @@ export const ProjectRisksTab = ({ risks, users = [], onEdit, onDelete, isReadOnl
                 type: "button",
                 onClick: () => handleConvertToRiskAction(risk),
                 className: "action-icon",
-                style: { color: 'var(--primary-color, #0284c7)' },
+                style: { color: 'var(--primary-color, #02c754)' },
                 title: isFa ? 'تبدیل برنامه پاسخ به اقدام پروژه' : 'Convert Response Plan to Action Item'
             }, React.createElement("span", { className: "material-symbols-outlined" }, "add_task")), !isReadOnly && ((!requiresWorkflow) || risk.isApproved || (currentUserId && risk.submittedBy === currentUserId) || isPMOrAdmin) && React.createElement(Fragment, null, React.createElement("button", { onClick: () => onEdit(risk), className: "action-icon edit", "aria-label": t('editRisk') }, React.createElement("span", { className: "material-symbols-outlined" }, "edit")), React.createElement("button", { onClick: () => onDelete(risk.id), className: "action-icon delete", "aria-label": t('deleteRisk') }, React.createElement("span", { className: "material-symbols-outlined" }, "delete")))));
         })
@@ -520,7 +520,7 @@ export const ProjectRisksTab = ({ risks, users = [], onEdit, onDelete, isReadOnl
         style: {
             marginTop: '1.5rem',
             borderRadius: '12px',
-            border: '1px solid var(--border-color, #e2e8f0)',
+            border: '1px solid var(--border-color, #e2f0e8)',
             backgroundColor: 'var(--card-bg-color, #ffffff)',
             overflow: 'hidden',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
@@ -533,21 +533,21 @@ export const ProjectRisksTab = ({ risks, users = [], onEdit, onDelete, isReadOnl
             justifyContent: 'space-between',
             padding: '0.9rem 1.25rem',
             cursor: 'pointer',
-            backgroundColor: isMatrixSectionExpanded ? 'var(--hover-bg-color, rgba(37, 99, 235, 0.05))' : 'var(--card-bg-color, #ffffff)',
-            borderBottom: isMatrixSectionExpanded ? '1px solid var(--border-color, #e2e8f0)' : 'none',
+            backgroundColor: isMatrixSectionExpanded ? 'var(--hover-bg-color, rgba(37, 235, 119, 0.05))' : 'var(--card-bg-color, #ffffff)',
+            borderBottom: isMatrixSectionExpanded ? '1px solid var(--border-color, #e2f0e8)' : 'none',
             userSelect: 'none',
             transition: 'background-color 0.2s ease'
         }
-    }, React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#2563eb', fontSize: '1.35rem' } }, "grid_view"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #1e293b)' } }, isFa ? 'ماتریس و جدول احتمال و اثر ریسک' : 'Risk Probability & Impact Matrix & Definitions'), React.createElement("span", {
+    }, React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#25eb77', fontSize: '1.35rem' } }, "grid_view"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #1e3b2a)' } }, isFa ? 'ماتریس و جدول احتمال و اثر ریسک' : 'Risk Probability & Impact Matrix & Definitions'), React.createElement("span", {
         style: {
             fontSize: '0.72rem',
             padding: '2px 8px',
             borderRadius: '9999px',
-            backgroundColor: isMatrixSectionExpanded ? '#dbeafe' : '#f1f5f9',
-            color: isMatrixSectionExpanded ? '#1d4ed8' : '#64748b',
+            backgroundColor: isMatrixSectionExpanded ? '#dbfeea' : '#f1f9f4',
+            color: isMatrixSectionExpanded ? '#1dd86b' : '#648b74',
             fontWeight: 600
         }
-    }, isMatrixSectionExpanded ? (isFa ? 'باز' : 'Expanded') : (isFa ? 'بسته' : 'Collapsed'))), React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#2563eb', fontSize: '0.82rem', fontWeight: 600 } }, React.createElement("span", null, isMatrixSectionExpanded ? (isFa ? 'بستن ماتریس و جدول' : 'Collapse') : (isFa ? 'نمایش ماتریس و جدول احتمال و اثر' : 'Show Matrix & Table')), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem' } }, isMatrixSectionExpanded ? 'expand_less' : 'expand_more'))), isMatrixSectionExpanded && React.createElement("div", { style: { padding: '1.25rem' } }, React.createElement("div", { className: "risk-tab-bottom-grid", style: { marginTop: 0 } }, React.createElement(RiskProbabilityImpactMatrix, {
+    }, isMatrixSectionExpanded ? (isFa ? 'باز' : 'Expanded') : (isFa ? 'بسته' : 'Collapsed'))), React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#25eb77', fontSize: '0.82rem', fontWeight: 600 } }, React.createElement("span", null, isMatrixSectionExpanded ? (isFa ? 'بستن ماتریس و جدول' : 'Collapse') : (isFa ? 'نمایش ماتریس و جدول احتمال و اثر' : 'Show Matrix & Table')), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem' } }, isMatrixSectionExpanded ? 'expand_less' : 'expand_more'))), isMatrixSectionExpanded && React.createElement("div", { style: { padding: '1.25rem' } }, React.createElement("div", { className: "risk-tab-bottom-grid", style: { marginTop: 0 } }, React.createElement(RiskProbabilityImpactMatrix, {
         risks: risks || [],
         language: language,
         cellColors: cellColors,
@@ -708,7 +708,7 @@ export const StakeholderStrategiesCard = ({ strategies, onSaveStrategies, langua
             badgeCls: 'stakeholder-strategy-monitor'
         }
     ];
-    return React.createElement("div", { className: "stakeholder-strategies-card" }, React.createElement("div", { className: "risk-def-header" }, React.createElement("h5", { className: "risk-def-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#0284c7' } }, "psychology"), React.createElement("span", null, isFa ? 'استراتژی‌های ماتریس ذینفعان' : 'Stakeholder Strategies Definition')), !isReadOnly && onSaveStrategies && (isEditing ? React.createElement("div", { className: "risk-def-actions" }, React.createElement("button", { type: "button", className: "risk-def-btn primary", onClick: handleSave }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "save"), React.createElement("span", null, isFa ? 'ذخیره' : 'Save')), React.createElement("button", { type: "button", className: "risk-def-btn secondary", onClick: handleCancel }, React.createElement("span", null, isFa ? 'انصراف' : 'Cancel'))) : React.createElement("div", { className: "risk-def-actions" }, React.createElement("button", { type: "button", className: "risk-def-btn secondary", onClick: () => setIsEditing(true) }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "edit"), React.createElement("span", null, isFa ? 'ویرایش استراتژی‌ها' : 'Edit')), React.createElement("button", { type: "button", className: "risk-def-btn reset", onClick: handleResetDefaults, title: isFa ? 'بازنشانی به پیش‌فرض' : 'Reset defaults' }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "restart_alt"))))), React.createElement("div", { className: "stakeholder-strat-grid" }, quadrantConfigs.map(q => {
+    return React.createElement("div", { className: "stakeholder-strategies-card" }, React.createElement("div", { className: "risk-def-header" }, React.createElement("h5", { className: "risk-def-title" }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem', color: '#02c754' } }, "psychology"), React.createElement("span", null, isFa ? 'استراتژی‌های ماتریس ذینفعان' : 'Stakeholder Strategies Definition')), !isReadOnly && onSaveStrategies && (isEditing ? React.createElement("div", { className: "risk-def-actions" }, React.createElement("button", { type: "button", className: "risk-def-btn primary", onClick: handleSave }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "save"), React.createElement("span", null, isFa ? 'ذخیره' : 'Save')), React.createElement("button", { type: "button", className: "risk-def-btn secondary", onClick: handleCancel }, React.createElement("span", null, isFa ? 'انصراف' : 'Cancel'))) : React.createElement("div", { className: "risk-def-actions" }, React.createElement("button", { type: "button", className: "risk-def-btn secondary", onClick: () => setIsEditing(true) }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "edit"), React.createElement("span", null, isFa ? 'ویرایش استراتژی‌ها' : 'Edit')), React.createElement("button", { type: "button", className: "risk-def-btn reset", onClick: handleResetDefaults, title: isFa ? 'بازنشانی به پیش‌فرض' : 'Reset defaults' }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '0.9rem' } }, "restart_alt"))))), React.createElement("div", { className: "stakeholder-strat-grid" }, quadrantConfigs.map(q => {
         const currentVal = localStrategies[q.key] || DEFAULT_STAKEHOLDER_STRATEGIES[q.key];
         return React.createElement("div", { key: q.key, className: "stakeholder-strat-item" }, React.createElement("div", { className: "stakeholder-strat-item-header" }, React.createElement("span", null, isFa ? q.titleFa : q.titleEn), React.createElement("span", { className: `stakeholder-strategy-badge ${q.badgeCls}`, style: { fontSize: '0.7rem', padding: '1px 6px' } }, isFa ? 'الگوی ماتریس' : 'Matrix Rule')), isEditing ? React.createElement("input", {
             type: "text",
@@ -871,7 +871,7 @@ export const ProjectStakeholdersTab = ({ stakeholders = [], users = [], onEdit, 
                     : (pVal === 'Low' && iVal === 'High')
                         ? 'stakeholder-strategy-informed'
                         : 'stakeholder-strategy-monitor';
-            return React.createElement("tr", { key: sh.id }, React.createElement("td", { style: { color: 'var(--text-muted, #64748b)' } }, isFa ? toPersianDigits(index + 1) : index + 1), React.createElement("td", { style: { fontWeight: 600 } }, sh.name), React.createElement("td", { style: { textAlign: 'center' } }, React.createElement("span", { className: pBadgeClass }, pBadgeLabel)), React.createElement("td", { style: { textAlign: 'center' } }, React.createElement("span", { className: iBadgeClass }, iBadgeLabel)), React.createElement("td", null, React.createElement("span", { className: `stakeholder-strategy-badge ${strategyClass}` }, strategyText)), React.createElement("td", { style: { lineHeight: 1.4, color: 'var(--text-color, #1e293b)' } }, sh.requirements || '-'), React.createElement("td", null, users?.find(u => String(u.id) === String(sh.submittedBy))?.username || '-'), React.createElement("td", null, approverDisplay), !hideApprovalStatus && React.createElement("td", { style: { textAlign: 'center' } }, isPending && React.createElement("span", { className: "badge badge-yellow", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#fef3c7', color: '#d97706', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'در انتظار تایید' : 'Pending Approval'), isRejected && React.createElement("span", { className: "badge badge-red", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#fee2e2', color: '#dc2626', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'عدم تایید' : 'Rejected'), (!isPending && !isRejected) && React.createElement("span", { className: "badge badge-green", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#dcfce7', color: '#15803d', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'تایید شده' : 'Approved')), React.createElement("td", { className: "action-cell" }, React.createElement("button", {
+            return React.createElement("tr", { key: sh.id }, React.createElement("td", { style: { color: 'var(--text-muted, #648b74)' } }, isFa ? toPersianDigits(index + 1) : index + 1), React.createElement("td", { style: { fontWeight: 600 } }, sh.name), React.createElement("td", { style: { textAlign: 'center' } }, React.createElement("span", { className: pBadgeClass }, pBadgeLabel)), React.createElement("td", { style: { textAlign: 'center' } }, React.createElement("span", { className: iBadgeClass }, iBadgeLabel)), React.createElement("td", null, React.createElement("span", { className: `stakeholder-strategy-badge ${strategyClass}` }, strategyText)), React.createElement("td", { style: { lineHeight: 1.4, color: 'var(--text-color, #1e3b2a)' } }, sh.requirements || '-'), React.createElement("td", null, users?.find(u => String(u.id) === String(sh.submittedBy))?.username || '-'), React.createElement("td", null, approverDisplay), !hideApprovalStatus && React.createElement("td", { style: { textAlign: 'center' } }, isPending && React.createElement("span", { className: "badge badge-yellow", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#fef3c7', color: '#d97706', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'در انتظار تایید' : 'Pending Approval'), isRejected && React.createElement("span", { className: "badge badge-red", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#fee2e2', color: '#dc2626', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'عدم تایید' : 'Rejected'), (!isPending && !isRejected) && React.createElement("span", { className: "badge badge-green", style: { display: 'inline-block', fontSize: '0.75rem', padding: '4px 10px', borderRadius: '9999px', backgroundColor: '#dcfce7', color: '#15803d', fontWeight: 500, whiteSpace: 'nowrap' } }, isFa ? 'تایید شده' : 'Approved')), React.createElement("td", { className: "action-cell" }, React.createElement("button", {
                 onClick: () => setHistoryModalInfo({
                     title: sh.name,
                     typeLabel: isFa ? 'ذینفع' : 'Stakeholder',
@@ -886,17 +886,17 @@ export const ProjectStakeholdersTab = ({ stakeholders = [], users = [], onEdit, 
                 type: "button",
                 onClick: () => handleConvertToStakeholderAction(sh),
                 className: "action-icon",
-                style: { color: 'var(--primary-color, #0284c7)' },
+                style: { color: 'var(--primary-color, #02c754)' },
                 title: isFa ? 'تبدیل استراتژی برخورد به اقدام پروژه' : 'Convert Strategy to Action Item'
             }, React.createElement("span", { className: "material-symbols-outlined" }, "add_task")), !isReadOnly && (!requiresWorkflow || !isPending) && React.createElement(Fragment, null, React.createElement("button", { onClick: () => onEdit(sh), className: "action-icon edit", title: t('edit') }, React.createElement("span", { className: "material-symbols-outlined" }, "edit")), React.createElement("button", { onClick: () => onDelete(sh.id), className: "action-icon delete", title: t('delete') }, React.createElement("span", { className: "material-symbols-outlined" }, "delete")))));
         })
-        : React.createElement("tr", null, React.createElement("td", { colSpan: 10, style: { textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted, #64748b)' } }, isFa ? 'هیچ ذینفعی برای این پروژه ثبت نشده است.' : 'No stakeholders registered for this project.'))))),
+        : React.createElement("tr", null, React.createElement("td", { colSpan: 10, style: { textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted, #648b74)' } }, isFa ? 'هیچ ذینفعی برای این پروژه ثبت نشده است.' : 'No stakeholders registered for this project.'))))),
     /* Stakeholder Analysis Matrix & Strategies below the grid (Closed by default) */
     React.createElement("div", {
         style: {
             marginTop: '1.5rem',
             borderRadius: '12px',
-            border: '1px solid var(--border-color, #e2e8f0)',
+            border: '1px solid var(--border-color, #e2f0e8)',
             backgroundColor: 'var(--card-bg-color, #ffffff)',
             overflow: 'hidden',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
@@ -910,17 +910,17 @@ export const ProjectStakeholdersTab = ({ stakeholders = [], users = [], onEdit, 
             padding: '0.9rem 1.25rem',
             cursor: 'pointer',
             backgroundColor: isMatrixSectionExpanded ? 'var(--hover-bg-color, rgba(234, 88, 12, 0.05))' : 'var(--card-bg-color, #ffffff)',
-            borderBottom: isMatrixSectionExpanded ? '1px solid var(--border-color, #e2e8f0)' : 'none',
+            borderBottom: isMatrixSectionExpanded ? '1px solid var(--border-color, #e2f0e8)' : 'none',
             userSelect: 'none',
             transition: 'background-color 0.2s ease'
         }
-    }, React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#ea580c', fontSize: '1.35rem' } }, "group_work"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #1e293b)' } }, isFa ? 'ماتریس تحلیل و استراتژی‌های ذینفعان (قدرت / علاقه)' : 'Stakeholder Analysis & Engagement Strategy Matrix'), React.createElement("span", {
+    }, React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.6rem' } }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#ea580c', fontSize: '1.35rem' } }, "group_work"), React.createElement("span", { style: { fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-color, #1e3b2a)' } }, isFa ? 'ماتریس تحلیل و استراتژی‌های ذینفعان (قدرت / علاقه)' : 'Stakeholder Analysis & Engagement Strategy Matrix'), React.createElement("span", {
         style: {
             fontSize: '0.72rem',
             padding: '2px 8px',
             borderRadius: '9999px',
-            backgroundColor: isMatrixSectionExpanded ? '#ffedd5' : '#f1f5f9',
-            color: isMatrixSectionExpanded ? '#c2410c' : '#64748b',
+            backgroundColor: isMatrixSectionExpanded ? '#ffedd5' : '#f1f9f4',
+            color: isMatrixSectionExpanded ? '#c2410c' : '#648b74',
             fontWeight: 600
         }
     }, isMatrixSectionExpanded ? (isFa ? 'باز' : 'Expanded') : (isFa ? 'بسته' : 'Collapsed'))), React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#ea580c', fontSize: '0.82rem', fontWeight: 600 } }, React.createElement("span", null, isMatrixSectionExpanded ? (isFa ? 'بستن ماتریس و استراتژی‌ها' : 'Collapse') : (isFa ? 'نمایش ماتریس و استراتژی‌های ذینفعان' : 'Show Matrix & Strategies')), React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.25rem' } }, isMatrixSectionExpanded ? 'expand_less' : 'expand_more'))), isMatrixSectionExpanded && React.createElement("div", { style: { padding: '1.25rem' } }, React.createElement("div", { className: "stakeholder-tab-bottom-grid", style: { marginTop: 0 } }, React.createElement(StakeholderAnalysisMatrix, {

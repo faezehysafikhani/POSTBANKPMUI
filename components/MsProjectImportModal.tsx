@@ -57,7 +57,7 @@ export const MsProjectImportModal: React.FC<Props> = ({ project, isOpen, onClose
               <label><input type="radio" name="msproject-mode" checked={mode === 'replace'} onChange={() => setMode('replace')} /> {isFa ? 'جایگزینی فعالیت‌های فعلی' : 'Replace the current activities'}</label>
               <label><input type="radio" name="msproject-mode" checked={mode === 'append'} onChange={() => setMode('append')} /> {isFa ? 'افزودن به فعالیت‌های فعلی' : 'Add to the current activities'}</label>
               {mode === 'append' && (
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted, #64748b)' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted, #648b74)' }}>
                   {isFa ? 'اگر پروژه فعالیت دارد، سامانه ایمپورت را بدون جایگزینی نمی‌پذیرد.' : 'A project that already has activities is refused unless they are replaced.'}
                 </p>
               )}

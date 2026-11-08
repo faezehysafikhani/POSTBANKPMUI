@@ -16,19 +16,19 @@ html .app-container :is(.form-section h3,.list-section h3) { font-size:1rem; mar
 html .app-container button { font-family:inherit; }
 html .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.submit-progress-btn,.add-user-btn,.approve-btn,.reject-btn,.delete-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.add-team-member-btn,.remove-team-member-btn,.export-btn,.print-btn,.sp-tab,.sp-secondary .sp-tab) {
   min-height:var(--control-height); padding:6px 12px!important; border-radius:var(--control-radius)!important;
-  font-size:.82rem!important; line-height:1.55; gap:6px; border:1px solid #c4e6f7!important;
-  background:linear-gradient(145deg,#ffffffed,#e3f4ffdb)!important; color:#0369a1!important;
-  box-shadow:3px 3px 8px #82b4d125,inset 1px 1px 2px #fff,inset -1px -1px 3px #c9e5f333!important;
+  font-size:.82rem!important; line-height:1.55; gap:6px; border:1px solid #c4f7d9!important;
+  background:linear-gradient(145deg,#ffffffed,#e3ffefdb)!important; color:#03a145!important;
+  box-shadow:3px 3px 8px #82d1a325,inset 1px 1px 2px #fff,inset -1px -1px 3px #c9f3db33!important;
   backdrop-filter:blur(12px); transition:background .15s,box-shadow .15s,transform .15s;
 }
 html .app-container :is(.save-btn,.submit-progress-btn,.action-button.primary,.quick-action-btn:not(.secondary),.sp-tab.is-active) {
-  background:linear-gradient(135deg,#38bdf8,#0284c7)!important; color:#fff!important; border-color:#7dd3fc!important;
-  box-shadow:3px 4px 10px #0284c726,inset 1px 1px 2px #ffffff80!important;
+  background:linear-gradient(135deg,#38f888,#02c754)!important; color:#fff!important; border-color:#7dfcb2!important;
+  box-shadow:3px 4px 10px #02c75426,inset 1px 1px 2px #ffffff80!important;
 }
 html .app-container :is(.action-icon,.modal-close-button,.logout-button,.sidebar-toggle-btn) {
   width:32px; height:32px; min-width:32px; min-height:32px; padding:5px!important; border-radius:11px!important;
-  border:1px solid #d0e9f7; background:linear-gradient(145deg,#ffffffd9,#e6f5ffd9); color:#0369a1;
-  box-shadow:2px 3px 6px #91bcd124,inset 1px 1px 2px #fff;
+  border:1px solid #d0f7e0; background:linear-gradient(145deg,#ffffffd9,#e6fff0d9); color:#03a145;
+  box-shadow:2px 3px 6px #91d1ac24,inset 1px 1px 2px #fff;
   display:inline-flex; align-items:center; justify-content:center;
 }
 html .app-container :is(.action-icon,.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn) .material-symbols-outlined { font-size:18px!important; }
@@ -36,9 +36,9 @@ html .app-container :is(.action-icon,.action-button,.save-btn,.back-button,.canc
 html .app-container .sidebar-subitem.active .material-symbols-outlined { color:white!important; }
 html .app-container :is(.action-cell,.action-buttons) { gap:5px; }
 html .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.action-icon):hover:not(:disabled) {
-  filter:brightness(1.025); transform:translateY(-1px); box-shadow:3px 5px 10px #0284c72b,inset 1px 1px 2px #fff!important;
+  filter:brightness(1.025); transform:translateY(-1px); box-shadow:3px 5px 10px #02c7542b,inset 1px 1px 2px #fff!important;
 }
-html .app-container button:focus-visible { outline:3px solid #38bdf8; outline-offset:3px; }
+html .app-container button:focus-visible { outline:3px solid #38f888; outline-offset:3px; }
 html .app-container button:disabled { cursor:not-allowed; }
 html .app-container :is(.delete-btn,.reject-btn,.action-icon.delete,.remove-team-member-btn) { color:#b42335!important; background:linear-gradient(145deg,#fff,#fff0f1)!important; border-color:#f3d1d7!important; }
 html .app-container .approve-btn { color:#147254!important; background:linear-gradient(145deg,#fff,#eaf9f2)!important; border-color:#caeade!important; }
@@ -50,7 +50,7 @@ html .app-container .form-group { margin-bottom:4px!important; gap:0; }
 html .app-container .form-group label { margin-bottom:5px!important; font-size:.83rem; line-height:1.6; }
 html .app-container :is(input[type="text"],input[type="number"],input[type="password"],input[type="email"],input[type="tel"],input[type="date"],select) {
   min-height:34px; height:34px; padding:6px 10px!important; font-size:.85rem; line-height:1.5; border-radius:10px;
-  border-color:#cce5f3; background:linear-gradient(180deg,#ffffff,#fbfdff); box-shadow:inset 0 1px 3px #1d648708;
+  border-color:#ccf3dc; background:linear-gradient(180deg,#ffffff,#fbfffd); box-shadow:inset 0 1px 3px #1d874908;
 }
 html .app-container textarea { padding:8px 10px; font-size:.85rem; border-radius:10px; line-height:1.8; }
 html .app-container input.shamsi-datepicker-input { padding-right:36px!important; padding-left:10px!important; }
@@ -64,7 +64,7 @@ html .settings-preview-layout .app-body .app-sidebar { height:auto; max-height:c
 
 /* Creation cards: same row, approximately half the original height. */
 html .app-container .portfolio-create-actions { gap:12px; margin-bottom:16px; }
-html .app-container .portfolio-create-button { min-height:64px; padding:11px 14px; border-radius:18px; gap:10px; box-shadow:4px 5px 12px #94c8e426,inset 1px 1px 3px #fff; }
+html .app-container .portfolio-create-button { min-height:64px; padding:11px 14px; border-radius:18px; gap:10px; box-shadow:4px 5px 12px #94e4b526,inset 1px 1px 3px #fff; }
 html .app-container .portfolio-create-icon { width:36px; height:36px; border-radius:12px; font-size:21px!important; }
 html .app-container .portfolio-create-copy { gap:2px; }
 html .app-container .portfolio-create-copy strong { font-size:.88rem; line-height:1.65; }
@@ -93,7 +93,7 @@ html .app-container .creation-form .tab-item:disabled { opacity:.58; transform:n
   html .app-container button { touch-action:manipulation; }
 }
 html[data-theme="dark"] .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.action-icon,.sp-tab:not(.is-active)) {
-  background:linear-gradient(145deg,#1c425b,#123249)!important; color:#bae6fd!important; border-color:#31576e!important; box-shadow:2px 3px 7px #04182466,inset 1px 1px 2px #ffffff10!important;
+  background:linear-gradient(145deg,#1c5b36,#124929)!important; color:#bafdd6!important; border-color:#316e4a!important; box-shadow:2px 3px 7px #04241166,inset 1px 1px 2px #ffffff10!important;
 }
-html[data-theme="dark"] .app-container :is(input,select,textarea) { background:#102c40; color:#e0f2fe; border-color:#31576e; }
+html[data-theme="dark"] .app-container :is(input,select,textarea) { background:#104024; color:#e0feed; border-color:#316e4a; }
 @media(prefers-reduced-motion:reduce) { html .app-container button { transition:none!important; } }
