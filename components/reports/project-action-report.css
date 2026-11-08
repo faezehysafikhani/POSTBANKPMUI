@@ -171,3 +171,25 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 .par-first-run{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 16px;border-radius:18px;border:1.5px dashed var(--par-line);color:var(--par-muted);font-size:.86rem;text-align:center}
 .par-first-run .material-symbols-outlined{font-size:44px;color:var(--par-accent);opacity:.7}
 .par-first-run strong{color:var(--par-head);font-size:.95rem}
+
+/* ---------- compact filter panel: four even columns, one-line fields, 34px controls ---------- */
+.par-filters{gap:10px;padding:10px 12px}
+.par-filter-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;padding-top:10px}
+.par-field{gap:4px}
+.par-label{min-height:22px;font-size:.74rem;gap:4px}
+.par-label .material-symbols-outlined{font-size:16px}
+.par .par-field select,.par .par-field input:not([type="checkbox"]):not([type="radio"]),.par .par-select{height:34px!important;min-height:0!important;font-size:.78rem!important;border-radius:10px!important;padding-top:0!important;padding-bottom:0!important}
+.par .par-select{padding:0 10px!important}
+.par-dates{grid-column:span 2}
+.par-date-row{grid-template-columns:1fr 1fr 130px;gap:6px}
+.par-date-row :is(input,.shamsi-datepicker-input,.shamsi-datepicker){height:34px!important;min-height:0!important}
+.par-label .par-presets{display:inline-flex;gap:4px;margin-inline-start:auto}
+.par-label .par-presets button{padding:1px 8px;font-size:.66rem;line-height:1.6}
+.par-label .par-role{margin:0 auto 0 0!important;width:auto!important;height:22px!important;padding:0 6px 0 22px!important;font-size:.66rem!important;border-radius:999px!important;background-position:left 6px center!important}
+.par-cost{gap:6px}
+.par-popover{padding:6px;border-radius:12px}
+.par-option{padding:5px 8px;font-size:.78rem}
+.par-pop-actions{padding-bottom:5px;margin-bottom:3px}
+@media(max-width:1300px){.par-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1000px){.par-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.par-dates{grid-column:1/-1}}
+@media(max-width:620px){.par-filter-grid{grid-template-columns:1fr}.par-date-row{grid-template-columns:1fr 1fr}.par-date-row select{grid-column:1/-1}.par-label .par-presets{display:none}}

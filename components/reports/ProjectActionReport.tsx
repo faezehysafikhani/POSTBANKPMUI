@@ -40,15 +40,15 @@ function useOutside(open: boolean, close: () => void) {
   return box;
 }
 
-function MultiSelect<T extends string>({ label, icon, options, value, onChange, searchable }: {
-  label: string; icon: string; options: { value: T; label: string }[]; value: T[]; onChange: (v: T[]) => void; searchable?: boolean;
+function MultiSelect<T extends string>({ label, icon, options, value, onChange, searchable, extra }: {
+  label: string; icon: string; options: { value: T; label: string }[]; value: T[]; onChange: (v: T[]) => void; searchable?: boolean; extra?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false); const [q, setQ] = useState('');
   const box = useOutside(open, () => setOpen(false));
   const shown = q ? options.filter(o => o.label.includes(q)) : options;
   const summary = value.length === 0 ? 'همه' : value.length === 1 ? (options.find(o => o.value === value[0])?.label ?? '۱ مورد') : `${fa(value.length)} مورد`;
   return <div className="par-field par-multi" ref={box}>
-    <span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</span>
+    <span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}{extra}</span>
     <button type="button" className={`par-select ${value.length ? 'has-value' : ''}`} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(o => !o)}>
       <span>{summary}</span><span className="material-symbols-outlined" aria-hidden="true">expand_more</span>
     </button>
@@ -106,7 +106,8 @@ function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOpt
     {open && <div className="par-filter-grid">
       <MultiSelect label="نوع" icon="category" value={filters.kinds} onChange={v => set('kinds', v)} options={KINDS.map(k => ({ value: k, label: KIND_LABEL[k] }))} />
       <div className="par-field par-dates">
-        <span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">date_range</span>بازه زمانی</span>
+        <span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">date_range</span>بازه زمانی
+          <span className="par-presets">{(Object.keys(PRESET_LABEL) as DatePreset[]).map(p => <button key={p} type="button" onClick={() => preset(p)}>{PRESET_LABEL[p]}</button>)}</span></span>
         <div className="par-date-row">
           <ShamsiDatePicker value={filters.from} onChange={v => set('from', v)} placeholder="از تاریخ" />
           <ShamsiDatePicker value={filters.to} onChange={v => set('to', v)} placeholder="تا تاریخ" />
@@ -114,18 +115,15 @@ function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOpt
             {(Object.keys(DATE_BASIS_LABEL) as DateBasis[]).map(b => <option key={b} value={b}>{DATE_BASIS_LABEL[b]}</option>)}
           </select>
         </div>
-        <div className="par-presets">{(Object.keys(PRESET_LABEL) as DatePreset[]).map(p => <button key={p} type="button" onClick={() => preset(p)}>{PRESET_LABEL[p]}</button>)}</div>
       </div>
       <MultiSelect label="وضعیت" icon="flag" value={filters.statuses} onChange={v => set('statuses', v)} options={STATUSES.map(s => ({ value: s, label: STATUS_LABEL[s] }))} />
       <MultiSelect label="وضعیت تأیید" icon="verified" value={filters.approvals} onChange={v => set('approvals', v)} options={APPROVALS.map(a => ({ value: a, label: APPROVAL_LABEL[a] }))} />
       <MultiSelect label="وضعیت زمانی" icon="schedule" value={filters.timings} onChange={v => set('timings', v)} options={TIMINGS.map(t => ({ value: t, label: t === 'dueSoon' ? `${TIMING_LABEL[t]} (${fa(DUE_SOON_DAYS)} روز)` : TIMING_LABEL[t] }))} />
       <MultiSelect label="واحد مالک" icon="corporate_fare" value={filters.units} onChange={v => set('units', v)} options={unitOptions.map(u => ({ value: u, label: u }))} searchable />
-      <div className="par-field">
-        <MultiSelect label="افراد" icon="group" value={filters.people} onChange={v => set('people', v)} options={peopleOptions} searchable />
-        <select className="par-role" value={filters.personRole} onChange={e => set('personRole', e.target.value as PersonRole)} aria-label="نقش فرد">
-          {(Object.keys(PERSON_ROLE_LABEL) as PersonRole[]).map(r => <option key={r} value={r}>{PERSON_ROLE_LABEL[r]}</option>)}
-        </select>
-      </div>
+      <MultiSelect label="افراد" icon="group" value={filters.people} onChange={v => set('people', v)} options={peopleOptions} searchable
+        extra={<select className="par-role" value={filters.personRole} onChange={e => set('personRole', e.target.value as PersonRole)} aria-label="نقش فرد">
+          {(Object.keys(PERSON_ROLE_LABEL) as PersonRole[]).map(r => <option key={r} value={r}>{r === 'any' ? 'همه نقش‌ها' : r === 'manager' ? 'مدیر / مسئول' : 'مالک'}</option>)}
+        </select>} />
       <MultiSelect label="منبع اقدام" icon="call_split" value={filters.sources} onChange={v => set('sources', v)} options={SOURCES.map(s => ({ value: s, label: SOURCE_LABEL[s] }))} />
       <label className="par-field"><span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">account_tree</span>پروژه مرتبط</span>
         <select value={filters.projectId} onChange={e => set('projectId', e.target.value)}>
