@@ -1,11 +1,12 @@
 import React, { useContext, ReactElement, useState, useMemo, useEffect } from 'react';
 import { LoginPortalClock } from './LoginPortalClock';
 import { WorkspaceThemeSwitch } from './WorkspaceTheme';
+import { HeaderUserMenu } from './HeaderUserMenu';
 import { LocalizationContext } from '../context';
 import { User } from '../types';
 import { toPersianDigits, appLogoUrl } from '../utils';
 
-export const Header = ({ user, onLogout }: { user: User, onLogout: () => void }): ReactElement => {
+export const Header = ({ user, onNavigate }: { user: User, onLogout?: () => void, onNavigate?: (page: string) => void }): ReactElement => {
   const { t } = useContext(LocalizationContext);
   return React.createElement("header", null,
     React.createElement("div", { className: "header-content" },
@@ -16,10 +17,8 @@ export const Header = ({ user, onLogout }: { user: User, onLogout: () => void })
       React.createElement(LoginPortalClock, { showGregorian: false }),
       React.createElement("div", { className: "user-info" },
         React.createElement(WorkspaceThemeSwitch),
-        React.createElement("span", null, t('welcomeUser', { username: user.username })),
-        React.createElement("button", { onClick: onLogout, className: "logout-button", "aria-label": t('logout'), title: t('logout') },
-          React.createElement("span", { className: "material-symbols-outlined" }, "logout")
-        )
+        // Sign-out lives at the bottom of the sidebar; this menu opens the person's own pages.
+        React.createElement(HeaderUserMenu, { name: user.name || [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username, onNavigate })
       )
     )
   );
@@ -39,6 +38,7 @@ export interface SidebarProps {
   overdueProjectsCount: number;
   pendingApprovalsCount: number;
   taskCenterNotificationCount: number;
+  onLogout?: () => void;
 }
 
 interface SubMenuItem {
@@ -77,7 +77,8 @@ export const Sidebar = ({
   currentUser,
   overdueProjectsCount,
   pendingApprovalsCount,
-  taskCenterNotificationCount
+  taskCenterNotificationCount,
+  onLogout
 }: SidebarProps): ReactElement | null => {
   const { t, language } = useContext(LocalizationContext);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -358,7 +359,16 @@ export const Sidebar = ({
             ),
             (isCollapsed && isItemActive(group.items[0]) && false) && null
           );
-        })
+        }),
+        // Sign-out, right under «کاربران و تنظیمات».
+        onLogout && React.createElement("div", { className: "sidebar-group sidebar-logout" },
+          React.createElement("button", { type: "button", className: "sidebar-group-header sidebar-logout-button", onClick: onLogout, title: isCollapsed ? (isFa ? 'خروج از سیستم' : 'Sign out') : undefined },
+            React.createElement("div", { className: "sidebar-group-header-left" },
+              React.createElement("span", { className: "material-symbols-outlined sidebar-icon" }, "logout"),
+              !isCollapsed && React.createElement("span", { className: "sidebar-group-title" }, isFa ? 'خروج از سیستم' : 'Sign out')
+            )
+          )
+        )
       )
     )
   );

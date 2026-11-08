@@ -127,7 +127,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
             <button type="button" role="menuitem" onClick={()=>createFromDay('action')}><span className="material-symbols-outlined" aria-hidden="true">add_task</span>اقدام جدید</button>
           </div>}
         </div>
-        <div className="mg-calendar-legend"><span><i className="holiday"/>تعطیلات تقویم</span><span className="mg-legend-alt"><b>۱۲</b>میلادی</span><span className="mg-legend-alt hijri"><b>۱۲</b>قمری</span><button type="button" className="cancel-btn" onClick={()=>{setMonth({year:today.jy,month:today.jm});setSelected(todayKey);}}>امروز</button></div>
+        <div className="mg-calendar-legend"><span><i className="holiday"/>تعطیلات تقویم</span><button type="button" className="cancel-btn" onClick={()=>{setMonth({year:today.jy,month:today.jm});setSelected(todayKey);}}>امروز</button></div>
       </section>
       <section className="mg-agenda-card" aria-labelledby="mg-agenda-title">
         <div className="mg-card-heading"><div><h3 id="mg-agenda-title">برنامه {toPersianDigits(selectedDay)} {PERSIAN_MONTHS[selectedMonth-1]} {toPersianDigits(selectedYear)}</h3></div></div>

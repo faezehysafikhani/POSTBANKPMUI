@@ -9,6 +9,18 @@ export const requestSettingsTab = (tab: string) => {
   pendingSettingsTab = tab;
   window.setTimeout(() => window.dispatchEvent(new CustomEvent(OPEN_SETTINGS_TAB_EVENT, { detail: { tab } })), 0);
 };
+let pendingProfileTab: string | null = null;
+/** Opens the profile page on one of its tabs (avatar, password, ...), also when it is not mounted yet. */
+export const requestProfileTab = (tab: string) => {
+  pendingProfileTab = tab;
+  requestSettingsTab('profile');
+  window.setTimeout(() => window.dispatchEvent(new CustomEvent(OPEN_PROFILE_EVENT, { detail: { tab } })), 0);
+};
+export const takePendingProfileTab = (): string | null => {
+  const tab = pendingProfileTab;
+  pendingProfileTab = null;
+  return tab;
+};
 export const takePendingSettingsTab = (): string | null => {
   const tab = pendingSettingsTab;
   pendingSettingsTab = null;

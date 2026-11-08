@@ -4,7 +4,7 @@ import { getKnownPermissions, getMyPermissions, changeMyPassword, requestPhoneCh
 import { AdminCard, SegmentedTabs, PillTabs, TabItem, Field, inputClass, Notice, PrimaryButton } from './AdminUi';
 import { UsersPanel } from './UsersPanel';
 import { SessionsPanel } from './SessionsPanel';
-import { OPEN_PROFILE_EVENT, OPEN_SETTINGS_TAB_EVENT, takePendingSettingsTab } from '../../utils/profileEvents';
+import { OPEN_PROFILE_EVENT, OPEN_SETTINGS_TAB_EVENT, takePendingProfileTab, takePendingSettingsTab } from '../../utils/profileEvents';
 import { RolesPanel } from './RolesPanel';
 import { LoginHistoryPanel } from './LoginHistoryPanel';
 import { LdapPanel } from './LdapPanel';
@@ -489,7 +489,7 @@ type ProfileTab = 'avatar' | 'password' | 'phone' | 'sessions' | 'account';
  * mobile number, sessions, account and sign-out - as a row of tabs with an underline.
  */
 const ProfileHub: React.FC<{ sections: ProfileSections; can: (permission: string) => boolean; placement?: React.ReactNode }> = ({ sections, can, placement }) => {
-  const [active, setActive] = useState<ProfileTab>('avatar');
+  const [active, setActive] = useState<ProfileTab>(() => (takePendingProfileTab() as ProfileTab | null) || 'avatar');
   const tabs: { id: ProfileTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'avatar', label: 'پروفایل و آواتار', icon: UserIcon },
     { id: 'password', label: 'تغییر رمز عبور', icon: KeyRound },

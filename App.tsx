@@ -622,9 +622,9 @@ const AppContent = () => {
         else handleNavigate(pageContext?.from || 'portfolio');
     };
     return (<div className={`app-container ${language}${!currentUser ? ' login-layout' : ''}${page === 'settings_profile' ? ' settings-preview-layout' : ''}${page === 'dashboard' ? ' management-layout' : ''}`}>
-            {currentUser && <Header user={currentUser} onLogout={handleLogout}/>}
+            {currentUser && <Header user={currentUser} onLogout={handleLogout} onNavigate={handleNavigate}/>}
             <div className="app-body">
-                {currentUser && (<Sidebar currentPage={page} onNavigate={handleNavigate} currentUser={currentUser} overdueProjectsCount={overdueProjectsCount} pendingApprovalsCount={pendingApprovalsCount} taskCenterNotificationCount={taskCenterNotificationCount}/>)}
+                {currentUser && (<Sidebar currentPage={page} onNavigate={handleNavigate} currentUser={currentUser} overdueProjectsCount={overdueProjectsCount} pendingApprovalsCount={pendingApprovalsCount} taskCenterNotificationCount={taskCenterNotificationCount} onLogout={handleLogout}/>)}
                 <main className="main-content">
                     {currentUser && creationKind ? <>
                         <ProjectPortfolioPage projects={projects} actions={actions} users={users} currentUser={currentUser} onNavigate={handleNavigate} progressUpdates={progressUpdates} owningUnits={owningUnits} onDeleteProject={handleDeleteProject} onDeleteAction={handleDeleteAction}/>
