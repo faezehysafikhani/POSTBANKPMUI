@@ -240,3 +240,26 @@ html .app-container:not(.login-layout){display:flex;flex-direction:column;min-he
 html .app-container:not(.login-layout)>.app-body{flex:1 0 auto;min-height:0!important}
 html .app-container:not(.login-layout)>.app-body>.app-sidebar{height:auto!important;align-self:stretch;max-height:calc(100vh - 65px);max-height:calc(100dvh - 65px);overflow-y:auto}
 html .app-container:not(.login-layout)>footer{margin-top:0!important;flex-shrink:0}
+
+/* ---------- sidebar: narrower, tighter, glossy "pillow" items (gel pills like the reference buttons) ---------- */
+html[data-pb-theme]{--pb-gel:linear-gradient(180deg,#ffffffa6 0,#ffffff33 46%,#ffffff00 52%),linear-gradient(180deg,#48d688,#0a8a46 60%,#06703a);--pb-gel-edge:#05753c;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#f7fcf9 46%,#e2f2e8 52%,#eef8f2);--pb-gel-idle-edge:#bfe0cb}
+html[data-pb-theme="purple"]{--pb-gel:linear-gradient(180deg,#ffffffa0 0,#ffffff2e 46%,#ffffff00 52%),linear-gradient(180deg,#8f5cff,#5b21b6 58%,#3b0a8c);--pb-gel-edge:#3b0a8c;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#fbf8ff 46%,#ebe1fd 52%,#f5f0ff);--pb-gel-idle-edge:#d6c4f7}
+html[data-pb-theme="black"]{--pb-gel:linear-gradient(180deg,#fffbe6b3 0,#ffffff38 46%,#ffffff00 52%),linear-gradient(180deg,#f6e27a,#d4af37 58%,#a57d1c);--pb-gel-edge:#8a6512;
+  --pb-gel-idle:linear-gradient(180deg,#56565c 0,#36363b 46%,#1d1d20 52%,#28282c);--pb-gel-idle-edge:#d4af3755}
+html[data-pb-theme] .app-container:not(.login-layout)>.app-body>.app-sidebar:not(.collapsed){width:238px!important;min-width:238px!important;padding:10px 8px!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-nav{gap:7px!important;padding:2px 4px!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group{margin-bottom:0!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-header{padding:6px 6px 10px!important;margin-bottom:4px}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group-header{min-height:0!important;padding:8px 10px!important;border-radius:999px!important;font-size:.84rem}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header,.sidebar-subitem,.sidebar-nested-subitem):not(.active):not(.active-parent):not(.sidebar-logout-button){background:var(--pb-gel-idle)!important;border:1px solid var(--pb-gel-idle-edge)!important;box-shadow:0 0 0 2px #ffffffb3,0 4px 9px var(--pb-shadow),inset 0 -2px 3px #0000000d!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-item.active,.sidebar-nested-subitem.active){background:var(--pb-gel)!important;border:1px solid var(--pb-gel-edge)!important;box-shadow:0 0 0 2px #ffffffd9,0 6px 13px var(--pb-shadow),inset 0 -3px 5px #0000002e!important;text-shadow:0 1px 1px #0000004d}
+html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-item.active,.sidebar-nested-subitem.active){text-shadow:0 1px 0 #fff8;box-shadow:0 0 0 2px #00000066,0 6px 13px #0008,inset 0 -3px 5px #6b4a0a40!important}
+html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header,.sidebar-subitem,.sidebar-nested-subitem):not(.active):not(.active-parent):not(.sidebar-logout-button){box-shadow:0 0 0 1px #00000080,0 4px 9px #0007,inset 0 1px 0 #ffffff1f!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group-items{gap:5px!important;margin-top:6px!important;padding-inline-start:10px}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-subitem,.sidebar-nested-subitem){margin-top:0!important;padding:6px 12px!important;border-radius:999px!important;font-size:.8rem}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-icon{font-size:20px!important}
+html .app-container .app-sidebar .sidebar-logout{margin-top:8px!important;padding-top:8px!important}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-logout .sidebar-group-header.sidebar-logout-button:not(.active):not(.active-parent){border-radius:999px!important;background:linear-gradient(180deg,#fff 0,#fff6f7 46%,#fde0e5 52%,#fdeef1)!important;box-shadow:0 0 0 2px #ffffffb3,0 4px 9px #c0394f26,inset 0 -2px 3px #c0394f14!important}
+html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar .sidebar-logout .sidebar-group-header.sidebar-logout-button:not(.active):not(.active-parent){background:linear-gradient(180deg,#5a2a33 0,#3d1b21 46%,#2a1015 52%,#33161b)!important;box-shadow:0 0 0 1px #0008,0 4px 9px #0007,inset 0 1px 0 #ffffff1a!important}
