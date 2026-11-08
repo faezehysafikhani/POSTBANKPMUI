@@ -51,6 +51,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }): Reac
   React.useEffect(() => {
     localStorage.setItem('pms_theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
   React.useEffect(() => {
