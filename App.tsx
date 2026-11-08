@@ -606,7 +606,7 @@ const AppContent = () => {
         if (sourceProject) handleNavigate(`create_${sourceProject.type}_details`, { project: sourceProject, type: sourceProject.type, initialTab: 'actions', from: 'portfolio' });
         else handleNavigate(pageContext?.from || 'portfolio');
     };
-    return (<div className={`app-container ${language}${page === 'settings_profile' ? ' settings-preview-layout' : ''}${page === 'dashboard' ? ' management-layout' : ''}`}>
+    return (<div className={`app-container ${language}${!currentUser ? ' login-layout' : ''}${page === 'settings_profile' ? ' settings-preview-layout' : ''}${page === 'dashboard' ? ' management-layout' : ''}`}>
             {currentUser && <Header user={currentUser} onLogout={handleLogout}/>}
             <div className="app-body">
                 {currentUser && (<Sidebar currentPage={page} onNavigate={handleNavigate} currentUser={currentUser} overdueProjectsCount={overdueProjectsCount} pendingApprovalsCount={pendingApprovalsCount} taskCenterNotificationCount={taskCenterNotificationCount}/>)}

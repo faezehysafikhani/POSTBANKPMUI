@@ -50,7 +50,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
   };
 
   return (
-    <div className={`login-container ${isDark ? 'login-dark-mode' : 'login-light-mode'}`} id="login-container-root">
+    <div className="pb-login" id="login-container-root"><div className="pb-wave" aria-hidden="true"/><section className="pb-brand"><svg className="pb-brand-mark" viewBox="0 0 160 160" aria-hidden="true"><defs><clipPath id="pb-logo-clip"><circle cx="80" cy="80" r="80"/></clipPath></defs><g clipPath="url(#pb-logo-clip)" fill="none" stroke="white" strokeWidth="12"><path d="M-20 15 C5 -10 25 65 53 38 S90 86 118 57 S145 98 180 75"/><path d="M-24 40 C1 15 21 90 49 63 S86 111 114 82 S141 123 176 100"/><path d="M-28 65 C-3 40 17 115 45 88 S82 136 110 107 S137 148 172 125"/></g></svg><h1>پست بانک ایران</h1><p>POST BANK IRAN</p><div className="pb-features">{[['task_alt','مدیریت وظایف'],['layers','مدیریت پروژه'],['calendar_month','پایش و پیگیری'],['bar_chart','گزارش‌ها و داشبوردها']].map(([icon,label])=><div key={icon}><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</div>)}</div></section>
       <FloatingSpheresCanvas />
       {/* Decorative ambient background glows */}
       <div className="login-ambient-glow login-glow-1" />
@@ -61,19 +61,16 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
         <div className="login-header">
           {/* Logo with no background box or glow ring beneath it */}
           <div className="login-logo-container" id="login-logo-container">
-            <img src={appLogoWatermarkUrl} alt="Company Logo" className="login-logo" />
+            <span className="material-symbols-outlined pb-person" aria-hidden="true">person</span>
           </div>
 
-          <h2 className="login-main-title">{t('mainTitle')}</h2>
+          <h2 className="login-main-title">{isFa ? 'ورود به سیستم' : 'Welcome back'}</h2>
           <p className="login-subtitle">
             {isFa
-              ? 'سامانه جامع مدیریت هوشمند پروژه‌ها و کارتابل وظایف'
+              ? 'سامانه مدیریت پروژه و وظایف سازمانی'
               : 'Smart Project & Task Management System'}
           </p>
-          <div className="login-company-badge">
-            <span className="material-symbols-outlined" style={{ fontSize: '0.95rem' }}>verified</span>
-            <span>{isFa ? 'توسعه‌یافته توسط شرکت مدیریت پروژه پارس (Pars PMI)' : 'Developed by Pars PMI'}</span>
-          </div>
+
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -90,7 +87,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={isFa ? 'نام کاربری خود را وارد کنید...' : 'Enter your username...'}
                 required
-                autoFocus
+                autoComplete="username"
                 className="login-input"
               />
             </div>
@@ -109,6 +106,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={isFa ? 'رمز عبور...' : 'Enter password...'}
                 required
+                autoComplete="current-password"
                 className="login-input password-input"
               />
               <button
@@ -116,7 +114,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
                 className="password-toggle-btn"
                 onClick={() => setShowPassword(!showPassword)}
                 title={showPassword ? (isFa ? 'مخفی‌سازی رمز' : 'Hide password') : (isFa ? 'نمایش رمز' : 'Show password')}
-                tabIndex={-1}
+
               >
                 <span className="material-symbols-outlined">
                   {showPassword ? 'visibility_off' : 'visibility'}
@@ -158,7 +156,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
           )}
 
           {error && (
-            <div className="login-error-banner">
+            <div className="login-error-banner" role="alert">
               <span className="material-symbols-outlined">error</span>
               <span>{error}</span>
             </div>
@@ -171,7 +169,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
             id="login-submit-btn"
           >
             <span className="material-symbols-outlined">login</span>
-            <span>{isSubmitting ? (isFa ? 'در حال بررسی...' : 'Signing in...') : t('login')}</span>
+            <span>{isSubmitting ? (isFa ? 'در حال بررسی...' : 'Signing in...') : (isFa ? 'ورود به سامانه' : 'Sign in')}</span>
           </button>
 
           <div className="login-actions-row">

@@ -14,3 +14,5 @@ if (rootElement) {
         </StrictMode>
     );
 }
+
+import './styles/postbank-login.css';
