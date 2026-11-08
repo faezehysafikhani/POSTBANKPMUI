@@ -23,11 +23,11 @@ html[data-pb-theme]{
 html[data-pb-theme="purple"]{
   --pb-accent:#7c3aed;--pb-accent2:#5b21b6;--pb-hi:#a978ff;--pb-pink:#e14bd6;--pb-soft:#f1e8ff;--pb-soft2:#f8f4ff;--pb-line:#ddccf7;
   --pb-text:#2e1a52;--pb-heading:#4c1d95;--pb-muted:#76679a;
-  --pb-page-bg:#f3eefc;--pb-wash1:#f7f2ffd6;--pb-wash2:#ebe1fbcf;--pb-wave-filter:hue-rotate(128deg) saturate(1.15);
+  --pb-page-bg:#efe9fb;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
   --pb-header-bg:linear-gradient(120deg,#fbf8ffeb,#d9c6f7eb);--pb-header-text:#3b1a72;
   --pb-side-bg:linear-gradient(155deg,#fbf8ffe6,#e2d3fae0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#efe5ffc8);
   --pb-side-text:#3d2270;--pb-side-icon:#8b3dff;
-  --pb-active-bg:linear-gradient(180deg,#ffffff40 0,#ffffff00 50%),linear-gradient(160deg,#a978ff,#7c3aed 55%,#5b21b6);--pb-active-text:#fff;
+  --pb-active-bg:linear-gradient(180deg,#ffffff38 0,#ffffff00 50%),linear-gradient(160deg,#8b5cf6,#5b21b6 55%,#3b0f80);--pb-active-text:#fff;
   --pb-card-bg:linear-gradient(140deg,#ffffffef,#f5efffdc);
   --pb-shadow:#5b21b633;--pb-glow:#9d5cff;--pb-focus:#9d5cff3d;
   --pb-field-bg:#fdfbff;--pb-field-inset:#b9a3e040;--pb-clock-bg:linear-gradient(145deg,#e4d6fb,#f8f4ff);
@@ -107,7 +107,7 @@ html[data-pb-theme="green"] .app-container:not(.login-layout) :is(.save-btn,.sub
 html[data-pb-theme="green"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:1px solid #b6dcc4!important;color:#0d5f34!important;background:linear-gradient(180deg,#fff 0,#f6fcf8 46%,#e3f4ea 52%,#eef9f2)!important;box-shadow:0 0 0 2px #ffffffcc,0 4px 10px #0063301f,inset 0 -2px 3px #9cc9ad40!important}
 
 /* ---------- buttons: PURPLE — glossy violet pills with a white ring ---------- */
-html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:1px solid #4c1d95!important;color:#fff!important;text-shadow:0 1px 1px #2e0a6680;background:linear-gradient(180deg,#ffffff8c 0,#ffffff2b 46%,#ffffff00 52%),linear-gradient(180deg,#a978ff,#7c3aed 55%,#5b21b6)!important;box-shadow:0 0 0 2px #ffffffdd,0 6px 15px #5b21b64d,inset 0 -3px 5px #2e0a6640!important}
+html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:1px solid #4c1d95!important;color:#fff!important;text-shadow:0 1px 1px #2e0a6680;background:linear-gradient(180deg,#ffffff8c 0,#ffffff2b 46%,#ffffff00 52%),linear-gradient(180deg,#8f5cff,#5b21b6 55%,#3b0a8c)!important;box-shadow:0 0 0 2px #ffffffdd,0 6px 15px #3b0a8c55,inset 0 -3px 5px #1e044d55!important}
 html[data-pb-theme="purple"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:1px solid #cdb6f5!important;color:#4c1d95!important;background:linear-gradient(180deg,#fff 0,#faf7ff 46%,#ece2fd 52%,#f5f0ff)!important;box-shadow:0 0 0 2px #ffffffcc,0 4px 10px #5b21b61f,inset 0 -2px 3px #b9a3e040!important}
 
 /* ---------- buttons: BLACK — glossy capsules with a gold rim ---------- */
@@ -210,3 +210,19 @@ html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar .side
 html[data-pb-theme="black"] .app-container:not(.login-layout) .sidebar-logout-button :is(.material-symbols-outlined,.sidebar-group-title){color:#ff9aab!important}
 html .app-container>header .pb-user-button .pb-user-name{color:inherit!important;font-size:.82rem!important;display:block;width:auto;max-width:160px}
 html .app-container>header .pb-user-button .pb-user-avatar{color:var(--pb-active-text,#fff)!important}
+
+/* Purple page: the wave picture keeps only its light and shade and takes the lavender of the page (no pink cast). */
+html[data-pb-theme="purple"] .app-container:not(.login-layout)::before{mix-blend-mode:luminosity;opacity:.6}
+html[data-pb-theme="purple"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#e4d6fd,transparent 55%),radial-gradient(ellipse at 90% 85%,#d9c8fb,transparent 50%),#efe9fb!important}
+
+/* ---------- creation dialogs: no title band, a floating close button ---------- */
+.creation-dialog-sr-title{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.creation-dialog-shell{position:relative}
+.creation-dialog-close-floating{position:absolute!important;top:22px;left:22px;z-index:20}
+.creation-dialog .creation-dialog-form>.content-container>.page-header,.creation-dialog .creation-dialog-form .page-header:first-child{padding-inline-end:60px}
+
+/* ---------- form toolbar icon buttons (save, send, PDF, back): white squircles with a thick coloured rim ---------- */
+html[data-pb-theme] .app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child){width:46px!important;height:46px!important;min-width:46px;padding:0!important;display:grid!important;place-items:center;border-radius:16px!important;border:4px solid transparent!important;background:linear-gradient(150deg,#fff,#eeeef2) padding-box,var(--pb-rim) border-box!important;color:var(--pb-icon-color)!important;text-shadow:none!important;box-shadow:0 6px 14px var(--pb-shadow),inset 2px 2px 3px #fff,inset -2px -3px 5px #0000001a!important}
+html[data-pb-theme] .app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child) .material-symbols-outlined{font-size:22px!important;color:var(--pb-icon-color)!important;margin:0!important}
+html[data-pb-theme] .app-container:not(.login-layout) .page-header-actions :is(.save-btn,.submit-progress-btn,.action-button.primary):has(>.material-symbols-outlined:only-child){background:var(--pb-active-bg) padding-box,var(--pb-rim) border-box!important;box-shadow:0 0 0 2px #fff,0 8px 16px var(--pb-shadow),inset 0 -3px 5px #0000002e!important}
+html[data-pb-theme] .app-container:not(.login-layout) .page-header-actions :is(.save-btn,.submit-progress-btn,.action-button.primary):has(>.material-symbols-outlined:only-child) .material-symbols-outlined{color:var(--pb-active-text)!important}
