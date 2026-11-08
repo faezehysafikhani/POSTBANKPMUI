@@ -57,7 +57,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
     event.preventDefault();next=Math.min(grid.days,Math.max(1,next));setSelected(persianDateKey(month.year,month.month,next));dayButtons.current[next]?.focus();
   }
   return <section className="management-dashboard" dir="rtl" aria-labelledby="management-dashboard-title">
-    <div className="mg-dashboard-header"><div><small>پست بانک ایران · مدیریت یکپارچه</small><h2 id="management-dashboard-title">داشبورد مدیریتی</h2><p>نمای کلی پروژه‌ها، اقدامات و برنامه رویدادهای شما</p></div><div className="mg-today"><span className="material-symbols-outlined" aria-hidden="true">calendar_today</span>{new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',dateStyle:'full'}).format(new Date())}</div></div>
+    <div className="mg-dashboard-header"><div><small>پست بانک ایران · مدیریت یکپارچه</small><h2 id="management-dashboard-title">داشبورد مدیریتی</h2><p>نمای کلی پروژه‌ها، اقدامات و برنامه رویدادهای شما</p></div></div>
     <div className="mg-stat-grid">{stats.map(stat=><div className="mg-stat-card" key={stat.label}><span className={`mg-stat-icon ${stat.color} material-symbols-outlined`} aria-hidden="true">{stat.icon}</span><div><div className="mg-stat-title"><strong>{toPersianDigits(stat.value)}</strong><span>{stat.label}</span></div><p>{stat.hint}</p></div></div>)}</div>
     <div className="mg-dashboard-columns">
       <section className="mg-calendar-card" aria-labelledby="mg-calendar-title">
