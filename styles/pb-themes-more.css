@@ -1,0 +1,71 @@
+/*
+ * BLUE theme: buttons like the reference "Start / Favorites" set, a cyan-to-blue gradient pill whose leading icon
+ * sits on a raised white cap. RED theme: buttons like the reference squircles, a white raised tile inside a thick
+ * crimson rim (primary actions filled crimson). Also the header title (3D letters, a wave every 20 seconds) and the
+ * logo that spins at the start of every wave. Loaded after pb-themes.css.
+ */
+html[data-pb-theme="blue"]{
+  --pb-accent:#0284c7;--pb-accent2:#075985;--pb-hi:#38bdf8;--pb-soft:#e0f2fe;--pb-soft2:#f3faff;--pb-line:#bae0f7;
+  --pb-text:#0c2d48;--pb-heading:#0a4a7a;--pb-muted:#5b7a92;
+  --pb-page-bg:#eaf4fc;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
+  --pb-header-bg:linear-gradient(120deg,#f6fbffeb,#bfe2f8eb);--pb-header-text:#0a3a63;
+  --pb-side-bg:linear-gradient(155deg,#f6fbffe6,#cfe7f8e0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#e3f2fdc8);
+  --pb-side-text:#0c3d63;--pb-side-icon:#0284c7;
+  --pb-active-bg:linear-gradient(180deg,#ffffff40 0,#ffffff00 50%),linear-gradient(160deg,#22d3ee,#0284c7 55%,#1e40af);--pb-active-text:#fff;
+  --pb-card-bg:linear-gradient(140deg,#ffffffef,#eef7fedc);
+  --pb-shadow:#0369a133;--pb-glow:#0ea5e9;--pb-focus:#0ea5e93d;
+  --pb-field-bg:#fbfdff;--pb-field-inset:#9cc3dd40;--pb-clock-bg:linear-gradient(145deg,#cfe6f7,#f2f9ff);
+  --pb-rim:linear-gradient(135deg,#67e8f9,#0284c7 50%,#1e3a8a);--pb-icon-color:#0369a1;--pb-chart-main:#0ea5e9;
+  --pb-gel:linear-gradient(180deg,#ffffff99 0,#ffffff33 46%,#ffffff00 52%),linear-gradient(180deg,#38bdf8,#0284c7 58%,#075985);--pb-gel-edge:#075985;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#f7fbff 46%,#e0effc 52%,#eef6fd);--pb-gel-idle-edge:#bcdcf3;
+}
+html[data-pb-theme="red"]{
+  --pb-accent:#b91c1c;--pb-accent2:#7f1d1d;--pb-hi:#ef4444;--pb-soft:#fde8e8;--pb-soft2:#fff6f6;--pb-line:#f3c4c4;
+  --pb-text:#3f0d12;--pb-heading:#7f1d1d;--pb-muted:#8a5a5e;
+  --pb-page-bg:#fbeeee;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
+  --pb-header-bg:linear-gradient(120deg,#fff8f8eb,#f2c4c4eb);--pb-header-text:#5c0f17;
+  --pb-side-bg:linear-gradient(155deg,#fff8f8e6,#f5d3d3e0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#fdeaeac8);
+  --pb-side-text:#5c1018;--pb-side-icon:#b91c1c;
+  --pb-active-bg:linear-gradient(180deg,#ffffff38 0,#ffffff00 50%),linear-gradient(160deg,#ef4444,#b91c1c 55%,#7f1d1d);--pb-active-text:#fff;
+  --pb-card-bg:linear-gradient(140deg,#ffffffef,#fdf2f2dc);
+  --pb-shadow:#7f1d1d33;--pb-glow:#dc2626;--pb-focus:#dc26263d;
+  --pb-field-bg:#fffcfc;--pb-field-inset:#ddb0b040;--pb-clock-bg:linear-gradient(145deg,#f6d2d2,#fff5f5);
+  --pb-rim:linear-gradient(135deg,#fb7185,#dc2626 50%,#7f1d1d);--pb-icon-color:#b91c1c;--pb-chart-main:#dc2626;
+  --pb-gel:linear-gradient(180deg,#ffffff99 0,#ffffff2e 46%,#ffffff00 52%),linear-gradient(180deg,#f05252,#b91c1c 58%,#7f1d1d);--pb-gel-edge:#7f1d1d;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#fff8f8 46%,#fbe3e3 52%,#fdf0f0);--pb-gel-idle-edge:#f0c2c2;
+}
+/* Page: the wave picture keeps only its light and shade and takes the page colour (as in purple). */
+html:is([data-pb-theme="blue"],[data-pb-theme="red"]) .app-container:not(.login-layout)::before{mix-blend-mode:luminosity;opacity:.55}
+html[data-pb-theme="blue"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#d5ebfb,transparent 55%),radial-gradient(ellipse at 90% 85%,#c6e2f8,transparent 50%),#eaf4fc!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#fbdcdc,transparent 55%),radial-gradient(ellipse at 90% 85%,#f6cfcf,transparent 50%),#fbeeee!important}
+.pb-theme-switch button[data-theme-option="blue"]{background:radial-gradient(circle at 35% 30%,#a5f3fc,#0369a1)}
+.pb-theme-switch button[data-theme-option="red"]{background:radial-gradient(circle at 35% 30%,#fca5a5,#7f1d1d)}
+
+/* BLUE buttons: gradient pill; a leading icon (with a label beside it) sits on a white cap at the start end. */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:2px solid #fff!important;color:#fff!important;text-shadow:0 1px 1px #0c4a6e66;background:linear-gradient(180deg,#ffffff40,#ffffff00 55%),linear-gradient(270deg,#1e40af,#0284c7 45%,#22d3ee)!important;box-shadow:0 7px 16px #0369a14d,inset 0 -2px 4px #0c4a6e40!important}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):has(>.material-symbols-outlined:first-child):not(:has(>.material-symbols-outlined:only-child)){padding-inline-start:8px!important;box-shadow:inset -40px 0 0 #fff,inset -42px 0 0 #bae6fd,0 7px 16px #0369a14d!important}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):not(:has(>.material-symbols-outlined:only-child))>.material-symbols-outlined:first-child{color:#0369a1!important;width:22px;margin-inline-end:14px;text-shadow:none}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:2px solid transparent!important;color:#0a4a7a!important;background:linear-gradient(180deg,#fff,#eef7fe) padding-box,linear-gradient(90deg,#67e8f9,#0284c7) border-box!important;box-shadow:0 4px 10px #0369a126,inset 0 1px 2px #fff!important}
+
+/* RED buttons: squircle tiles inside a thick crimson rim; primary ones filled crimson. */
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:16px!important;border:3px solid transparent!important;color:#fff!important;text-shadow:0 1px 1px #450a0a80;background:linear-gradient(180deg,#ffffff38,#ffffff00 50%) padding-box,linear-gradient(160deg,#ef4444,#b91c1c 55%,#7f1d1d) padding-box,linear-gradient(135deg,#fecaca,#dc2626 50%,#7f1d1d) border-box!important;box-shadow:0 0 0 2px #fff,0 7px 15px #7f1d1d40,inset 0 -3px 5px #450a0a40!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:16px!important;border:3px solid transparent!important;color:#7f1d1d!important;background:linear-gradient(150deg,#fff,#fbf1f1) padding-box,linear-gradient(135deg,#fb7185,#dc2626 50%,#7f1d1d) border-box!important;box-shadow:0 5px 12px #7f1d1d26,inset 2px 2px 3px #fff,inset -2px -3px 5px #7f1d1d14!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn){border-width:4px!important;border-radius:17px!important}
+
+/* Header title: raised 3D letters and a wave every 20 seconds (word by word); the logo spins once at the start
+   of every wave. Turned off for people who ask for less motion. */
+html .app-container>header .pb-wave-title{perspective:600px}
+html .app-container>header .pb-wave-word{display:inline-block;transform-origin:50% 100%;
+  text-shadow:0 1px 0 #ffffffcc,0 2px 0 color-mix(in srgb,var(--pb-heading,#0d5f34) 35%,transparent),0 3px 0 color-mix(in srgb,var(--pb-heading,#0d5f34) 22%,transparent),0 5px 7px #00000033;
+  animation:pb-title-wave 20s ease-in-out infinite;animation-delay:calc(var(--i) * .14s)}
+html[data-pb-theme="black"] .app-container>header .pb-wave-word{text-shadow:0 1px 0 #00000099,0 2px 0 #d4af3766,0 3px 0 #d4af3740,0 6px 8px #000a}
+@keyframes pb-title-wave{
+  0%,7%,100%{transform:translateY(0) rotateX(0) scale(1)}
+  2%{transform:translateY(-7px) rotateX(18deg) scale(1.08)}
+  4%{transform:translateY(1px) rotateX(-6deg) scale(.98)}
+}
+html .app-container>header .header-title-group{perspective:500px}
+html .app-container>header .header-logo{animation:pb-logo-spin 20s cubic-bezier(.45,.05,.3,1) infinite}
+@keyframes pb-logo-spin{0%,8%,100%{transform:rotateY(0)}6%{transform:rotateY(360deg)}}
+html .app-container>header .header-logo:hover{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){html .app-container>header :is(.pb-wave-word,.header-logo){animation:none!important}}

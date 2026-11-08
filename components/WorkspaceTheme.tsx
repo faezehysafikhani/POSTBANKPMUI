@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 
-export type WorkspaceTheme = 'green' | 'purple' | 'black';
+export type WorkspaceTheme = 'green' | 'purple' | 'black' | 'blue' | 'red';
 const KEY = 'pb_workspace_theme';
 const THEMES: { id: WorkspaceTheme; label: string }[] = [
   { id: 'green', label: 'تم سبز' },
   { id: 'purple', label: 'تم بنفش' },
   { id: 'black', label: 'تم مشکی' },
+  { id: 'blue', label: 'تم آبی' },
+  { id: 'red', label: 'تم قرمز' },
 ];
-const isTheme = (value: unknown): value is WorkspaceTheme => value === 'green' || value === 'purple' || value === 'black';
+const isTheme = (value: unknown): value is WorkspaceTheme => THEMES.some(t => t.id === value);
 
 function readTheme(): WorkspaceTheme {
   try { const saved = localStorage.getItem(KEY); if (isTheme(saved)) return saved; } catch {}
