@@ -1,6 +1,7 @@
 // «+ افزودن»: one small button on a card (or a row) that opens a short menu of what can be added
 // right there - a sub-unit, a post, a person. The menu is drawn on the page (not inside the chart),
 // so zooming or scrolling the chart never cuts it off.
+import { portalRoot } from '../../../../utils/portalRoot';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Plus } from 'lucide-react';
@@ -81,7 +82,7 @@ export const AddMenu: React.FC<{
             ))}
           </div>
         </>,
-        document.body,
+        portalRoot(),
       )}
     </>
   );

@@ -842,7 +842,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       currentUserId={currentUser?.id}
       profile={{ avatar: profileContent, password: passwordContent, phone: phoneContent, account: accountStatusContent }}
       team={teamContent}
-      appearance={appearanceContent}
       help={projectHelp ?? helpContent}
       projectSettings={projectSettings}
     />

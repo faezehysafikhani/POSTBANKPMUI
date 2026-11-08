@@ -7,3 +7,9 @@
 @media(prefers-reduced-motion:reduce){.settings-profile-page *{transition:none!important}}
 .settings-preview-layout .app-body{min-height:0}.settings-preview-layout .app-sidebar{height:auto;max-height:calc(100vh - 85px);align-self:stretch}.settings-preview-layout>footer{margin-top:0;padding:14px 20px}.settings-preview-layout>footer p{margin:0}
 @media(max-width:700px){.settings-preview-layout>.app-body>.app-sidebar.collapsed{width:54px;min-width:54px}.settings-preview-layout .sidebar-header{padding:10px 6px}.settings-preview-layout .sidebar-nav{padding:8px 4px}.settings-preview-layout .main-content{padding:16px 10px}.settings-preview-layout .app-sidebar:not(.collapsed){position:absolute;right:0;top:0;width:255px;min-width:255px;max-width:calc(100vw - 30px);height:auto;max-height:calc(100vh - 85px)}.settings-preview-layout .app-sidebar:not(.collapsed)+.main-content{margin-right:54px}.settings-preview-layout>header{padding:0 10px}.settings-preview-layout .header-title-group{gap:6px;min-width:0}.settings-preview-layout header h1{font-size:.95rem}.settings-preview-layout .header-logo{height:28px}.settings-preview-layout .user-info{gap:5px;flex-wrap:wrap;justify-content:flex-end;font-size:.65rem}.settings-preview-layout .header-content{gap:8px}.settings-preview-layout .user-info button{padding:5px}.settings-preview-layout>footer{font-size:.7rem}}
+/* Tab bars of the reference screens: compact, every group on one row (it scrolls sideways when too narrow). */
+.sp-tab-list.sp-fit{display:flex;flex-wrap:nowrap;gap:5px;padding:5px;overflow-x:auto;scrollbar-width:thin}
+.sp-tab-list.sp-fit .sp-tab{flex:1 0 auto;padding:8px 14px;font-size:.8rem;white-space:nowrap}
+.sp-tab-list.sp-fit .sp-tab svg{width:17px;height:17px}
+.sp-secondary>.sp-tab-list.sp-fit{padding:0 0 10px;gap:6px}.sp-secondary>.sp-tab-list.sp-fit .sp-tab{flex:0 0 auto;border-radius:9px}
+.sp-secondary>.sp-tab-list.sp-fit .sp-tab.is-active{box-shadow:0 2px 6px #02c75422}

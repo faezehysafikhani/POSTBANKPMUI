@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FeaturesHandbook } from './FeaturesHandbook';
 import { refreshBranding } from '../tmpb/utils/branding';
-import { ThemeContext } from '../context';
 import { SettingsView } from '../tmpb/components/SettingsView';
-import type { AppColorPalette, AppTheme, User } from '../tmpb/types';
-import { adoptExternalSession, forgetExternalSession, getSessionUser, updateMyPreferences, updateMyProfile } from '../tmpb/services/nexusApi';
+import type { User } from '../tmpb/types';
+import { adoptExternalSession, forgetExternalSession, getSessionUser, updateMyProfile } from '../tmpb/services/nexusApi';
 import { tokenStore } from '../services/api';
 import referenceCss from '../tmpb/generated.css?inline';
 
@@ -59,42 +58,23 @@ type Props = {
 
 export function SettingsAndProfile({ userId, onLogout, projectSettings }: Props) {
   useReferenceStyles();
-  const { theme, setTheme } = useContext(ThemeContext);
   const { user, failed } = useAdoptedSession(userId);
   const [current, setCurrent] = useState<User | null>(null);
-  const [pattern, setPattern] = useState<AppTheme>('default');
-  const [palette, setPalette] = useState<AppColorPalette>('indigo');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     setCurrent(user);
-    setPattern(user.theme || 'default');
-    setPalette(user.colorPalette || 'indigo');
   }, [user]);
-
-  const preference = async (settings: Parameters<typeof updateMyPreferences>[0]) => {
-    try {
-      await updateMyPreferences(settings);
-      setError(null);
-      if (settings.theme) setPattern(settings.theme as AppTheme);
-      if (settings.colorPalette) setPalette(settings.colorPalette as AppColorPalette);
-      if (settings.themeMode) setTheme(settings.themeMode as 'light' | 'dark');
-      setCurrent(getSessionUser());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'ذخیره تنظیمات ممکن نشد.');
-    }
-  };
 
   if (failed) return <div className="content-container" dir="rtl" role="alert">بارگذاری تنظیمات ممکن نشد. دوباره وارد شوید.</div>;
   if (!current) return <div className="content-container" dir="rtl">در حال بارگذاری…</div>;
 
-  return <div className={`content-container bg-pattern-${pattern} palette-${palette}`} dir="rtl">
+  return <div className="tw-scope settings-profile-page" dir="rtl">
     {error && <p role="alert">{error}</p>}
     <SettingsView projectHelp={<FeaturesHandbook />} projectSettings={projectSettings}
-      themeMode={theme} setThemeMode={mode => void preference({ themeMode: mode })}
-      appColorTheme={pattern} setAppColorTheme={next => void preference({ theme: next })}
-      appColorPalette={palette} setAppColorPalette={next => void preference({ colorPalette: next })}
+      themeMode="light" setThemeMode={() => {}} appColorTheme="default" setAppColorTheme={() => {}}
+      appColorPalette="indigo" setAppColorPalette={() => {}}
       totalTasksCount={0} currentUser={current} onLogout={onLogout} onOpenAuthModal={onLogout}
       onSaveProfile={async updates => { setCurrent(await updateMyProfile(updates)); }} />
   </div>;

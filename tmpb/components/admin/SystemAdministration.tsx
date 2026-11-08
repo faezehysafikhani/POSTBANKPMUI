@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from 'react';
-import { Smartphone, MessageSquare, Users, History, Network, KeyRound, Loader2, Save, User as UserIcon, Palette, FileText, UploadCloud, Building2, BadgeCheck, ShieldCheck, Image as ImageIcon, RotateCcw, ChevronDown, ChevronUp, MonitorSmartphone, LogOut, Briefcase } from 'lucide-react';
+import { Smartphone, MessageSquare, Users, History, Network, KeyRound, Loader2, Save, User as UserIcon, Palette, FileText, UploadCloud, Building2, BadgeCheck, ShieldCheck, Image as ImageIcon, RotateCcw, ChevronDown, ChevronUp, MonitorSmartphone, LogOut, Briefcase, Settings as SettingsIcon } from 'lucide-react';
 import { getKnownPermissions, getMyPermissions, changeMyPassword, requestPhoneChange, confirmPhoneChange, fetchUploadPolicy, updateMaxUploadSizeKb } from '../../services/nexusApi';
 import { AdminCard, SegmentedTabs, PillTabs, TabItem, Field, inputClass, Notice, PrimaryButton } from './AdminUi';
 import { UsersPanel } from './UsersPanel';
@@ -554,7 +554,7 @@ export const SystemAdministration: React.FC<{
   currentUserId?: string;
   profile: ProfileSections;
   team: React.ReactNode;
-  appearance: React.ReactNode;
+  appearance?: React.ReactNode;
   help: React.ReactNode;
   /** Product-specific settings (the project-management product's workflow, visibility, calendars, base tables). Absent: no tab. */
   projectSettings?: React.ReactNode;
@@ -579,7 +579,7 @@ export const SystemAdministration: React.FC<{
     { id: 'profile', label: 'پروفایل', icon: UserIcon },
     // Only for people given the work-team permissions; nobody else sees the tab.
     ...(canSeeWorkTeams(permissions) ? [{ id: 'team' as const, label: 'مدیریت تیم کاری', icon: Users }] : []),
-    { id: 'appearance', label: 'ظاهر سامانه', icon: Palette },
+    ...(appearance || can('settings.update') ? [{ id: 'appearance' as const, label: 'ظاهر سامانه', icon: Palette }] : []),
     { id: 'help', label: 'آموزش سامانه', icon: FileText },
     ...(projectSettings ? [{ id: 'project' as const, label: 'تنظیمات مدیریت پروژه', icon: Briefcase }] : []),
     ...(can('sms_settings.view') ? [{ id: 'sms' as const, label: 'پنل پیامکی', icon: MessageSquare }] : []),
@@ -593,15 +593,17 @@ export const SystemAdministration: React.FC<{
     <div className="w-full space-y-5" dir="rtl">
       {/* The page's title, and under it its main tabs from the start (right) edge; each tab's own
           sub-tabs come below, in the page itself. */}
-      <AdminCard className="p-5 sm:p-6 space-y-4">
+      <div className="sp-heading">
+        <span className="sp-heading-icon"><SettingsIcon className="w-6 h-6" /></span>
         <div>
-          <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">تنظیمات سامانه</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">تنظیمات شخصی، پنل پیامکی و مدیریت کاربران سامانه</p>
+          <h2>تنظیمات و پروفایل</h2>
+          <p>مدیریت اطلاعات شخصی و تنظیمات سامانه</p>
         </div>
-        {!tabsReady ? (
-          <div className="h-[52px] rounded-2xl bg-slate-100/80 dark:bg-slate-800/70 animate-pulse" aria-hidden="true" />
-        ) : tabs.length > 1 && <SegmentedTabs tabs={tabs} active={current} onChange={setActive} />}
-      </AdminCard>
+      </div>
+      <div className="sp-workspace space-y-5">
+      {!tabsReady ? (
+        <div className="h-[52px] rounded-2xl bg-slate-100 animate-pulse" aria-hidden="true" />
+      ) : tabs.length > 1 && <SegmentedTabs tabs={tabs} active={current} onChange={setActive} />}
 
       {current === 'profile' && <ProfileHub sections={profile} can={can} placement={orgStructureAvailable ? <MyPlacementPanel /> : null} />}
       {current === 'team' && canSeeWorkTeams(permissions) && team}
@@ -617,6 +619,7 @@ export const SystemAdministration: React.FC<{
       {current === 'sms' && <SmsPanel canUpdate={can('sms_settings.update')} canTest={can('sms_settings.test')} />}
       {current === 'users' && currentUserId && <UserManagementSection currentUserId={currentUserId} can={can} orgStructureAvailable={orgStructureAvailable} />}
       {current === 'org' && <OrgStructureSection can={can} />}
+      </div>
     </div>
   );
 };

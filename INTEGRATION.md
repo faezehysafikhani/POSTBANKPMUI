@@ -91,3 +91,10 @@ structure. They use their own API client (`tmpb/services/nexusApi.ts`); it adopt
 compiled by `npm run build:settings` (run by `predev` / `prebuild`) and mounted only while these screens are open.
 Administrators also get «تنظیمات مدیریت پروژه» with four sub-tabs (workflow and approvals, visibility, work calendars, base tables;
 `components/ProjectSettingsTabs.tsx`). The old «مدیریت کاربران» and «تنظیمات» pages and menu items are gone; their routes lead here.
+
+Look: the reference screens carry no look of their own. `tmpb/reference.css` maps their colour names to the product's palette (green accent,
+green-grey neutrals), uses flat soft shadows and Vazirmatn, and is scoped to `.tw-scope` (no global reset, so the header, menu and
+other pages are untouched; dialogs are drawn into `portalRoot()` for the same reason). The tab bars (`SegmentedTabs`, `PillTabs`) use the
+product's `sp-tab` classes, and the page heading and workspace use `sp-heading` / `sp-workspace` from `pages/settings-profile.css`.
+The product is light-only, so the reference's day/night, colour-palette and background-pattern choices are not offered; the
+«ظاهر سامانه» tab keeps only the system name, logo and upload-size cards (administrators).

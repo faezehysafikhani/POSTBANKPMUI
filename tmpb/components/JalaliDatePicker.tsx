@@ -1,3 +1,4 @@
+import { portalRoot } from '../utils/portalRoot';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -178,7 +179,7 @@ export const JalaliDatePicker: React.FC<{
             <button type="button" onClick={() => pick(today)} className="text-xs font-bold text-indigo-600 hover:underline cursor-pointer">امروز</button>
             {selected && <button type="button" onClick={() => { onChange(undefined); setOpen(false); }} className="text-xs font-bold text-slate-500 hover:text-rose-600 cursor-pointer">پاک کردن</button>}
           </div>
-        </div>, document.body
+        </div>, portalRoot()
       )}
     </div>
   );

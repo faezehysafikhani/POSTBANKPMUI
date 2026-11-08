@@ -5,7 +5,7 @@ import { toPersianDigits } from '../../utils/helpers';
 /** Shared building blocks of the administration screens (Settings), in one visual language. */
 
 export const AdminCard: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
-  <div className={`bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-[0_8px_28px_-24px_rgba(15,23,42,0.4)] ${className}`}>
+  <div className={`bg-white border border-slate-200 rounded-2xl shadow-sm ${className}`}>
     {children}
   </div>
 );
@@ -16,24 +16,40 @@ export interface TabItem<T extends string> {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-/** The main navigation of a settings page: a soft track with the active tab raised. */
-export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void }) {
-  return (
-    <div className="flex flex-nowrap gap-1 p-1 w-fit max-w-full bg-slate-100/80 dark:bg-slate-800/70 rounded-2xl overflow-x-auto" role="tablist">
-      {tabs.map(({ id, label, icon: Icon }) => {
+// Both tab bars use the product's own tab look (the `sp-tab` classes of pages/settings-profile.css), so every
+// settings page reads as one family: the main bar is a white track with the active tab filled green, and the
+// secondary bar under it is the same tabs on a plain underline.
+function TabBar<T extends string>({ tabs, active, onChange, secondary }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void; secondary: boolean }) {
+  const buttons = React.useRef<(HTMLButtonElement | null)[]>([]);
+  // Horizontal RTL: the arrows follow the visual direction; Home / End reach the ends.
+  const move = (event: React.KeyboardEvent, index: number) => {
+    let next: number;
+    switch (event.key) {
+      case 'ArrowLeft': next = (index + 1) % tabs.length; break;
+      case 'ArrowRight': next = (index - 1 + tabs.length) % tabs.length; break;
+      case 'Home': next = 0; break;
+      case 'End': next = tabs.length - 1; break;
+      default: return;
+    }
+    event.preventDefault();
+    onChange(tabs[next].id);
+    buttons.current[next]?.focus();
+  };
+  const list = (
+    <div className="sp-tab-list sp-fit" role="tablist" aria-orientation="horizontal">
+      {tabs.map(({ id, label, icon: Icon }, index) => {
         const selected = id === active;
         return (
           <button
             key={id}
+            ref={(element) => { buttons.current[index] = element; }}
             type="button"
             role="tab"
             aria-selected={selected}
+            tabIndex={selected ? 0 : -1}
             onClick={() => onChange(id)}
-            className={`flex shrink-0 items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
-              selected
-                ? 'bg-white dark:bg-slate-900 text-indigo-800 dark:text-indigo-300 shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-            }`}
+            onKeyDown={(event) => move(event, index)}
+            className={`sp-tab ${selected ? 'is-active' : ''}`}
           >
             <Icon className="w-4 h-4" />
             <span>{label}</span>
@@ -42,34 +58,17 @@ export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { ta
       })}
     </div>
   );
+  return secondary ? <div className="sp-tab-section sp-secondary">{list}</div> : list;
 }
 
-/** Secondary navigation inside a tab: separate pills, the active one filled. */
-export function PillTabs<T extends string>({ tabs, active, onChange, compact = false }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void; compact?: boolean }) {
-  return (
-    <div className={compact ? "grid grid-cols-2 sm:grid-cols-4 gap-1 rounded-xl bg-slate-100/80 dark:bg-slate-800/70 p-1" : "flex flex-nowrap gap-1.5 overflow-x-auto"} role="tablist">
-      {tabs.map(({ id, label, icon: Icon }) => {
-        const selected = id === active;
-        return (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            aria-selected={selected}
-            onClick={() => onChange(id)}
-            className={`flex items-center justify-center gap-1.5 rounded-lg font-bold border transition-all cursor-pointer ${compact ? 'px-2 py-2 text-xs' : 'px-3 py-1.5 text-xs whitespace-nowrap'} ${
-              selected
-                ? 'bg-indigo-800 border-indigo-800 text-white shadow-sm dark:bg-indigo-600 dark:border-indigo-600'
-                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-300'
-            }`}
-          >
-            <Icon className="w-4 h-4" />
-            <span>{label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
+/** The main navigation of a settings page. */
+export function SegmentedTabs<T extends string>({ tabs, active, onChange }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void }) {
+  return <TabBar tabs={tabs} active={active} onChange={onChange} secondary={false} />;
+}
+
+/** Secondary navigation inside a tab. */
+export function PillTabs<T extends string>({ tabs, active, onChange }: { tabs: TabItem<T>[]; active: T; onChange: (id: T) => void; compact?: boolean }) {
+  return <TabBar tabs={tabs} active={active} onChange={onChange} secondary />;
 }
 
 export const SearchBox: React.FC<{ value: string; onChange: (value: string) => void; placeholder: string }> = ({ value, onChange, placeholder }) => (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GitPullRequest, Eye, CalendarDays, Table2 } from 'lucide-react';
-import { SegmentedTabs, type TabItem } from '../tmpb/components/admin/AdminUi';
+import { PillTabs, type TabItem } from '../tmpb/components/admin/AdminUi';
 import { SettingsPage as ProjectSettingsPage } from '../pages/CorePages';
 import { CalendarManagementPage, ReferenceTablesPage } from '../pages/AdvancedPages';
 import type { Calendar } from '../types';
@@ -39,7 +39,7 @@ export function ProjectSettingsTabs({ workflow, calendars, onDeleteCalendar, pro
 
   return (
     <div className="space-y-4" dir="rtl">
-      <SegmentedTabs tabs={TABS} active={tab} onChange={setTab} />
+      <PillTabs tabs={TABS} active={tab} onChange={setTab} />
       {/* The old pages carry their own title and a back button; inside a tab only their content is wanted. */}
       <style>{`.pm-embedded .back-button{display:none}`}</style>
       <div className="pm-embedded">

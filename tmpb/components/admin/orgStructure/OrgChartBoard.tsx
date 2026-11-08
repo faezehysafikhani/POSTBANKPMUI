@@ -1,3 +1,4 @@
+import { portalRoot } from '../../../utils/portalRoot';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Plus, Building2, Network, Users, UserRound, ChevronDown, ChevronUp, GitBranch, GitFork, Maximize2, Minimize2, ChevronsDownUp, ChevronsUpDown, UserX, ZoomIn, ZoomOut, Scan, Search, X, FileDown, Loader2, Briefcase, Crown, UserPlus, Move, RotateCcw } from 'lucide-react';
@@ -760,7 +761,7 @@ export const OrgChartBoard: React.FC<{
             onSaved={async () => { await data.reload(); }}
             onClose={() => setCompanyForm(null)}
           />,
-          document.body,
+          portalRoot(),
         )}
       </>
     );
@@ -1320,11 +1321,11 @@ export const OrgChartBoard: React.FC<{
         onReload={data.reload}
         onClose={() => setMoveRequest(null)}
       />,
-      document.body,
+      portalRoot(),
     )}
     {linkChoices && createPortal(
       <AutoLinkChoiceDialog choices={linkChoices} onDone={data.reload} onClose={() => setLinkChoices(null)} />,
-      document.body,
+      portalRoot(),
     )}
     {postsRequest && createPortal(
       <AddPostsDialog
@@ -1334,7 +1335,7 @@ export const OrgChartBoard: React.FC<{
         onDone={async (text) => { await data.reload(); onStructureChanged?.(); showToast(text, 'ok'); }}
         onClose={() => setPostsRequest(null)}
       />,
-      document.body,
+      portalRoot(),
     )}
     {addRequest && createPortal(
       <AddNodeDialog
@@ -1357,7 +1358,7 @@ export const OrgChartBoard: React.FC<{
         }}
         onClose={() => setAddRequest(null)}
       />,
-      document.body,
+      portalRoot(),
     )}
     </>
   );

@@ -1,3 +1,4 @@
+import { portalRoot } from '../../../utils/portalRoot';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -735,7 +736,7 @@ export const OrgChartDetails: React.FC<{
             onClose={() => setExtra(null)}
           />
         ) : null,
-        document.body,
+        portalRoot(),
       )}
       {/* At the page root: the panel is sticky, and the chart's cards would otherwise cover a dialog opened inside it. */}
       {dialog && createPortal(
@@ -755,7 +756,7 @@ export const OrgChartDetails: React.FC<{
           onClose={() => setDialog(null)}
           onSelect={onSelect}
         />,
-        document.body,
+        portalRoot(),
       )}
     </AdminCard>
   );

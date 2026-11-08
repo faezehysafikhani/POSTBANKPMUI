@@ -1,3 +1,4 @@
+import { portalRoot } from './portalRoot';
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 
@@ -18,7 +19,7 @@ function host(): void {
   if (root || typeof document === 'undefined') return;
   const el = document.createElement('div');
   el.setAttribute('data-app-dialog-host', '');
-  document.body.appendChild(el);
+  portalRoot().appendChild(el);
   root = createRoot(el);
   root.render(<DialogHost />);
 }
