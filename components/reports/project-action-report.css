@@ -193,3 +193,15 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 @media(max-width:1300px){.par-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1000px){.par-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.par-dates{grid-column:1/-1}}
 @media(max-width:620px){.par-filter-grid{grid-template-columns:1fr}.par-date-row{grid-template-columns:1fr 1fr}.par-date-row select{grid-column:1/-1}.par-label .par-presets{display:none}}
+
+/* ---------- head row: view tabs | saved views (select + save, same height) | count — one tidy line ---------- */
+.par-head{flex-wrap:nowrap;gap:10px;padding:6px 8px;border-radius:999px;background:var(--pb-card-bg,#fff);border:1px solid var(--pb-card-border,#fff);box-shadow:0 6px 16px var(--par-shadow),inset 1px 1px 3px #fff}
+.par-tabs{flex-shrink:0;padding:3px}
+.par-tabs button{padding:6px 14px;font-size:.8rem}
+.par-views{flex-wrap:nowrap;gap:6px;min-width:0}
+.par .par-views select{width:220px;min-width:0!important;height:34px!important;min-height:0!important;padding:0 10px 0 28px!important;font-size:.78rem!important;border-radius:999px!important}
+.par .par-views :is(.cancel-btn,.save-btn){height:34px!important;min-height:0!important;padding:0 14px!important;font-size:.76rem!important;white-space:nowrap;flex-shrink:0}
+.par .par-views .action-icon{width:34px!important;height:34px!important;min-width:34px;padding:0!important}
+.par-name-view input{height:34px!important;width:160px;border-radius:999px!important}
+.par-count-line{flex-shrink:0;padding:4px 12px;border-radius:999px;background:var(--par-soft);color:var(--par-head);font-size:.74rem}
+@media(max-width:900px){.par-head{flex-wrap:wrap;border-radius:18px}.par .par-views select{width:170px}}
