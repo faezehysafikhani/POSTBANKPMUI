@@ -50,7 +50,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
   };
 
   return (
-    <div className="pb-login" id="login-container-root"><div className="pb-wave" aria-hidden="true"/><section className="pb-brand"><svg className="pb-brand-mark" viewBox="0 0 160 160" aria-hidden="true"><defs><clipPath id="pb-logo-clip"><circle cx="80" cy="80" r="80"/></clipPath></defs><g clipPath="url(#pb-logo-clip)" fill="none" stroke="white" strokeWidth="12"><path d="M-20 15 C5 -10 25 65 53 38 S90 86 118 57 S145 98 180 75"/><path d="M-24 40 C1 15 21 90 49 63 S86 111 114 82 S141 123 176 100"/><path d="M-28 65 C-3 40 17 115 45 88 S82 136 110 107 S137 148 172 125"/></g></svg><h1>پست بانک ایران</h1><p>POST BANK IRAN</p><div className="pb-features">{[['task_alt','مدیریت وظایف'],['layers','مدیریت پروژه'],['calendar_month','پایش و پیگیری'],['bar_chart','گزارش‌ها و داشبوردها']].map(([icon,label])=><div key={icon}><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</div>)}</div></section>
+    <div className="pb-login" id="login-container-root"><div className="pb-wave" aria-hidden="true"/><section className="pb-brand"><img className="pb-brand-mark" src="/post-bank-iran-logo.png" alt="نشان پست بانک ایران" width="160" height="160" /><h1>پست بانک ایران</h1><p>POST BANK IRAN</p><div className="pb-features">{[['task_alt','مدیریت وظایف'],['layers','مدیریت پروژه'],['calendar_month','پایش و پیگیری'],['bar_chart','گزارش‌ها و داشبوردها']].map(([icon,label])=><div key={icon}><span className="material-symbols-outlined" aria-hidden="true">{icon}</span>{label}</div>)}</div></section>
       <FloatingSpheresCanvas />
       {/* Decorative ambient background glows */}
       <div className="login-ambient-glow login-glow-1" />
