@@ -1,5 +1,6 @@
 import React, { useContext, ReactElement, useState, useMemo, useEffect } from 'react';
 import { LoginPortalClock } from './LoginPortalClock';
+import { WorkspaceThemeSwitch } from './WorkspaceTheme';
 import { LocalizationContext } from '../context';
 import { User } from '../types';
 import { toPersianDigits, appLogoUrl } from '../utils';
@@ -14,6 +15,7 @@ export const Header = ({ user, onLogout }: { user: User, onLogout: () => void })
       ),
       React.createElement(LoginPortalClock, { showGregorian: false }),
       React.createElement("div", { className: "user-info" },
+        React.createElement(WorkspaceThemeSwitch),
         React.createElement("span", null, t('welcomeUser', { username: user.username })),
         React.createElement("button", { onClick: onLogout, className: "logout-button", "aria-label": t('logout'), title: t('logout') },
           React.createElement("span", { className: "material-symbols-outlined" }, "logout")

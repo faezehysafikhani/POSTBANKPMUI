@@ -8,6 +8,29 @@ import { gregorianDay, monthGrid, moveMonth, PERSIAN_MONTHS, persianDateKey, teh
 import './management-dashboard.css';
 
 const weekdays = ['ش','ی','د','س','چ','پ','ج'];
+
+// «پروژه جدید» opens a small menu (waterfall / agile); «اقدام جدید» goes straight to the action form.
+function CreateButtons({ onNavigate, compact = false }: { onNavigate:(page:string,context?:any)=>void; compact?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement|null>(null);
+  useEffect(()=>{
+    if(!open)return;
+    const close=(event:MouseEvent|KeyboardEvent)=>{if(event instanceof KeyboardEvent?event.key==='Escape':!box.current?.contains(event.target as Node))setOpen(false);};
+    document.addEventListener('mousedown',close);document.addEventListener('keydown',close);
+    return()=>{document.removeEventListener('mousedown',close);document.removeEventListener('keydown',close);};
+  },[open]);
+  const go=(page:string,type?:string)=>{setOpen(false);onNavigate(page,{...(type?{type}:{}),from:'dashboard'});};
+  return <div className={`mg-create-buttons${compact?' compact':''}`} ref={box}>
+    <div className="mg-create-menu">
+      <button type="button" className="save-btn" aria-haspopup="menu" aria-expanded={open} onClick={()=>setOpen(value=>!value)}><span className="material-symbols-outlined" aria-hidden="true">create_new_folder</span>پروژه جدید<span className="material-symbols-outlined mg-caret" aria-hidden="true">expand_more</span></button>
+      {open&&<div className="mg-create-popover" role="menu">
+        <button type="button" role="menuitem" onClick={()=>go('create_waterfall_details','waterfall')}><span className="material-symbols-outlined" aria-hidden="true">account_tree</span><span><strong>پروژه آبشاری</strong><small>مرحله‌ای با ساختار شکست کار</small></span></button>
+        <button type="button" role="menuitem" onClick={()=>go('create_agile_details','agile')}><span className="material-symbols-outlined" aria-hidden="true">sync_alt</span><span><strong>پروژه چابک</strong><small>اسپرینت‌ها و فعالیت‌های تیم</small></span></button>
+      </div>}
+    </div>
+    <button type="button" className="save-btn" onClick={()=>go('define_action')}><span className="material-symbols-outlined" aria-hidden="true">add_task</span>اقدام جدید</button>
+  </div>;
+}
 const statusLabels: Record<string,string> = {'In Progress':'در حال انجام','Planning':'برنامه‌ریزی','Completed':'تکمیل شده','On Hold':'متوقف شده','Not Started':'شروع نشده','Cancelled':'لغو شده'};
 const isoDay = (date: Date) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 // An item belongs to a day while that day lies between its start and end dates (either may be missing).
@@ -33,7 +56,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
     {label:'اقدامات باز',value:openActions,hint:'نیازمند پیگیری',icon:'inbox',color:'orange'},
   ];
   const chart = [
-    {label:'در حال انجام',value:active,color:'#35bb6d'}, {label:'برنامه‌ریزی',value:projects.filter(p=>p.status==='Planning').length,color:'#e9b16b'},
+    {label:'در حال انجام',value:active,color:'var(--pb-chart-main, #35bb6d)'}, {label:'برنامه‌ریزی',value:projects.filter(p=>p.status==='Planning').length,color:'#e9b16b'},
     {label:'تکمیل شده',value:projects.filter(p=>p.status==='Completed').length,color:'#5fb89e'}, {label:'متوقف شده',value:projects.filter(p=>p.status==='On Hold').length,color:'#db8994'},
   ];
   useEffect(()=>{
@@ -68,8 +91,8 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
     <h2 id="management-dashboard-title" className="mg-visually-hidden">داشبورد مدیریتی</h2>
     <div className="mg-stat-grid">{stats.map(stat=><div className="mg-stat-card" key={stat.label}><span className={`mg-stat-icon ${stat.color} material-symbols-outlined`} aria-hidden="true">{stat.icon}</span><div><div className="mg-stat-title"><strong>{toPersianDigits(stat.value)}</strong><span>{stat.label}</span></div><p>{stat.hint}</p></div></div>)}</div>
     <div className="mg-dashboard-columns">
-      <section className="mg-calendar-card" aria-labelledby="mg-calendar-title">
-        <div className="mg-card-heading"><div><h3 id="mg-calendar-title">تقویم شمسی مدیریتی</h3><p>رویدادها، یادآوری‌ها و تعطیلات تقویم کاری</p></div><button type="button" className="save-btn" onClick={()=>{setNotice('');setEventDate(selected);}}><span className="material-symbols-outlined" aria-hidden="true">add</span>رویداد جدید</button></div>
+      <section className="mg-calendar-card" aria-label="تقویم شمسی مدیریتی">
+        <div className="mg-card-heading mg-toolbar"><CreateButtons onNavigate={onNavigate}/></div>
         {notice&&<p className="mg-notice" role="status">{notice}</p>}
         {error&&<div className="mg-error" role="alert">{error}<button type="button" className="cancel-btn" onClick={()=>setRevision(value=>value+1)}>تلاش دوباره</button></div>}
         <div className="mg-month-nav"><button type="button" className="mg-icon-button" onClick={()=>changeMonth(-1)} aria-label="ماه قبل"><span className="material-symbols-outlined" aria-hidden="true">chevron_right</span></button><div aria-live="polite"><h4>{PERSIAN_MONTHS[month.month-1]} {toPersianDigits(month.year)}</h4><p>{rangeFormat.format(gregorianStart)} تا {rangeFormat.format(gregorianEnd)}</p></div><button type="button" className="mg-icon-button" onClick={()=>changeMonth(1)} aria-label="ماه بعد"><span className="material-symbols-outlined" aria-hidden="true">chevron_left</span></button></div>
@@ -87,7 +110,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
         <div className="mg-calendar-legend"><span><i className="holiday"/>تعطیلات تقویم</span><span><i className="event"/>رویداد ثبت‌شده</span><button type="button" className="cancel-btn" onClick={()=>{setMonth({year:today.jy,month:today.jm});setSelected(todayKey);}}>امروز</button></div>
       </section>
       <section className="mg-agenda-card" aria-labelledby="mg-agenda-title">
-        <div className="mg-card-heading"><div><h3 id="mg-agenda-title">برنامه {toPersianDigits(selectedDay)} {PERSIAN_MONTHS[selectedMonth-1]} {toPersianDigits(selectedYear)}</h3><p>پروژه‌ها و اقدامات در جریانِ روز انتخاب‌شده</p></div><button type="button" className="mg-icon-button" onClick={()=>{setNotice('');setEventDate(selected);}} aria-label="افزودن رویداد برای این روز" title="افزودن رویداد برای این روز"><span className="material-symbols-outlined" aria-hidden="true">add</span></button></div>
+        <div className="mg-card-heading"><div><h3 id="mg-agenda-title">برنامه {toPersianDigits(selectedDay)} {PERSIAN_MONTHS[selectedMonth-1]} {toPersianDigits(selectedYear)}</h3></div><div className="mg-agenda-actions"><CreateButtons onNavigate={onNavigate} compact/><button type="button" className="mg-icon-button" onClick={()=>{setNotice('');setEventDate(selected);}} aria-label="افزودن رویداد برای این روز" title="افزودن رویداد برای این روز"><span className="material-symbols-outlined" aria-hidden="true">edit_calendar</span></button></div></div>
         <div className="mg-agenda-list" tabIndex={0} aria-label="فهرست کارهای روز">
           <h4><span className="material-symbols-outlined" aria-hidden="true">folder_special</span>پروژه‌ها<b>{toPersianDigits(dayProjects.length)}</b></h4>
           {dayProjects.length?dayProjects.map(project=><button type="button" className="mg-agenda-item project" key={project.id} onClick={()=>onNavigate('project_dashboard_details',{project,from:'dashboard'})}><span className="mg-agenda-mark" aria-hidden="true"/><span><strong>{project.name}</strong><small>{shortDate(project.startDate)} تا {shortDate(project.endDate)}</small></span><em>{statusLabels[project.status]||project.status}</em></button>):<p className="mg-muted">پروژه‌ای در این روز در جریان نیست.</p>}
