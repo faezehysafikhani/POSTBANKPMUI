@@ -345,10 +345,13 @@ function DashboardTab({ rows, previous, users, filters, setFilters, onOpen }: {
     { icon: 'speed', label: 'میانگین پیشرفت', value: s.avgProgress !== null ? `${fa(s.avgProgress)}٪` : '—', delta: null },
   ];
   return <div className="par-dashboard">
-    <div className="par-kpis">{cards.map(c => <button key={c.label} type="button" className={`par-kpi ${c.tone || ''}`} onClick={c.pick} disabled={!c.pick}>
-      <span className="par-kpi-icon material-symbols-outlined" aria-hidden="true">{c.icon}</span>
-      <span className="par-kpi-text"><small>{c.label}</small><strong>{c.value}</strong>{c.delta}</span>
-    </button>)}</div>
+    <div className="par-kpis">{cards.map(c => {
+      const body = <><span className="par-kpi-icon material-symbols-outlined" aria-hidden="true">{c.icon}</span>
+        <span className="par-kpi-text"><small>{c.label}</small><strong>{c.value}</strong>{c.delta}</span></>;
+      // Only the «تأخیردار» card filters; the others are plain cards (a disabled button would look greyed out).
+      return c.pick ? <button key={c.label} type="button" className={`par-kpi ${c.tone || ''}`} onClick={c.pick} title="نمایش موارد تأخیردار">{body}</button>
+        : <div key={c.label} className={`par-kpi ${c.tone || ''}`}>{body}</div>;
+    })}</div>
     {rows.length === 0 ? <div className="par-nothing"><span className="material-symbols-outlined" aria-hidden="true">search_off</span>موردی با این فیلترها پیدا نشد.</div> : <>
       <p className="par-hint no-print"><span className="material-symbols-outlined" aria-hidden="true">touch_app</span>روی هر بخش نمودار کلیک کنید تا گزارش به همان مورد فیلتر شود.</p>
       <div className="par-grid two">
@@ -383,8 +386,8 @@ function DashboardTab({ rows, previous, users, filters, setFilters, onOpen }: {
 // ======================================================================= page
 interface SavedView { name: string; filters: ReportFilters }
 
-export function ProjectActionReport({ projects, actions, users, currentUserId, onNavigate }: {
-  projects: Project[]; actions: ActionItem[]; users: User[]; currentUserId?: string; onNavigate: (page: string, context?: any) => void;
+export function ProjectActionReport({ projects, actions, users, owningUnits = [], currentUserId, onNavigate }: {
+  projects: Project[]; actions: ActionItem[]; users: User[]; owningUnits?: string[]; currentUserId?: string; onNavigate: (page: string, context?: any) => void;
 }) {
   const keyBase = `par:${currentUserId || 'me'}`;
   const [tab, setTab] = useState<'list' | 'dashboard'>(() => (store.get(`${keyBase}:ui`, { tab: 'dashboard' as 'list' | 'dashboard' })).tab);
@@ -399,9 +402,9 @@ export function ProjectActionReport({ projects, actions, users, currentUserId, o
   const allRows = useMemo(() => buildRows(projects, actions), [projects, actions]);
   const rows = useMemo(() => applyFilters(allRows, filters), [allRows, filters]);
   const previous = useMemo(() => { const p = previousRange(filters.from, filters.to); return p ? summarize(applyFilters(allRows, filters, p)) : null; }, [allRows, filters]);
-  const unitOptions = useMemo(() => [...new Set<string>(allRows.flatMap(r => [r.unitLevel2, r.unit]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fa')), [allRows]);
+  const unitOptions = useMemo(() => [...new Set<string>([...owningUnits, ...allRows.flatMap(r => [r.unitLevel2, r.unit])].filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fa')), [allRows, owningUnits]);
   const peopleOptions = useMemo(() => {
-    const ids = new Set<string>(allRows.flatMap(r => [r.managerId, r.ownerId]).filter((x): x is string => !!x));
+    const ids = new Set<string>([...users.map(u => u.id), ...allRows.flatMap(r => [r.managerId, r.ownerId])].filter((x): x is string => !!x));
     return [...ids].map(id => ({ value: id, label: personName(users, id) })).sort((a, b) => a.label.localeCompare(b.label, 'fa'));
   }, [allRows, users]);
   const projectOptions = useMemo(() => projects.map(p => ({ value: p.id, label: p.name })).sort((a, b) => a.label.localeCompare(b.label, 'fa')), [projects]);
@@ -433,7 +436,9 @@ export function ProjectActionReport({ projects, actions, users, currentUserId, o
       <p className="par-count-line">{fa(rows.length)} از {fa(allRows.length)} مورد</p>
     </div>
     <FilterBar filters={filters} setFilters={setFilters} unitOptions={unitOptions} peopleOptions={peopleOptions} projectOptions={projectOptions} open={filtersOpen} setOpen={setFiltersOpen} />
-    {tab === 'list'
+    {allRows.length === 0 ? <div className="par-first-run"><span className="material-symbols-outlined" aria-hidden="true">query_stats</span>
+      <strong>هنوز پروژه یا اقدامی ثبت نشده است.</strong>با ثبت اولین پروژه یا اقدام، گزارش و نمودارها همین‌جا ساخته می‌شوند.</div>
+    : tab === 'list'
       ? <ListTab rows={rows} users={users} onOpen={open} storageKey={`${keyBase}:list`} />
       : <DashboardTab rows={rows} previous={previous} users={users} filters={filters} setFilters={setFilters} onOpen={open} />}
   </section>;

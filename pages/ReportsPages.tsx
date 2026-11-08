@@ -381,7 +381,7 @@ export const ReportsDashboardPage = ({
       <AnimatePresence mode="wait">
         {activeTab === 'projectsActions' && (
           <motion.div key="projectsActions" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }} transition={{ duration: 0.25 }}>
-            <ProjectActionReport projects={projects} actions={actions} users={users} onNavigate={onNavigate} />
+            <ProjectActionReport projects={projects} actions={actions} users={users} owningUnits={owningUnits} onNavigate={onNavigate} />
           </motion.div>
         )}
         {activeTab === 'units' && (

@@ -25,6 +25,8 @@ export interface ReportRow {
   approval: Approval;
   cost: number | null;
   progress: number | null; // 0..100
+  /** The progress was calculated by the backend (not just «completed = 100»); only these count in averages. */
+  measured: boolean;
   plannedProgress: number | null;
   source: Source | null;
   projectId: string | null;
@@ -104,7 +106,7 @@ export function buildRows(projects: Project[], actions: ActionItem[], today = to
       managerId: p.projectManagerId ?? null, ownerId: p.ownerId ?? null, start, end, status: p.status, approval: approvalOfProject(p),
       cost: typeof p.cost === 'number' ? p.cost : null,
       progress: hasFigures ? Math.round(p.actualProgress) : (p.status === 'Completed' ? 100 : null),
-      plannedProgress: hasFigures ? Math.round(p.plannedProgress) : null,
+      plannedProgress: hasFigures ? Math.round(p.plannedProgress) : null, measured: hasFigures,
       source: null, projectId: null, projectName: '', ...timingOf(p.status, end, today), original: raw,
     });
   }
@@ -115,7 +117,7 @@ export function buildRows(projects: Project[], actions: ActionItem[], today = to
       key: `a:${a.id}`, kind: 'action', id: a.id, name: a.title || '—', code: '',
       unit: a.owningUnit || '', unitLevel2: getUnitLevel2(a.owningUnit) || a.owningUnit || '',
       managerId: a.responsibleUserId ?? null, ownerId: a.ownerUserId ?? null, start, end, status: a.status, approval: approvalOfAction(a),
-      cost: null, progress: a.status === 'Completed' ? 100 : null, plannedProgress: null,
+      cost: null, progress: a.status === 'Completed' ? 100 : null, plannedProgress: null, measured: false,
       source, projectId: a.projectId ?? null, projectName: a.sourceInfo?.projectName || (a.projectId ? projectNames.get(a.projectId) || '' : ''),
       ...timingOf(a.status, end, today), original: a,
     });
@@ -197,7 +199,7 @@ export function previousRange(from: string, to: string): { from: string; to: str
 // ---------- summaries ----------
 export interface Summary { total: number; active: number; delayed: number; completed: number; cost: number; avgProgress: number | null }
 export function summarize(rows: ReportRow[]): Summary {
-  const withProgress = rows.filter(r => r.progress !== null);
+  const withProgress = rows.filter(r => r.measured && r.progress !== null);
   return {
     total: rows.length,
     active: rows.filter(r => r.status === 'In Progress').length,
