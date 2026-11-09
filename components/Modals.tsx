@@ -831,6 +831,7 @@ export const WBSModal = ({ root, onClose, onNodeClick }: {
             setExpandedNodes({});
         }
     };
+    const allNodesOpen = activityMap.size > 0 && Array.from(activityMap.keys()).every(id => !!expandedNodes[id]);
     const WbsNode = ({ node, isRoot = false }: {
         node: ProjectActivity;
         isRoot?: boolean;
@@ -892,17 +893,12 @@ export const WBSModal = ({ root, onClose, onNodeClick }: {
         style: { display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.35rem 0.65rem', fontSize: '0.78rem', background: 'transparent', border: 'none', color: 'var(--text-color, #1e3b2a)' }
     }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#dc2626', fontSize: '1.15rem' } }, "crop_portrait"), React.createElement("span", { style: { fontWeight: 600 } }, language === 'fa' ? 'PDF عمودی' : 'PDF Portrait'))), React.createElement("button", { onClick: onClose, className: "modal-close-button no-print", title: t('close') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "close")))), React.createElement("div", { className: "wbs-toolbar no-print" }, React.createElement("div", { className: "wbs-toolbar-left" }, React.createElement("button", {
         type: "button",
-        onClick: handleExpandAll,
+        onClick: allNodesOpen ? handleCollapseAll : handleExpandAll,
+        "aria-expanded": allNodesOpen,
         className: "action-button",
         style: { padding: '0.3rem 0.65rem', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' },
-        title: language === 'fa' ? 'گسترش تمامی شاخه‌ها' : 'Expand All Nodes'
-    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem' } }, "unfold_more"), language === 'fa' ? 'گسترش همه' : 'Expand All'), React.createElement("button", {
-        type: "button",
-        onClick: handleCollapseAll,
-        className: "action-button",
-        style: { padding: '0.3rem 0.65rem', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' },
-        title: language === 'fa' ? 'جمع‌کردن شاخه‌ها' : 'Collapse All Nodes'
-    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem' } }, "unfold_less"), language === 'fa' ? 'بستن همه' : 'Collapse'), React.createElement("span", { className: "gantt-stat-pill", style: { marginInlineStart: '0.5rem' } }, language === 'fa' ? `${toPersianDigits(activityMap.size)} فعالیت / بسته کاری` : `${activityMap.size} Activities / Work Packages`)), React.createElement("div", { className: "wbs-legend" }, React.createElement("div", { className: "wbs-legend-item" }, React.createElement("span", { className: "wbs-legend-badge planned" }), React.createElement("span", null, language === 'fa' ? 'پیشرفت برنامه‌ای' : 'Planned Progress')), React.createElement("div", { className: "wbs-legend-item" }, React.createElement("span", { className: "wbs-legend-badge actual" }), React.createElement("span", null, language === 'fa' ? 'پیشرفت واقعی' : 'Actual Progress')))), React.createElement("div", { className: "modal-body wbs-container", style: { overflow: 'auto' } }, React.createElement("div", { className: "org-chart-tree" }, root && React.createElement("ul", null, React.createElement(WbsNode, { node: root, isRoot: true })))))));
+        title: allNodesOpen ? (language === 'fa' ? 'جمع‌کردن شاخه‌ها' : 'Collapse All Nodes') : (language === 'fa' ? 'گسترش تمامی شاخه‌ها' : 'Expand All Nodes')
+    }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', transform: allNodesOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } }, "expand_more"), allNodesOpen ? (language === 'fa' ? 'بستن همه' : 'Collapse') : (language === 'fa' ? 'گسترش همه' : 'Expand All')), React.createElement("span", { className: "gantt-stat-pill", style: { marginInlineStart: '0.5rem' } }, language === 'fa' ? `${toPersianDigits(activityMap.size)} فعالیت / بسته کاری` : `${activityMap.size} Activities / Work Packages`)), React.createElement("div", { className: "wbs-legend" }, React.createElement("div", { className: "wbs-legend-item" }, React.createElement("span", { className: "wbs-legend-badge planned" }), React.createElement("span", null, language === 'fa' ? 'پیشرفت برنامه‌ای' : 'Planned Progress')), React.createElement("div", { className: "wbs-legend-item" }, React.createElement("span", { className: "wbs-legend-badge actual" }), React.createElement("span", null, language === 'fa' ? 'پیشرفت واقعی' : 'Actual Progress')))), React.createElement("div", { className: "modal-body wbs-container", style: { overflow: 'auto' } }, React.createElement("div", { className: "org-chart-tree" }, root && React.createElement("ul", null, React.createElement(WbsNode, { node: root, isRoot: true })))))));
 };
 export const GanttChartModal = ({ activities, project, onClose }: {
     activities: ProjectActivity[];

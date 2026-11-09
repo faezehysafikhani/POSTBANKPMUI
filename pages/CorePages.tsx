@@ -324,8 +324,8 @@ export const MainMenu = ({ onNavigate, currentUser, overdueProjectsCount, pendin
               },
                 React.createElement("span", { className: "material-symbols-outlined" }, "add_business"),
                 React.createElement("span", null, t('createProject')),
-                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', marginInlineStart: '4px' } },
-                  createProjectDropdownOpen ? 'expand_less' : 'expand_more'
+                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', marginInlineStart: '4px', transform: createProjectDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+                  'expand_more'
                 )
               ),
               createProjectDropdownOpen && React.createElement("div", { className: "quick-action-dropdown-menu" },
@@ -553,8 +553,8 @@ export const SettingsPage = ({
                 color: '#ffffff'
               }
             }, language === 'fa' ? 'فارسی' : 'English'),
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
-              expandedSections.language ? 'expand_less' : 'expand_more'
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)', transform: expandedSections.language ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+              'expand_more'
             )
           )
         ),
@@ -625,8 +625,8 @@ export const SettingsPage = ({
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
-              expandedSections.process ? 'expand_less' : 'expand_more'
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)', transform: expandedSections.process ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+              'expand_more'
             )
           )
         ),
@@ -802,8 +802,8 @@ export const SettingsPage = ({
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
-              expandedSections.visibility ? 'expand_less' : 'expand_more'
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)', transform: expandedSections.visibility ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+              'expand_more'
             )
           )
         ),
@@ -965,8 +965,8 @@ export const SettingsPage = ({
             )
           ),
           React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.75rem' } },
-            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)' } },
-              expandedSections.other ? 'expand_less' : 'expand_more'
+            React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.3rem', color: 'var(--inactive-color, #648b74)', transform: expandedSections.other ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+              'expand_more'
             )
           )
         ),
