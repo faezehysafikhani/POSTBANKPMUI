@@ -82,7 +82,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
     {
       id: 'risks',
       tabKey: 'risks',
-      titleFa: 'ریسک‌های پروژه',
+      titleFa: 'ریسک پروژه',
       titleEn: 'Project Risks',
       icon: 'warning',
       descFa: 'مراحل گردش کار و تایید ریسک‌های جدید شناسایی شده در پروژه',

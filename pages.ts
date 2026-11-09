@@ -617,10 +617,10 @@ export const i18nStrings = {
     // Project Details
     newProject: 'جدید',
     projectCharter: 'منشور پروژه',
-    projectSchedule: 'برنامه زمان‌بندی پروژه',
+    projectSchedule: 'زمان‌بندی پروژه',
     projectSettings: 'تنظیمات پروژه',
     projectTeam: 'تیم پروژه',
-    projectRisks: 'ریسک‌های پروژه',
+    projectRisks: 'ریسک پروژه',
     projectStakeholders: 'ذی‌نفعان پروژه',
     projectStatus: 'وضعیت پروژه',
     causesOfDelay: 'علل تاخیر',
