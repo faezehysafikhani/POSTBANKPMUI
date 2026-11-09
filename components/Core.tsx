@@ -86,7 +86,14 @@ export const Sidebar = ({
   onLogout
 }: SidebarProps): ReactElement | null => {
   const { t, language } = useContext(LocalizationContext);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  // On narrow screens the menu starts as the icon rail, and it follows the window when it is resized across that width.
+  const [isCollapsed, setIsCollapsed] = useState(() => typeof window !== 'undefined' && window.innerWidth < 1100);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 1099px)');
+    const follow = (event: MediaQueryListEvent) => setIsCollapsed(event.matches);
+    query.addEventListener('change', follow);
+    return () => query.removeEventListener('change', follow);
+  }, []);
   useEffect(() => {
     if (!['settings_profile', 'dashboard'].includes(currentPage)) return;
     const media = window.matchMedia('(max-width: 700px)');

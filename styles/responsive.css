@@ -1,0 +1,60 @@
+/* Fluid layout: the same arrangement on a laptop, a desktop monitor and a wide screen.
+   Content fills the width up to a comfortable maximum and is centred beyond it; grids and tables adapt; nothing scrolls the page sideways. */
+html, body { max-width: 100%; overflow-x: hidden; }
+html body img, html body video, html body canvas, html body svg { max-width: 100%; }
+
+/* content width follows the window, centred on very wide monitors */
+html .app-container .main-content { align-items: stretch; min-width: 0; }
+html .app-container .main-content > .content-container,
+html .app-container .main-content > .main-menu-container {
+  width: 100%;
+  max-width: min(1760px, 100%);
+  margin-inline: auto;
+}
+html .app-container .app-body { min-width: 0; }
+
+/* padding scales with the window */
+html .app-container .main-content { padding: clamp(12px, 1.6vw, 28px) clamp(12px, 2vw, 36px); }
+
+/* grids of cards and fields reflow by width instead of by device */
+html .app-container :is(.metric-grid, .stats-grid, .dashboard-grid, .cards-grid, .form-grid, .kpi-grid, .mg-status-grid) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: clamp(8px, 1vw, 16px);
+}
+
+/* wide tables scroll inside their own box */
+html .app-container :is(.table-responsive, .tab-table-wrapper, .table-wrapper) { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+html .app-container table { max-width: 100%; }
+
+/* dialogs never exceed the screen */
+html body :is(.modal-content, .creation-dialog, .document-dialog, [role="dialog"]) { max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); overflow: auto; }
+html body .creation-dialog { inset-inline: 12px; width: auto; }
+
+/* toolbars and action rows wrap instead of overflowing */
+html .app-container :is(.page-header, .page-header-actions, .action-buttons, .action-cell, .filter-bar, .toolbar) { flex-wrap: wrap; min-width: 0; }
+
+/* ---- breakpoints ---- */
+@media (min-width: 1921px) {
+  html .app-container .app-sidebar { width: 280px; min-width: 280px; }
+  html .app-container .app-sidebar.collapsed { width: 76px; min-width: 76px; }
+}
+@media (max-width: 1280px) {
+  html .app-container .app-sidebar:not(.collapsed) { width: 230px; min-width: 230px; }
+  html .app-container .content-container { padding: 14px; }
+}
+@media (max-width: 1099px) {
+  /* the menu is the icon rail; the content takes the rest */
+  html .app-container .app-sidebar.collapsed { width: 64px; min-width: 64px; }
+  html .app-container :is(.page-header) { flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 768px) {
+  html .app-container .app-body { flex-direction: row; }
+  html .app-container .content-container { padding: 10px; border-radius: 14px; }
+  html .app-container :is(.metric-grid, .stats-grid, .dashboard-grid, .cards-grid, .form-grid, .kpi-grid, .mg-status-grid) { grid-template-columns: 1fr; }
+  html .app-container .page-header-actions { width: 100%; }
+}
+@media (max-width: 520px) {
+  html .app-container .main-content { padding: 8px; }
+  html .app-container .app-sidebar.collapsed { width: 54px; min-width: 54px; }
+}
