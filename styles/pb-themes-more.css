@@ -151,3 +151,51 @@ html[data-pb-theme] .app-container:not(.login-layout) :is(.creation-dialog,.main
 /* Small red icon buttons stay visibly square (a 16px radius on a 34px button reads as a circle). */
 html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.sidebar-toggle-btn){border-radius:10px!important}
 html[data-pb-theme="red"] .app-container>header .logout-button,html[data-pb-theme="red"] .pb-user-avatar{border-radius:9px!important}
+
+/* =====================================================================================================
+   RED buttons, like the reference tiles: a white, slightly domed tile sunk into a thick, glossy burgundy rim
+   (light top-left, deep bottom-right), very round corners, burgundy icon and label, soft shadow under it.
+   Primary actions get the deeper, thicker rim and bold text; others a lighter rim. The chosen tab / item shows
+   a faint burgundy tint inside the tile. These rules come last and replace the earlier red button rules.
+   ===================================================================================================== */
+html[data-pb-theme="red"]{
+  --pb-red-tile:radial-gradient(120% 120% at 30% 20%,#ffffff 0%,#fbf9f9 45%,#ece6e7 100%);
+  --pb-red-rim-strong:linear-gradient(145deg,#f1b9bc 0%,#c4454c 22%,#9f1d24 52%,#6b1016 78%,#3f080c 100%);
+  --pb-red-rim-soft:linear-gradient(145deg,#f6d3d5 0%,#d88a8f 30%,#b4565c 62%,#8a3a3f 100%);
+  --pb-red-tile-depth:inset 0 2px 3px #5c0d1238,inset 0 -3px 6px #00000012,inset 2px 0 3px #ffffffcc;
+  --pb-red-lift:0 0 0 1px #3f080c26,0 8px 16px #5c0d1238,0 2px 3px #00000020;
+}
+/* every red button: primary, secondary, tabs */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn,.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.add-team-member-btn,.sp-tab,.tabs-nav .tab-item){
+  border:4px solid transparent!important;border-radius:18px!important;
+  background:var(--pb-red-tile) padding-box,var(--pb-red-rim-soft) border-box!important;
+  color:#8b1a20!important;text-shadow:0 1px 0 #ffffffb3!important;
+  box-shadow:var(--pb-red-tile-depth),var(--pb-red-lift)!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)){
+  border-width:5px!important;background:var(--pb-red-tile) padding-box,var(--pb-red-rim-strong) border-box!important;color:#7a1419!important;font-weight:800!important}
+/* the chosen tab: a faint burgundy tint inside the tile, strong rim */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.sp-tab.is-active,.tabs-nav .tab-item.active){
+  border-width:4px!important;background:radial-gradient(120% 120% at 30% 20%,#fff6f6 0%,#f6e3e4 55%,#e9cfd1 100%) padding-box,var(--pb-red-rim-strong) border-box!important;color:#6b1016!important;font-weight:800!important}
+/* icons in the buttons: plain burgundy (no inner tile any more) */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn,.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.add-team-member-btn,.sp-tab,.tabs-nav .tab-item) .material-symbols-outlined{
+  color:#a3262d!important;background:none!important;box-shadow:none!important;width:auto;height:auto;margin-inline-end:4px;text-shadow:0 1px 0 #ffffffb3}
+/* icon-only buttons (toolbar, settings, edit, print / PDF): square tiles with very round corners, like the reference */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn,.pb-output-btn),
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child),
+html[data-pb-theme="red"] .pb-output-btn{
+  border:5px solid transparent!important;border-radius:15px!important;
+  background:var(--pb-red-tile) padding-box,var(--pb-red-rim-strong) border-box!important;
+  color:#a3262d!important;box-shadow:var(--pb-red-tile-depth),var(--pb-red-lift)!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child){border-radius:18px!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.sidebar-toggle-btn){border-width:4px!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn,.pb-output-btn,.page-header-actions button) .material-symbols-outlined{color:#a3262d!important;text-shadow:0 1px 0 #fff}
+/* the save button of a form toolbar keeps a little more weight: a tinted tile */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) .page-header-actions :is(.save-btn,.submit-progress-btn,.action-button.primary):has(>.material-symbols-outlined:only-child){
+  background:radial-gradient(120% 120% at 30% 20%,#fff6f6 0%,#f6e3e4 55%,#e9cfd1 100%) padding-box,var(--pb-red-rim-strong) border-box!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.save-btn,.cancel-btn,.action-button,.filter-toggle-btn,.mg-icon-button,.action-icon,.pb-output-btn,.page-header-actions button):hover:not(:disabled){transform:translateY(-2px);filter:none!important;box-shadow:var(--pb-red-tile-depth),0 0 0 1px #3f080c26,0 12px 22px #5c0d1247,0 3px 5px #00000024!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.save-btn,.cancel-btn,.action-button,.filter-toggle-btn,.mg-icon-button,.action-icon,.pb-output-btn,.page-header-actions button):active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 3px 6px #5c0d1240,0 0 0 1px #3f080c26,0 3px 6px #5c0d1229!important}
+/* Red: the toolbar's icon-only buttons keep a burgundy icon (an older rule made the save icon white). */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child) .material-symbols-outlined{color:#a3262d!important;text-shadow:0 1px 0 #fff!important}
+/* Red: small icon buttons are true squares, the thick rim counted inside their size, the icon centred. */
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.sidebar-toggle-btn){box-sizing:border-box!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:0!important;padding:0!important;display:inline-grid!important;place-items:center!important;line-height:1!important}
+html[data-pb-theme="red"] .app-container.app-container.app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.sidebar-toggle-btn) .material-symbols-outlined{font-size:20px!important;line-height:1!important;margin:0!important}
