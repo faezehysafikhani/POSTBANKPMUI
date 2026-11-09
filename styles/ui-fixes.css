@@ -1,0 +1,31 @@
+/* Fixes found on the project creation screens. */
+
+/* 1. The six icon buttons at the top of a creation form (close, PDF, print, back, send, save): one size, one row. */
+html:root:root:root body .creation-dialog :is(.creation-dialog-close, .pb-output-btn, .creation-dialog-form .page-header-actions > button) {
+  width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important;
+  padding: 0 !important; border-radius: 50% !important; box-sizing: border-box !important;
+  display: inline-flex !important; align-items: center; justify-content: center; flex: 0 0 40px;
+}
+html .creation-dialog :is(.creation-dialog-close, .pb-output-btn, .creation-dialog-form .page-header-actions > button) .material-symbols-outlined {
+  font-size: 22px !important; width: 22px !important; height: 22px !important; flex: 0 0 22px !important; line-height: 1;
+}
+html .creation-dialog .pb-output-buttons { gap: 8px; }
+html .creation-dialog .creation-dialog-form .page-header-actions { gap: 8px !important; flex-wrap: nowrap; margin-inline-end: -27px; }
+html .creation-dialog .creation-dialog-close-floating { top: 26px !important; left: 26px !important; }
+html .creation-dialog .creation-dialog-output { top: 26px; left: 74px; }
+/* the form's own buttons start right after the output buttons */
+html .creation-dialog .creation-dialog-form>.content-container>.page-header,
+html .creation-dialog .creation-dialog-form .page-header:first-child { padding-inline-end: 0; }
+
+/* 2. The "+" on the create cards is a true circle. */
+html .app-container .portfolio-create-button .portfolio-create-plus {
+  width: 28px !important; height: 28px !important; min-width: 28px; flex: 0 0 28px !important;
+  border-radius: 50% !important; aspect-ratio: 1 / 1; display: grid !important; place-items: center; line-height: 1; overflow: hidden;
+}
+
+/* 3. Tabs of the creation forms: the label has room inside its frame and is never cut. */
+html .creation-form .tabs-nav, html .tabs-nav { gap: 10px; }
+html body .tabs-nav .tab-item, html body .creation-form .tabs-nav .tab-item {
+  flex: 0 0 auto !important; overflow: visible !important; text-overflow: clip !important;
+  padding: 10px 22px !important; min-height: 42px; line-height: 1.5;
+}

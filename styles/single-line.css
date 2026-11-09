@@ -37,7 +37,7 @@ html body :is(.badge, [class*="-badge"], [class*="badge-"], [class*="chip"], [cl
 
 /* one icon size inside controls, menus, tabs, badges and lists (decorative big icons in cards are left as they are) */
 html body :is(button, [role="button"], [role="tab"], [role="menuitem"], .badge, [class*="-badge"], [class*="chip"], [class*="pill"],
-  .sidebar-group-header, .sidebar-subitem, .sidebar-nested-item, .header-menu-item, .user-menu-item, .tabs-nav > *, .sp-tab, label) .material-symbols-outlined {
+  .sidebar-group-header, .sidebar-subitem, .sidebar-nested-item, .header-menu-item, .user-menu-item, .tabs-nav > *, .sp-tab, label) .material-symbols-outlined:not(.portfolio-create-plus):not(.portfolio-create-icon) {
   font-size: 20px !important;
   width: 20px;
   height: 20px;
