@@ -1,25 +1,91 @@
 import express from 'express';
+import type { Request } from 'express';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { createServer as createViteServer } from 'vite';
+
+/**
+ * The app's own server (BFF): serves the UI and forwards /api to the .NET backend, so the browser never talks to it directly.
+ *
+ * Security settings (environment variables):
+ *   BACKEND_URL    where the backend runs (default http://localhost:5251)
+ *   TRUST_PROXY    "1" only when this server sits behind a reverse proxy (IIS / nginx) that sets X-Forwarded-For / -Proto.
+ *                  Otherwise a client-sent X-Forwarded-For is ignored, so nobody can fake their address towards the backend.
+ *   MAX_BODY_MB    largest request body forwarded (uploads), default 200
+ */
+const isProd = process.env.NODE_ENV === 'production';
+const TRUST_PROXY = /^(1|true|yes)$/i.test(process.env.TRUST_PROXY || '');
+const MAX_BODY_BYTES = Math.max(1, Number(process.env.MAX_BODY_MB || 200)) * 1024 * 1024;
+
+/** The client's address: the proxy's word for it only when a proxy is configured, otherwise the connection's own. */
+function clientAddress(req: Request): string {
+  let ip = TRUST_PROXY ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : '';
+  ip = ip || req.socket.remoteAddress || '';
+  ip = ip.replace(/^::ffff:/, '');
+  return ip === '::1' ? '127.0.0.1' : ip;
+}
+const isHttps = (req: Request) =>
+  (req.socket as { encrypted?: boolean }).encrypted === true
+  || (TRUST_PROXY && String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase() === 'https');
+
+/**
+ * Content-Security-Policy. Production allows scripts from this origin only; development also allows what Vite's hot reload
+ * needs (an inline preamble, eval and its websocket). Styles allow inline (React style attributes and the settings
+ * stylesheet injected at run time). Images / fonts may be data: or blob: (logos, generated PDFs); nothing is loaded from
+ * another origin, and the app may not be framed by anyone (clickjacking).
+ */
+const CSP = [
+  "default-src 'self'",
+  isProd ? "script-src 'self'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  isProd ? "connect-src 'self'" : "connect-src 'self' ws: wss:",
+  "frame-src 'self' blob:",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
 
 async function startServer() {
   const app = express();
   const httpServer = createServer(app);
   const port = Number(process.env.PORT || 3000);
+  app.disable('x-powered-by');
+
+  // Security headers on every answer (pages, assets and the forwarded API).
+  app.use((req, res, next) => {
+    res.setHeader('Content-Security-Policy', CSP);
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()');
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+    res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+    res.setHeader('X-DNS-Prefetch-Control', 'off');
+    if (isHttps(req)) res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+  });
+
   app.use(express.json({ limit: '5mb' }));
   const BACKEND_TARGET = (process.env.BACKEND_URL || "http://localhost:5251").replace(/\/+$/, "");
+
   // The address of the computer asking, for the header of printed / PDF reports (a browser cannot read its own IP).
-  // Behind a reverse proxy the first X-Forwarded-For entry is the client; IPv4-mapped and loopback forms are tidied.
   app.get("/__client-info", (req, res) => {
-    const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
-    let ip = forwarded || req.socket.remoteAddress || "";
-    ip = ip.replace(/^::ffff:/, "");
-    if (ip === "::1") ip = "127.0.0.1";
     res.setHeader("Cache-Control", "no-store");
-    res.json({ ip });
+    res.json({ ip: clientAddress(req) });
   });
+
   app.use("/api", async (req, res) => {
+    // Only paths under /api reach the backend: "..", encoded dots and backslashes could step outside it (to Swagger, health ...).
+    if (/(^|[\/\\])\.\.([\/\\]|$)|%2e|%5c|\\/i.test(req.url.split('?')[0])) {
+      res.status(400).json({ title: "bad_request", detail: "نشانی درخواست معتبر نیست." });
+      return;
+    }
     const target = `${BACKEND_TARGET}/api${req.url}`;
     try {
       const headers: Record<string, string> = {};
@@ -32,8 +98,11 @@ async function startServer() {
       for (const name of ["cookie", "x-nexus-session", "x-requested-with", "user-agent", "x-active-posts", "x-nexus-activity"]) {
         if (req.headers[name]) headers[name] = String(req.headers[name]);
       }
-      const clientAddress = req.socket.remoteAddress;
-      if (clientAddress) headers["X-Forwarded-For"] = [req.headers["x-forwarded-for"], clientAddress].filter(Boolean).join(", ");
+      // The client's address for the backend: a client-sent X-Forwarded-For is passed on only behind a configured proxy.
+      const socketAddress = req.socket.remoteAddress;
+      const chain = TRUST_PROXY ? [req.headers["x-forwarded-for"], socketAddress] : [socketAddress];
+      const forwardedFor = chain.filter(Boolean).join(", ");
+      if (forwardedFor) headers["X-Forwarded-For"] = forwardedFor;
       // JSON bodies were already parsed above; anything else (a multipart document upload, for instance) is passed through byte for byte.
       let body: BodyInit | undefined;
       if (!["GET", "HEAD"].includes(req.method)) {
@@ -41,11 +110,19 @@ async function startServer() {
           if (req.body && Object.keys(req.body).length > 0) body = JSON.stringify(req.body);
         } else {
           const chunks: Buffer[] = [];
-          for await (const chunk of req) chunks.push(chunk as Buffer);
+          let size = 0;
+          for await (const chunk of req) {
+            size += (chunk as Buffer).length;
+            if (size > MAX_BODY_BYTES) {
+              res.status(413).json({ title: "payload_too_large", detail: "حجم فایل یا درخواست بیش از حد مجاز است." });
+              return;
+            }
+            chunks.push(chunk as Buffer);
+          }
           if (chunks.length) body = Buffer.concat(chunks);
         }
       }
-      const backendResponse = await fetch(target, { method: req.method, headers, body });
+      const backendResponse = await fetch(target, { method: req.method, headers, body, signal: AbortSignal.timeout(130_000) });
       res.status(backendResponse.status);
       const contentType = backendResponse.headers.get("content-type");
       if (contentType) res.setHeader("Content-Type", contentType);
@@ -61,17 +138,21 @@ async function startServer() {
       }
       res.send(Buffer.from(await backendResponse.arrayBuffer()));
     } catch (err: any) {
-      res.status(502).json({ title: "backend.unreachable", detail: `The backend (${BACKEND_TARGET}) could not be reached: ${err?.message || err}` });
+      // The reason is logged here; the browser gets no internals (no backend address, no error text).
+      console.error(`[api] ${req.method} ${req.path} -> backend unreachable:`, err?.message || err);
+      if (!res.headersSent) res.status(502).json({ title: "backend.unreachable", detail: "سرور سامانه در دسترس نیست. کمی بعد دوباره تلاش کنید." });
     }
   });
 
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (!isProd) {
     const vite = await createViteServer({ server: { middlewareMode: true, hmr: { server: httpServer } }, appType: 'spa' });
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    // dist also holds this server's own bundle and its source map: never served. Nor is any other source map.
+    app.use((req, res, next) => (/^\/server\.c?js/i.test(req.path) || /\.map$/i.test(req.path) ? res.status(404).end() : next()));
+    app.use(express.static(distPath, { dotfiles: 'ignore', index: false }));
     app.get('*all', (_req, res) => res.sendFile(path.join(distPath, 'index.html')));
   }
   httpServer.on('error', (error: NodeJS.ErrnoException) => {

@@ -11,6 +11,14 @@ Plan and the list of backend additions: `docs/ui-integration/PLAN.md` in the bac
    `server.ts` forwards every `/api` request that is not an AI route to the backend, so the browser never talks to it directly (no CORS).
 3. Sign in with the backend's administrator account (a username - the national code - and password; after a failed attempt a CAPTCHA is asked for).
 
+## Security (what the UI side does, and what a deployment must set)
+
+* **Tokens:** the access token lives in memory only (never in localStorage / sessionStorage); the refresh token is the backend's HttpOnly cookie. A reload renews the token through that cookie.
+* **Headers (`server.ts`, every answer):** Content-Security-Policy (production: scripts from this origin only, nothing from other origins, `frame-ancestors 'none'`), X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, Cross-Origin-Opener/Resource-Policy; HSTS when served over HTTPS. No `X-Powered-By`.
+* **Proxy:** only paths under `/api` reach the backend (`..`, encoded dots and backslashes are refused with 400); a client-sent `X-Forwarded-For` is ignored unless `TRUST_PROXY=1`; bodies above `MAX_BODY_MB` get 413; a backend failure answers with a generic message (details only in the server log).
+* **Production files:** `dist/server.cjs`, its source map and any `.map` are never served.
+* **Deployment must:** serve the BFF over HTTPS (the refresh cookie is `Secure` outside Development); set `TRUST_PROXY=1` only behind a reverse proxy that sets X-Forwarded-For / -Proto; keep the backend port reachable only from the BFF (it listens on localhost by default); give the backend a real `Jwt__SigningKey` (the committed one is a placeholder the backend refuses in production); turn `Database:SeedOnStartup` off after the first setup; set `AllowedHosts` to the real host name.
+
 ## Where the connection lives
 
 * `services/api.ts` - the only HTTP door: token handling, refresh on 401, the backend's error messages.

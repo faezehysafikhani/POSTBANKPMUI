@@ -21,27 +21,29 @@ export interface ApiResult<T> {
   error?: ApiError;
 }
 
-const ACCESS_KEY = 'pms_access_token';
-/** An older build kept the refresh token here; the backend now keeps it in an HttpOnly cookie, so this is only ever removed. */
-const LEGACY_REFRESH_KEY = 'pms_refresh_token';
+/** Older builds kept tokens in storage (the access token, and before the cookie the refresh token); they are only ever removed. */
+const LEGACY_KEYS = ['pms_access_token', 'pms_refresh_token'];
+const dropLegacyTokens = () => { try { LEGACY_KEYS.forEach(key => localStorage.removeItem(key)); } catch { /* storage unavailable */ } };
+dropLegacyTokens();
 
-/** Only the short-lived access token lives in the page; the refresh token is the backend's HttpOnly cookie and is never visible here. */
+/**
+ * The short-lived access token lives in memory only, never in localStorage / sessionStorage, so a script injected into the page
+ * could not read it from storage. A reload starts without it and renews it through the backend's HttpOnly refresh cookie
+ * (loadSession -> refreshSession), which the page never sees.
+ */
+let accessToken: string | null = null;
 export const tokenStore = {
   get access(): string | null {
-    try { return localStorage.getItem(ACCESS_KEY); } catch { return null; }
+    return accessToken;
   },
   set(access: string) {
     lastEndReason = null; // a session was opened: whatever ended the previous one is old news
-    try {
-      localStorage.setItem(ACCESS_KEY, access);
-      localStorage.removeItem(LEGACY_REFRESH_KEY);
-    } catch { /* storage unavailable: the session just will not survive a reload */ }
+    accessToken = access;
+    dropLegacyTokens();
   },
   clear() {
-    try {
-      localStorage.removeItem(ACCESS_KEY);
-      localStorage.removeItem(LEGACY_REFRESH_KEY);
-    } catch { /* ignore */ }
+    accessToken = null;
+    dropLegacyTokens();
   }
 };
 
