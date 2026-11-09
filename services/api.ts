@@ -26,24 +26,47 @@ const LEGACY_KEYS = ['pms_access_token', 'pms_refresh_token'];
 const dropLegacyTokens = () => { try { LEGACY_KEYS.forEach(key => localStorage.removeItem(key)); } catch { /* storage unavailable */ } };
 dropLegacyTokens();
 
+/** The refresh token, kept in the page only in "body" mode (see usesBodyToken); in cookie mode it is the backend's HttpOnly cookie. */
+const REFRESH_KEY = 'pms_session_refresh';
+
+/** The API's address from config/runtime-config.json: empty means this page's own origin (the default). */
+export const apiBaseUrl = (): string => String((window as any).__TMPB_RUNTIME_CONFIG__?.apiBaseUrl || '');
+/** Absolute address of an /api path: the page's origin, or the API site named in the runtime config. */
+export const apiUrl = (url: string): string => (url.startsWith('/api/') || url === '/api' ? apiBaseUrl() + url : url);
+
 /**
- * The short-lived access token lives in memory only, never in localStorage / sessionStorage, so a script injected into the page
- * could not read it from storage. A reload starts without it and renews it through the backend's HttpOnly refresh cookie
- * (loadSession -> refreshSession), which the page never sees.
+ * How the refresh token travels. The HttpOnly cookie is Secure outside development, so it only works over https on the
+ * API's own origin. On plain http (or with the API on another site) the backend hands the token over in the response body
+ * (Identity:Session:ReturnRefreshTokenInBody) and it is kept here. Once the site is on https this switches back by itself.
+ */
+export const usesBodyToken = (): boolean =>
+  !!apiBaseUrl() || (window.location.protocol === 'http:' && !['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname));
+
+/**
+ * The short-lived access token lives in memory only, never in localStorage / sessionStorage. A reload starts without it and
+ * renews it through the refresh token (the HttpOnly cookie, or on plain http the stored one).
  */
 let accessToken: string | null = null;
 export const tokenStore = {
   get access(): string | null {
     return accessToken;
   },
-  set(access: string) {
+  get refresh(): string | null {
+    try { return usesBodyToken() ? localStorage.getItem(REFRESH_KEY) : null; } catch { return null; }
+  },
+  set(access: string, refresh?: string | null) {
     lastEndReason = null; // a session was opened: whatever ended the previous one is old news
     accessToken = access;
     dropLegacyTokens();
+    try {
+      if (refresh && usesBodyToken()) localStorage.setItem(REFRESH_KEY, refresh);
+      else if (!usesBodyToken()) localStorage.removeItem(REFRESH_KEY);
+    } catch { /* storage unavailable: the session just will not survive a reload */ }
   },
   clear() {
     accessToken = null;
     dropLegacyTokens();
+    try { localStorage.removeItem(REFRESH_KEY); } catch { /* ignore */ }
   }
 };
 
@@ -51,7 +74,8 @@ export const tokenStore = {
  * What the backend's session endpoints expect from a browser: the refresh token travels as a cookie (X-Nexus-Session) and
  * the request must carry X-Requested-With, a header a cross-site form cannot send.
  */
-const SESSION_HEADERS: Record<string, string> = { 'X-Nexus-Session': 'cookie', 'X-Requested-With': 'XMLHttpRequest' };
+const sessionHeaders = (): Record<string, string> =>
+  usesBodyToken() ? { 'X-Requested-With': 'XMLHttpRequest' } : { 'X-Nexus-Session': 'cookie', 'X-Requested-With': 'XMLHttpRequest' };
 const isAuthUrl = (url: string) => url.startsWith('/api/identity/auth/');
 /** The calls that carry no access token of their own: a 401 from them is an answer, not a reason to refresh and retry. */
 const isSessionOpeningUrl = (url: string) =>
@@ -66,10 +90,11 @@ let refreshing: Promise<boolean> | null = null;
 export async function refreshSession(): Promise<boolean> {
   refreshing ??= (async () => {
     try {
-      const response = await fetch('/api/identity/auth/refresh', {
+      const stored = tokenStore.refresh;
+      const response = await fetch(apiUrl('/api/identity/auth/refresh'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...SESSION_HEADERS },
-        body: '{}'
+        headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
+        body: JSON.stringify(stored ? { refreshToken: stored } : {})
       });
       if (!response.ok) {
         lastEndReason = await endReasonOf(response);
@@ -77,7 +102,7 @@ export async function refreshSession(): Promise<boolean> {
       }
       const data = await response.json();
       if (!data.accessToken) return false;
-      tokenStore.set(data.accessToken);
+      tokenStore.set(data.accessToken, data.refreshToken);
       return true;
     } catch {
       return false;
@@ -128,13 +153,13 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
   const token = tokenStore.access;
   if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (isAuthUrl(url)) Object.assign(headers, SESSION_HEADERS);
+  if (isAuthUrl(url)) Object.assign(headers, sessionHeaders());
   // The server's idle clock moves only for requests the user caused (a click, a key, a scroll), never for polling.
   if (takeActivityFlag()) headers['X-Nexus-Activity'] = '1';
 
   let response: Response;
   try {
-    response = await fetch(url, { method, headers, signal: AbortSignal.timeout(isForm ? 120000 : 20000), body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body) });
+    response = await fetch(apiUrl(url), { method, headers, signal: AbortSignal.timeout(isForm ? 120000 : 20000), body: body === undefined ? undefined : isForm ? (body as FormData) : JSON.stringify(body) });
   } catch (err: any) {
     return { ok: false, error: { status: 0, code: 'network', message: err?.message || 'The server could not be reached.' } };
   }
@@ -161,7 +186,7 @@ async function download(url: string, fallbackName: string, retry = true): Promis
   const token = tokenStore.access;
   let response: Response;
   try {
-    response = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+    response = await fetch(apiUrl(url), { headers: token ? { Authorization: `Bearer ${token}` } : {} });
   } catch (err: any) {
     return { ok: false, error: { status: 0, code: 'network', message: err?.message || 'The server could not be reached.' } };
   }

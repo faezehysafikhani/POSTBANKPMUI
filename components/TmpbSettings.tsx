@@ -4,7 +4,7 @@ import { refreshBranding } from '../tmpb/utils/branding';
 import { SettingsView } from '../tmpb/components/SettingsView';
 import type { User } from '../tmpb/types';
 import { adoptExternalSession, forgetExternalSession, getSessionUser, updateMyProfile } from '../tmpb/services/nexusApi';
-import { tokenStore } from '../services/api';
+import { refreshSession, tokenStore } from '../services/api';
 import referenceCss from '../tmpb/generated.css?inline';
 
 // The reference stylesheet is active only while its screens are mounted; the product's own pages keep their stylesheet.
@@ -35,7 +35,7 @@ function useAdoptedSession(userId: string): { user: User | null; failed: boolean
     let cancelled = false;
     const access = tokenStore.access;
     if (!access) { setFailed(true); return; }
-    void adoptExternalSession(access).then(adopted => {
+    void adoptExternalSession(access, async () => ((await refreshSession()) ? tokenStore.access : null)).then(adopted => {
       if (cancelled) return;
       if (adopted && adopted.id === userId) setUser(adopted); else setFailed(true);
     });

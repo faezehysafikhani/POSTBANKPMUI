@@ -52,6 +52,7 @@ export type LoginOutcome =
 
 interface AuthBody {
   accessToken: string;
+  refreshToken?: string | null;
   user: BackendUser;
   sessionLimit?: SessionLimit | null;
 }
@@ -63,7 +64,7 @@ export async function requestCaptcha(): Promise<Captcha | null> {
 
 async function openSession(body: AuthBody): Promise<LoginOutcome> {
   if (body.sessionLimit) return { kind: 'limit', limit: body.sessionLimit };
-  tokenStore.set(body.accessToken);
+  tokenStore.set(body.accessToken, body.refreshToken);
   const session = await loadSession();
   return session ? { kind: 'ok', session } : { kind: 'failed', message: 'اطلاعات کاربر دریافت نشد.' };
 }
@@ -110,7 +111,8 @@ export async function loadSession(): Promise<Session | null> {
 export async function logout(): Promise<void> {
   const hadSession = !!tokenStore.access;
   // The backend ends the session and removes the cookie; the token is dropped here either way.
-  if (hadSession) await api.post('/api/identity/auth/logout');
+  const refreshToken = tokenStore.refresh;
+  if (hadSession) await api.post('/api/identity/auth/logout', refreshToken ? { refreshToken } : undefined);
   tokenStore.clear();
 }
 

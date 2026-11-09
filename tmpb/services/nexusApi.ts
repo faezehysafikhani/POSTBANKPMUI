@@ -506,6 +506,12 @@ async function refreshSession(): Promise<boolean> {
 
   refreshInFlight = withRefreshLock(async () => {
     if (!readSession()) return false;
+    if (externalRefresh) {
+      const accessToken = await externalRefresh();
+      if (!accessToken) return false;
+      tokens = { accessToken, accessTokenExpiresAtUtc: new Date(Date.now() + 10 * 60_000).toISOString() };
+      return true;
+    }
     try {
       const auth = await request<AuthResponse>('POST', '/api/identity/auth/refresh', {
         // The cookie carries the token; a body is only sent when the server handed the token over in one.
@@ -1228,7 +1234,11 @@ export async function refreshCurrentUser(): Promise<User | null> {
  * opening a second one. The access token it holds is used for /me; from then on this client renews it from the same
  * HttpOnly cookie, exactly as after its own sign-in. Returns null when the token is not accepted.
  */
-export async function adoptExternalSession(accessToken: string): Promise<User | null> {
+/** PM product only: how the product renews its own session; the adopted session renews through it (one session, one token). */
+let externalRefresh: (() => Promise<string | null>) | null = null;
+
+export async function adoptExternalSession(accessToken: string, refresh?: () => Promise<string | null>): Promise<User | null> {
+  externalRefresh = refresh ?? null;
   try {
     const response = await fetch(buildUrl('/api/identity/auth/me'), { headers: { Authorization: `Bearer ${accessToken}` } });
     if (!response.ok) return null;
@@ -1243,6 +1253,7 @@ export async function adoptExternalSession(accessToken: string): Promise<User | 
 
 /** PM product only: forgets the adopted session when the product signs the person out (no server call: the product did it). */
 export function forgetExternalSession(): void {
+  externalRefresh = null;
   tokens = null;
   writeSession(null);
   clearPrivateData();
