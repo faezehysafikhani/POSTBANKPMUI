@@ -10,10 +10,17 @@ html .creation-dialog :is(.creation-dialog-close, .pb-output-btn, .creation-dial
   font-size: 22px !important; width: 22px !important; height: 22px !important; flex: 0 0 22px !important; line-height: 1;
 }
 html .creation-dialog .pb-output-buttons { gap: 8px; }
-html .creation-dialog .creation-dialog-form .page-header-actions { gap: 8px !important; flex-wrap: nowrap; margin-inline-end: -27px; }
+html .creation-dialog .creation-dialog-form .page-header-actions { gap: 8px !important; flex-wrap: nowrap; }
 html .creation-dialog .creation-dialog-close-floating { top: 26px !important; left: 26px !important; }
 html .creation-dialog .creation-dialog-output { top: 26px; left: 74px; }
-/* the form's own buttons start right after the output buttons */
+/* the form's own buttons are placed from the same corner as close / PDF / print, so the six always form one row */
+html:root:root:root body .creation-dialog .creation-dialog-form :is(.content-container, .page-header, .creation-dialog-shell) { position: static !important; }
+html:root:root:root body .creation-dialog .creation-dialog-form .page-header-actions {
+  position: absolute !important; top: 3px !important; left: 147px !important; right: auto !important; margin: 0 !important;
+  display: flex !important; align-items: center; gap: 8px !important; z-index: 20;
+}
+/* the title keeps clear of the buttons */
+html .creation-dialog .creation-dialog-form .page-header:first-child, html .creation-dialog .creation-dialog-form>.content-container>.page-header { min-height: 48px; }
 html .creation-dialog .creation-dialog-form>.content-container>.page-header,
 html .creation-dialog .creation-dialog-form .page-header:first-child { padding-inline-end: 0; }
 
