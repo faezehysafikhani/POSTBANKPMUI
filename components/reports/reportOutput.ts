@@ -35,7 +35,7 @@ function buildSheet(content: HTMLElement, meta: OutputMeta, s: Stamp, forPdf: bo
     <div class="rp-watermark" aria-hidden="true"><img src="${LOGO}" alt=""></div>
     <div class="rp-head">
       <img class="rp-logo" src="${LOGO}" alt="پست بانک ایران">
-      <div class="rp-title"><strong>پست بانک ایران</strong><span>سامانه مدیریت پروژه</span><h1>${esc(meta.title)}</h1><small>${esc(meta.kind)}</small></div>
+      <div class="rp-title"><h1>${esc(meta.title)}</h1><small>${esc(meta.kind)}</small></div>
       <dl class="rp-meta">
         <div><dt>تاریخ</dt><dd>${esc(s.date)}</dd></div>
         <div><dt>ساعت</dt><dd dir="ltr">${esc(s.time)}</dd></div>

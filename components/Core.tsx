@@ -12,11 +12,8 @@ export const Header = ({ user, onNavigate }: { user: User, onLogout?: () => void
     React.createElement("div", { className: "header-content" },
       React.createElement("div", { className: "header-title-group" },
         React.createElement("img", { src: "/post-bank-iran-logo.png", alt: "پست بانک ایران", className: "header-logo" }),
-        // The title moves word by word (a «Mexican wave»); splitting Persian letters would break how they join.
-        React.createElement("h1", { className: "pb-wave-title", "aria-label": t('mainTitle') },
-          t('mainTitle').split(' ').map((word, i, all) => React.createElement(React.Fragment, { key: i },
-            React.createElement("span", { className: "pb-wave-word", style: { '--i': i } as React.CSSProperties, "aria-hidden": "true" }, word),
-            i < all.length - 1 ? ' ' : null)))
+        // Only the logo is shown; the system title stays for screen readers (and the page outline) but is not drawn.
+        React.createElement("h1", { className: "pb-visually-hidden" }, t('mainTitle'))
       ),
       React.createElement(LoginPortalClock, { showGregorian: false }),
       React.createElement("div", { className: "user-info" },
