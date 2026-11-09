@@ -248,7 +248,7 @@ html[data-pb-theme="purple"]{--pb-gel:linear-gradient(180deg,#ffffffa0 0,#ffffff
   --pb-gel-idle:linear-gradient(180deg,#fff 0,#fbf8ff 46%,#ebe1fd 52%,#f5f0ff);--pb-gel-idle-edge:#d6c4f7}
 html[data-pb-theme="black"]{--pb-gel:linear-gradient(180deg,#fffbe6b3 0,#ffffff38 46%,#ffffff00 52%),linear-gradient(180deg,#f6e27a,#d4af37 58%,#a57d1c);--pb-gel-edge:#8a6512;
   --pb-gel-idle:linear-gradient(180deg,#56565c 0,#36363b 46%,#1d1d20 52%,#28282c);--pb-gel-idle-edge:#d4af3755}
-html[data-pb-theme] .app-container:not(.login-layout)>.app-body>.app-sidebar:not(.collapsed){width:238px!important;min-width:238px!important;padding:10px 8px!important}
+html[data-pb-theme] .app-container:not(.login-layout)>.app-body>.app-sidebar:not(.collapsed){width:var(--pb-sidebar-w,290px)!important;min-width:var(--pb-sidebar-w,290px)!important;padding:10px 8px!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-nav{gap:7px!important;padding:2px 4px!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group{margin-bottom:0!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-header{padding:6px 6px 10px!important;margin-bottom:4px}

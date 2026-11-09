@@ -6,7 +6,7 @@ html body :is(button, [role="button"], [role="tab"], [role="menuitem"], a.action
   .action-button, .save-btn, .cancel-btn, .back-button, .approve-btn, .reject-btn, .delete-btn, .quick-action-btn,
   .filter-toggle-btn, .grouping-toggle-btn, .risk-def-btn, .sp-tab, .tab-button, .tabs-nav > *,
   .badge, [class*="-badge"], [class*="badge-"], [class*="chip"], [class*="pill"], [class*="tag-"],
-  .sidebar-text, .sidebar-group-header, .sidebar-subitem, .sidebar-nested-item, .header-menu-item, .user-menu-item) {
+  .sidebar-text, .sidebar-group-header, .sidebar-subitem, .sidebar-nested-item, .header-menu-item, .user-menu-item):not(.pb-theme-switch *):not([class*="swatch"]):not([class*="circle"]):not([class*="round"]) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -17,7 +17,7 @@ html body th { white-space: nowrap; }
 
 /* the same height and spacing for every control that holds an icon and/or a text */
 html body :is(button, [role="button"], .action-button, .save-btn, .cancel-btn, .back-button, .approve-btn, .reject-btn,
-  .delete-btn, .quick-action-btn, .filter-toggle-btn, .grouping-toggle-btn, .risk-def-btn, .sp-tab, .tab-button):not(.action-icon):not(.modal-close-button):not(.sidebar-toggle-btn):not(.password-toggle-btn):not(.mg-icon-button) {
+  .delete-btn, .quick-action-btn, .filter-toggle-btn, .grouping-toggle-btn, .risk-def-btn, .sp-tab, .tab-button):not(.action-icon):not(.modal-close-button):not(.pb-theme-switch *):not([class*="swatch"]):not([class*="circle"]):not([class*="round"]):not(.sidebar-toggle-btn):not(.password-toggle-btn):not(.mg-icon-button) {
   display: inline-flex;
   align-items: center;
   justify-content: center;

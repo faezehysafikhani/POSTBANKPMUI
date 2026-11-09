@@ -34,13 +34,16 @@ html body .creation-dialog { inset-inline: 12px; width: auto; }
 /* toolbars and action rows wrap instead of overflowing */
 html .app-container :is(.page-header, .page-header-actions, .action-buttons, .action-cell, .filter-bar, .toolbar) { flex-wrap: wrap; min-width: 0; }
 
+/* the menu is wide enough for its longest label on one line (width itself is set in pb-themes.css from this variable) */
+:root { --pb-sidebar-w: 290px; }
+
 /* ---- breakpoints ---- */
 @media (min-width: 1921px) {
-  html .app-container .app-sidebar { width: 280px; min-width: 280px; }
+  :root { --pb-sidebar-w: 310px; }
   html .app-container .app-sidebar.collapsed { width: 76px; min-width: 76px; }
 }
 @media (max-width: 1280px) {
-  html .app-container .app-sidebar:not(.collapsed) { width: 230px; min-width: 230px; }
+  :root { --pb-sidebar-w: 270px; }
   html .app-container .content-container { padding: 14px; }
 }
 @media (max-width: 1099px) {
