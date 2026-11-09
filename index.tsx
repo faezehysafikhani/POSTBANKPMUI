@@ -36,3 +36,4 @@ import './styles/pb-themes.css';
 import './styles/pb-themes-more.css';
 import './styles/logo-only.css';
 import './styles/typography.css';
+import './styles/single-line.css';
