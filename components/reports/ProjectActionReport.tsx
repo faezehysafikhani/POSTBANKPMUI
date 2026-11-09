@@ -95,7 +95,7 @@ function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOpt
     <div className="par-filter-head">
       <button type="button" className="filter-toggle-btn" aria-expanded={open} onClick={() => setOpen(!open)}>
         <span className="material-symbols-outlined" aria-hidden="true">filter_alt</span>فیلترها{count > 0 && <b className="par-count">{fa(count)}</b>}
-        <span className="material-symbols-outlined" aria-hidden="true">{open ? 'expand_less' : 'expand_more'}</span>
+        <span className="material-symbols-outlined" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>expand_more</span>
       </button>
       <div className="par-search"><span className="material-symbols-outlined" aria-hidden="true">search</span>
         <input type="search" placeholder="جستجو در نام یا کد…" value={filters.search} onChange={e => set('search', e.target.value)} aria-label="جستجو در نام یا کد" /></div>
@@ -221,7 +221,7 @@ function ListTab({ rows, users, onOpen, storageKey }: { rows: ReportRow[]; users
             return <tbody key={g.key || 'all'}>
               {groupBy !== 'none' && <tr className="par-group-row"><td colSpan={shown.length}>
                 <button type="button" aria-expanded={!isCollapsed} onClick={() => setCollapsed(s => { const n = new Set(s); n.has(g.key) ? n.delete(g.key) : n.add(g.key); return n; })}>
-                  <span className="material-symbols-outlined" aria-hidden="true">{isCollapsed ? 'chevron_left' : 'expand_more'}</span><strong>{g.key}</strong><small>{groupSummary(g.rows)}</small>
+                  <span className="material-symbols-outlined" aria-hidden="true" style={{ transform: isCollapsed ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s ease' }}>expand_more</span><strong>{g.key}</strong><small>{groupSummary(g.rows)}</small>
                 </button></td></tr>}
               {!isCollapsed && g.rows.map(r => <tr key={r.key} className={`par-row ${r.timing}`} tabIndex={0} onClick={() => onOpen(r)} onKeyDown={e => { if (e.key === 'Enter') onOpen(r); }} title="باز کردن">
                 {shown.map(c => <td key={c.id} className={c.numeric ? 'num' : ''}>{c.render ? c.render(r) : (c.value(r) === '' ? '—' : c.value(r))}</td>)}

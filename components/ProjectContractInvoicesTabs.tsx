@@ -1014,8 +1014,8 @@ export const ProjectContractsTab = ({
                                                             <span className="material-symbols-outlined" style={{ fontSize: '0.8rem' }}>post_add</span>
                                                             {isFa ? `${toPersianDigits(cAmendments.length)} الحاقیه` : `${cAmendments.length} Amendments`}
                                                         </span>
-                                                        <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: '#02c754' }}>
-                                                            {isExpanded ? "expand_less" : "expand_more"}
+                                                        <span className="material-symbols-outlined" style={{ fontSize: '1.1rem', color: '#02c754', transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>
+                                                            expand_more
                                                         </span>
                                                     </div>
                                                 ) : (

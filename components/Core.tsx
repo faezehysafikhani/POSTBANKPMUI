@@ -300,7 +300,7 @@ export const Sidebar = ({
               ),
               !isCollapsed && React.createElement("div", { className: "sidebar-group-header-right" },
                 (!isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge),
-                !directPage && React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron" }, isOpen ? "expand_less" : "expand_more")
+                !directPage && React.createElement("span", { className: "material-symbols-outlined sidebar-group-chevron", style: { transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } }, "expand_more")
               ),
               (isCollapsed && !isOpen && totalGroupBadge > 0) && React.createElement("span", { className: "sidebar-badge collapsed-badge" }, isFa ? toPersianDigits(totalGroupBadge) : totalGroupBadge)
             ),
@@ -321,8 +321,8 @@ export const Sidebar = ({
                     },
                       React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-icon" }, item.icon),
                       React.createElement("span", { className: "sidebar-text" }, itemName),
-                      React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-chevron" },
-                        isSubMenuExpanded ? "expand_less" : "expand_more"
+                      React.createElement("span", { className: "material-symbols-outlined sidebar-subitem-chevron", style: { transform: isSubMenuExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } },
+                        "expand_more"
                       )
                     ),
                     isSubMenuExpanded && React.createElement("div", { className: "sidebar-nested-items" },

@@ -382,6 +382,7 @@ export const ReferenceTablesPage = ({
     const handleCollapseAllUnits = () => {
         setExpandedUnitIds(new Set());
     };
+    const allUnitsOpen = unitNodes.length > 0 && unitNodes.every(n => expandedUnitIds.has(n.id));
     const [addingChildToId, setAddingChildToId] = useState<string | null>(null);
     const [newChildName, setNewChildName] = useState('');
     const [editingUnitId, setEditingUnitId] = useState<string | null>(null);
@@ -489,21 +490,13 @@ export const ReferenceTablesPage = ({
                         React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '0.5rem' } },
                             React.createElement("button", {
                                 type: "button",
-                                onClick: handleExpandAllUnits,
+                                onClick: allUnitsOpen ? handleCollapseAllUnits : handleExpandAllUnits,
+                                "aria-expanded": allUnitsOpen,
                                 className: "action-button",
                                 style: { padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: '#3bf689', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }
                             },
-                                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem' } }, "unfold_more"),
-                                language === 'fa' ? 'باز کردن همه' : 'Expand All'
-                            ),
-                            React.createElement("button", {
-                                type: "button",
-                                onClick: handleCollapseAllUnits,
-                                className: "cancel-btn",
-                                style: { padding: '0.35rem 0.75rem', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }
-                            },
-                                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem' } }, "unfold_less"),
-                                language === 'fa' ? 'بستن همه (پیش‌فرض)' : 'Collapse All'
+                                React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1rem', transform: allUnitsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' } }, "expand_more"),
+                                allUnitsOpen ? (language === 'fa' ? 'بستن همه' : 'Collapse All') : (language === 'fa' ? 'باز کردن همه' : 'Expand All')
                             )
                         )
                     ),
@@ -586,8 +579,8 @@ export const ReferenceTablesPage = ({
                                                         cursor: 'pointer'
                                                     }
                                                 },
-                                                    React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', fontWeight: 800 } },
-                                                        isExpanded ? 'expand_more' : (language === 'fa' ? 'chevron_left' : 'chevron_right')
+                                                    React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem', fontWeight: 800, transform: isExpanded ? 'none' : (language === 'fa' ? 'rotate(90deg)' : 'rotate(-90deg)'), transition: 'transform 0.2s ease' } },
+                                                        'expand_more'
                                                     )
                                                 )
                                             ) : (
