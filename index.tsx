@@ -34,3 +34,4 @@ import './styles/postbank-workspace.css';
 import './styles/pb-theme-palette.css';
 import './styles/pb-themes.css';
 import './styles/pb-themes-more.css';
+import './styles/responsive.css';
