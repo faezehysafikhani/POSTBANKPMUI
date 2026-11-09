@@ -1,0 +1,39 @@
+/* One typeface and one scale for the whole product.
+   Font: B Nazanin (Windows ships it; the stack falls back to Vazirmatn / Tahoma where it is not installed).
+   Text that is not a heading is 15px; headings stay larger so they still stand out. Icon fonts are left alone. */
+:root {
+  --pb-font: 'B Nazanin', 'BNazanin', 'B Nazanin Regular', 'Vazirmatn', Tahoma, sans-serif;
+  --pb-text: 15px;
+  --pb-h1: 28px;
+  --pb-h2: 23px;
+  --pb-h3: 20px;
+  --pb-h4: 17px;
+}
+
+html { font-size: var(--pb-text) !important; font-family: var(--pb-font) !important; }
+
+/* the typeface: everything except icon fonts, code and svg */
+html body,
+html body *:not(.material-symbols-outlined):not(.material-icons):not([class*="material-symbols"]):not(code):not(pre):not(kbd):not(svg *) {
+  font-family: var(--pb-font) !important;
+}
+html .tw-scope, html .tw-scope * { --font-sans: var(--pb-font); }
+html body input, html body select, html body textarea, html body button, html body option { font-family: var(--pb-font) !important; }
+
+/* body text: 15px (headings, icon glyphs and big numbers/titles are not touched) */
+html body :is(p, li, td, th, label, dt, dd, legend, caption, figcaption, summary, small, input, select, textarea, button, option, a):not([class*="material-symbols"]):not([class*="title"]):not([class*="value"]):not([class*="number"]):not([class*="count"]):not([class*="kpi"]):not([class*="stat"]),
+html body :is(span, strong, em, b, i, div):not(:has(*)):not([class*="material-symbols"]):not([class*="title"]):not([class*="value"]):not([class*="number"]):not([class*="count"]):not([class*="kpi"]):not([class*="stat"]):not([class*="heading"]):not([class*="header"]):not([class*="logo"]) {
+  font-size: var(--pb-text) !important;
+  line-height: 1.6;
+}
+
+/* headings stay bigger than the text */
+html body h1 { font-size: var(--pb-h1) !important; line-height: 1.5; }
+html body h2 { font-size: var(--pb-h2) !important; line-height: 1.55; }
+html body h3 { font-size: var(--pb-h3) !important; line-height: 1.55; }
+html body :is(h4, h5, h6) { font-size: var(--pb-h4) !important; line-height: 1.55; }
+html body .page-header h2 { font-size: var(--pb-h2) !important; }
+html body :is(.modal-title, .dialog-title, .group-header, .subgroup-header, .login-main-title) { font-size: var(--pb-h3) !important; }
+
+/* numbers stay tabular in the Persian font */
+html body { font-feature-settings: "pnum" 1; font-variant-numeric: tabular-nums; }

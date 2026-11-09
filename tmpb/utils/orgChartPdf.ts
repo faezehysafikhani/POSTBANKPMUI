@@ -107,7 +107,7 @@ export async function downloadOrgChartPdf(chart: HTMLElement, title: string, fil
   root.dir = 'rtl';
   Object.assign(root.style, {
     position: 'fixed', top: '0', left: '-20000px', zIndex: '-1', background: '#ffffff', color: '#0f172a',
-    padding: '28px 32px', width: 'max-content', fontFamily: "'Vazirmatn Variable', Tahoma, sans-serif",
+    padding: '28px 32px', width: 'max-content', fontFamily: "'B Nazanin', 'Vazirmatn Variable', Tahoma, sans-serif",
   });
   const header = document.createElement('div');
   Object.assign(header.style, {

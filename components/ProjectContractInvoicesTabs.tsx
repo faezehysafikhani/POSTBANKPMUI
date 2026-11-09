@@ -258,7 +258,7 @@ export const ContractModal = ({
                                     onChange: (e) => setAmount(parseAmountInput(e.target.value)),
                                     placeholder: isFa ? 'مثال: ۵۰۰,۰۰۰,۰۰۰' : 'e.g. 500,000,000',
                                     required: true,
-                                    style: { fontFamily: 'Vazirmatn, Tahoma, sans-serif' }
+                                    style: { fontFamily: 'var(--pb-font)' }
                                 }),
                                 amount !== '' && React.createElement("span", { style: { fontSize: '0.75rem', color: '#02c754', marginTop: '0.2rem', display: 'block' } },
                                     `${isFa ? 'مبلغ با جداکننده سه‌رقمی:' : 'Formatted Amount:'} ${formatCurrencyAmount(amount, isFa)}`
@@ -420,7 +420,7 @@ export const ContractModal = ({
                                             value: formatAmountInputDisplay(amendmentAmount, isFa),
                                             onChange: (e) => setAmendmentAmount(parseAmountInput(e.target.value)),
                                             placeholder: isFa ? 'مثال: ۵۰,۰۰۰,۰۰۰' : 'e.g. 50,000,000',
-                                            style: { padding: '0.4rem', fontSize: '0.85rem', fontFamily: 'Vazirmatn, Tahoma, sans-serif' }
+                                            style: { padding: '0.4rem', fontSize: '0.85rem', fontFamily: 'var(--pb-font)' }
                                         }),
                                         amendmentAmount !== '' && React.createElement("span", { style: { fontSize: '0.7rem', color: '#f59e0b', marginTop: '0.15rem', display: 'block' } },
                                             formatCurrencyAmount(amendmentAmount, isFa)
@@ -667,7 +667,7 @@ export const InvoiceModal = ({
                                     onChange: (e) => setInvoiceNumber(toEnglishDigits(e.target.value)),
                                     placeholder: isFa ? 'مثال: INV-001 یا ص/۱۴۰۲/۰۱' : 'e.g. INV-2024-001',
                                     required: true,
-                                    style: { fontFamily: 'Vazirmatn, Tahoma, sans-serif' }
+                                    style: { fontFamily: 'var(--pb-font)' }
                                 })
                             ),
                             React.createElement("div", { className: "form-group" },
@@ -719,7 +719,7 @@ export const InvoiceModal = ({
                                     onChange: (e) => setAmount(parseAmountInput(e.target.value)),
                                     placeholder: isFa ? 'مثال: ۷۵,۰۰۰,۰۰۰' : 'e.g. 75,000,000',
                                     required: true,
-                                    style: { fontFamily: 'Vazirmatn, Tahoma, sans-serif' }
+                                    style: { fontFamily: 'var(--pb-font)' }
                                 }),
                                 amount !== '' && React.createElement("span", { style: { fontSize: '0.75rem', color: '#10b981', marginTop: '0.2rem', display: 'block' } },
                                     `${isFa ? 'مبلغ با جداکننده سه‌رقمی:' : 'Formatted Amount:'} ${formatCurrencyAmount(amount, isFa)}`
