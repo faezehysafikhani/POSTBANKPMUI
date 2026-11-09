@@ -43,9 +43,10 @@ const isGreen = (h, s, l) => h >= 70 && h <= 180 && s >= 0.1 && l > 0.03 && l < 
 function themed([r, g, b], theme) {
   const [h, s, l] = rgbToHsl(r, g, b);
   if (theme === 'purple') return hslToRgb(268 + (h - 140) * 0.3, clamp(s * 1.08), l);
-  if (theme === 'blue') return hslToRgb(206 + (h - 140) * 0.25, clamp(s * 1.05), l);
-  // red: a deep crimson; mid tones a little darker so white text on accents stays strong.
-  if (theme === 'red') return hslToRgb(356 + (h - 140) * 0.12, clamp(s * 1.1), s > 0.35 && l < 0.62 ? l * 0.9 : l);
+  // blue: deep navy; mid tones darker so accents read as navy, light tints only slightly blue.
+  if (theme === 'blue') return hslToRgb(222 + (h - 140) * 0.12, clamp(l > 0.85 ? s * 0.55 : s * 0.85), s > 0.35 && l < 0.62 ? l * 0.82 : l);
+  // red: a corporate burgundy (not a lipstick red); light tints are nearly neutral warm greys.
+  if (theme === 'red') return hslToRgb(357 + (h - 140) * 0.06, clamp(l > 0.85 ? s * 0.32 : s * 0.72), s > 0.35 && l < 0.62 ? l * 0.78 : l);
   // black: neutral warm grey; saturated accents go near-black, dark text gets darker.
   const nl = s > 0.35 && l < 0.62 ? l * 0.42 : l < 0.35 ? l * 0.55 : l;
   return hslToRgb(42, s * 0.06, nl);

@@ -1,56 +1,84 @@
 /*
- * BLUE theme: buttons like the reference "Start / Favorites" set, a cyan-to-blue gradient pill whose leading icon
- * sits on a raised white cap. RED theme: buttons like the reference squircles, a white raised tile inside a thick
- * crimson rim (primary actions filled crimson). Also the header title (3D letters, a wave every 20 seconds) and the
- * logo that spins at the start of every wave. Loaded after pb-themes.css.
+ * BLUE (deep navy) and RED (corporate burgundy) themes. Each has its own shape language so they never look alike:
+ *   BLUE  — everything round: capsule buttons whose leading icon sits on a white round cap, icon-only buttons are
+ *           circles in a navy ring, sidebar items are capsules with their icon on a white disc.
+ *   RED   — everything a rounded square: squircle buttons inside a thick burgundy rim (primary ones filled),
+ *           icon-only buttons are squircle tiles, sidebar items are rounded tiles with their icon in a small tile.
+ * Also the header title animation (below). Loaded after pb-themes.css.
  */
 html[data-pb-theme="blue"]{
-  --pb-accent:#0284c7;--pb-accent2:#075985;--pb-hi:#38bdf8;--pb-soft:#e0f2fe;--pb-soft2:#f3faff;--pb-line:#bae0f7;
-  --pb-text:#0c2d48;--pb-heading:#0a4a7a;--pb-muted:#5b7a92;
-  --pb-page-bg:#eaf4fc;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
-  --pb-header-bg:linear-gradient(120deg,#f6fbffeb,#bfe2f8eb);--pb-header-text:#0a3a63;
-  --pb-side-bg:linear-gradient(155deg,#f6fbffe6,#cfe7f8e0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#e3f2fdc8);
-  --pb-side-text:#0c3d63;--pb-side-icon:#0284c7;
-  --pb-active-bg:linear-gradient(180deg,#ffffff40 0,#ffffff00 50%),linear-gradient(160deg,#22d3ee,#0284c7 55%,#1e40af);--pb-active-text:#fff;
-  --pb-card-bg:linear-gradient(140deg,#ffffffef,#eef7fedc);
-  --pb-shadow:#0369a133;--pb-glow:#0ea5e9;--pb-focus:#0ea5e93d;
-  --pb-field-bg:#fbfdff;--pb-field-inset:#9cc3dd40;--pb-clock-bg:linear-gradient(145deg,#cfe6f7,#f2f9ff);
-  --pb-rim:linear-gradient(135deg,#67e8f9,#0284c7 50%,#1e3a8a);--pb-icon-color:#0369a1;--pb-chart-main:#0ea5e9;
-  --pb-gel:linear-gradient(180deg,#ffffff99 0,#ffffff33 46%,#ffffff00 52%),linear-gradient(180deg,#38bdf8,#0284c7 58%,#075985);--pb-gel-edge:#075985;
-  --pb-gel-idle:linear-gradient(180deg,#fff 0,#f7fbff 46%,#e0effc 52%,#eef6fd);--pb-gel-idle-edge:#bcdcf3;
+  --pb-accent:#1e40af;--pb-accent2:#172554;--pb-hi:#3b6fd8;--pb-soft:#e3eaf6;--pb-soft2:#f3f6fb;--pb-line:#c5d2e8;
+  --pb-text:#0f1f3d;--pb-heading:#1e3a8a;--pb-muted:#5a6b88;
+  --pb-page-bg:#e9eef6;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
+  --pb-header-bg:linear-gradient(120deg,#f5f8fcee,#c8d5ebee);--pb-header-text:#142a5c;
+  --pb-side-bg:linear-gradient(155deg,#f5f8fce6,#d2ddefe0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#e6ecf7c8);
+  --pb-side-text:#142a5c;--pb-side-icon:#1e40af;
+  --pb-active-bg:linear-gradient(180deg,#ffffff33 0,#ffffff00 50%),linear-gradient(160deg,#3b6fd8,#1e40af 55%,#172554);--pb-active-text:#fff;
+  --pb-card-bg:linear-gradient(140deg,#ffffffef,#eef2f9dc);
+  --pb-shadow:#1e3a8a33;--pb-glow:#2563eb;--pb-focus:#2563eb3d;
+  --pb-field-bg:#fbfcfe;--pb-field-inset:#9fb2d340;--pb-clock-bg:linear-gradient(145deg,#cfdbef,#f2f5fb);
+  --pb-rim:linear-gradient(135deg,#7aa2f7,#1e40af 50%,#172554);--pb-icon-color:#1e40af;--pb-chart-main:#2563eb;
+  --pb-gel:linear-gradient(180deg,#ffffff8c 0,#ffffff2b 46%,#ffffff00 52%),linear-gradient(180deg,#4f7fe0,#1e40af 58%,#172554);--pb-gel-edge:#172554;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#f6f8fc 46%,#e1e8f4 52%,#eef2f9);--pb-gel-idle-edge:#c2cfe6;
 }
 html[data-pb-theme="red"]{
-  --pb-accent:#b91c1c;--pb-accent2:#7f1d1d;--pb-hi:#ef4444;--pb-soft:#fde8e8;--pb-soft2:#fff6f6;--pb-line:#f3c4c4;
-  --pb-text:#3f0d12;--pb-heading:#7f1d1d;--pb-muted:#8a5a5e;
-  --pb-page-bg:#fbeeee;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
-  --pb-header-bg:linear-gradient(120deg,#fff8f8eb,#f2c4c4eb);--pb-header-text:#5c0f17;
-  --pb-side-bg:linear-gradient(155deg,#fff8f8e6,#f5d3d3e0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#fdeaeac8);
-  --pb-side-text:#5c1018;--pb-side-icon:#b91c1c;
-  --pb-active-bg:linear-gradient(180deg,#ffffff38 0,#ffffff00 50%),linear-gradient(160deg,#ef4444,#b91c1c 55%,#7f1d1d);--pb-active-text:#fff;
-  --pb-card-bg:linear-gradient(140deg,#ffffffef,#fdf2f2dc);
-  --pb-shadow:#7f1d1d33;--pb-glow:#dc2626;--pb-focus:#dc26263d;
-  --pb-field-bg:#fffcfc;--pb-field-inset:#ddb0b040;--pb-clock-bg:linear-gradient(145deg,#f6d2d2,#fff5f5);
-  --pb-rim:linear-gradient(135deg,#fb7185,#dc2626 50%,#7f1d1d);--pb-icon-color:#b91c1c;--pb-chart-main:#dc2626;
-  --pb-gel:linear-gradient(180deg,#ffffff99 0,#ffffff2e 46%,#ffffff00 52%),linear-gradient(180deg,#f05252,#b91c1c 58%,#7f1d1d);--pb-gel-edge:#7f1d1d;
-  --pb-gel-idle:linear-gradient(180deg,#fff 0,#fff8f8 46%,#fbe3e3 52%,#fdf0f0);--pb-gel-idle-edge:#f0c2c2;
+  --pb-accent:#9f1d24;--pb-accent2:#5c0d12;--pb-hi:#b8323a;--pb-soft:#f3e8e8;--pb-soft2:#faf6f6;--pb-line:#e0cacb;
+  --pb-text:#2e0d10;--pb-heading:#7a1419;--pb-muted:#7d6264;
+  --pb-page-bg:#f1eded;--pb-wash1:#ffffff00;--pb-wash2:#ffffff00;--pb-wave-filter:grayscale(1) contrast(.9) brightness(1.06);
+  --pb-header-bg:linear-gradient(120deg,#faf7f7ee,#e2d0d0ee);--pb-header-text:#4f0c11;
+  --pb-side-bg:linear-gradient(155deg,#faf7f7e6,#e6d8d8e0);--pb-side-item:linear-gradient(135deg,#ffffffc8,#f4ecebc8);
+  --pb-side-text:#4f0c11;--pb-side-icon:#8b1a20;
+  --pb-active-bg:linear-gradient(180deg,#ffffff2e 0,#ffffff00 50%),linear-gradient(160deg,#b8323a,#8b1a20 55%,#5c0d12);--pb-active-text:#fff;
+  --pb-card-bg:linear-gradient(140deg,#ffffffef,#f8f3f3dc);
+  --pb-shadow:#5c0d1233;--pb-glow:#a3262d;--pb-focus:#a3262d38;
+  --pb-field-bg:#fdfbfb;--pb-field-inset:#cdb3b440;--pb-clock-bg:linear-gradient(145deg,#ead9d9,#faf6f6);
+  --pb-rim:linear-gradient(135deg,#d46a70,#9f1d24 50%,#4a0a0f);--pb-icon-color:#8b1a20;--pb-chart-main:#9f1d24;
+  --pb-gel:linear-gradient(180deg,#ffffff7a 0,#ffffff24 46%,#ffffff00 52%),linear-gradient(180deg,#c0424a,#8b1a20 58%,#5c0d12);--pb-gel-edge:#5c0d12;
+  --pb-gel-idle:linear-gradient(180deg,#fff 0,#fbf8f8 46%,#efe4e4 52%,#f7f1f1);--pb-gel-idle-edge:#ddc6c7;
 }
 /* Page: the wave picture keeps only its light and shade and takes the page colour (as in purple). */
-html:is([data-pb-theme="blue"],[data-pb-theme="red"]) .app-container:not(.login-layout)::before{mix-blend-mode:luminosity;opacity:.55}
-html[data-pb-theme="blue"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#d5ebfb,transparent 55%),radial-gradient(ellipse at 90% 85%,#c6e2f8,transparent 50%),#eaf4fc!important}
-html[data-pb-theme="red"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#fbdcdc,transparent 55%),radial-gradient(ellipse at 90% 85%,#f6cfcf,transparent 50%),#fbeeee!important}
-.pb-theme-switch button[data-theme-option="blue"]{background:radial-gradient(circle at 35% 30%,#a5f3fc,#0369a1)}
-.pb-theme-switch button[data-theme-option="red"]{background:radial-gradient(circle at 35% 30%,#fca5a5,#7f1d1d)}
+html:is([data-pb-theme="blue"],[data-pb-theme="red"]) .app-container:not(.login-layout)::before{mix-blend-mode:luminosity;opacity:.5}
+html[data-pb-theme="blue"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#d8e2f2,transparent 55%),radial-gradient(ellipse at 90% 85%,#ccd9ee,transparent 50%),#e9eef6!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout){background:radial-gradient(ellipse at 15% 10%,#ece2e2,transparent 55%),radial-gradient(ellipse at 90% 85%,#e7dbdb,transparent 50%),#f1eded!important}
+.pb-theme-switch button[data-theme-option="blue"]{background:radial-gradient(circle at 35% 30%,#93b4f5,#172554)}
+.pb-theme-switch button[data-theme-option="red"]{background:radial-gradient(circle at 35% 30%,#d98a8f,#5c0d12)}
 
-/* BLUE buttons: gradient pill; a leading icon (with a label beside it) sits on a white cap at the start end. */
-html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:2px solid #fff!important;color:#fff!important;text-shadow:0 1px 1px #0c4a6e66;background:linear-gradient(180deg,#ffffff40,#ffffff00 55%),linear-gradient(270deg,#1e40af,#0284c7 45%,#22d3ee)!important;box-shadow:0 7px 16px #0369a14d,inset 0 -2px 4px #0c4a6e40!important}
-html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):has(>.material-symbols-outlined:first-child):not(:has(>.material-symbols-outlined:only-child)){padding-inline-start:8px!important;box-shadow:inset -40px 0 0 #fff,inset -42px 0 0 #bae6fd,0 7px 16px #0369a14d!important}
-html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):not(:has(>.material-symbols-outlined:only-child))>.material-symbols-outlined:first-child{color:#0369a1!important;width:22px;margin-inline-end:14px;text-shadow:none}
-html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:2px solid transparent!important;color:#0a4a7a!important;background:linear-gradient(180deg,#fff,#eef7fe) padding-box,linear-gradient(90deg,#67e8f9,#0284c7) border-box!important;box-shadow:0 4px 10px #0369a126,inset 0 1px 2px #fff!important}
+/* ================================================================== BLUE: round shapes */
+/* Primary: navy capsule with a white ring. */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:999px!important;border:2px solid #fff!important;color:#fff!important;text-shadow:0 1px 1px #0b153366;background:linear-gradient(180deg,#ffffff3d,#ffffff00 55%),linear-gradient(270deg,#172554,#1e40af 50%,#3b6fd8)!important;box-shadow:0 7px 16px #1e3a8a4d,inset 0 -2px 4px #0b153340!important}
+/* …with an icon and a label: the icon sits on a white round cap at the start end. */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):has(>.material-symbols-outlined:first-child):not(.page-header-actions *){padding-inline-start:6px!important}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):not(.page-header-actions *)>.material-symbols-outlined:first-child{display:inline-grid!important;place-items:center;width:28px;height:28px;margin-inline-end:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#e8eef9)!important;color:#1e40af!important;font-size:18px!important;text-shadow:none;box-shadow:0 2px 5px #0b153359,inset 0 -1px 2px #1e3a8a26}
+/* Secondary: white capsule with a navy outline. */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:999px!important;border:2px solid #1e40af!important;color:#1e3a8a!important;background:linear-gradient(180deg,#fff,#f1f5fb)!important;box-shadow:0 4px 10px #1e3a8a1f,inset 0 1px 2px #fff!important}
+/* Icon-only buttons: circles in a navy ring (a labelled one stretches to a capsule). */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn,.pb-output-btn),
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child){border-radius:999px!important;border:3px solid #1e40af!important;background:radial-gradient(circle at 35% 30%,#fff,#eef2f9)!important;color:#1e40af!important;box-shadow:0 0 0 2px #fff,0 5px 12px #1e3a8a33!important}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .page-header-actions :is(.save-btn,.submit-progress-btn,.action-button.primary):has(>.material-symbols-outlined:only-child){background:linear-gradient(180deg,#ffffff3d,#ffffff00 55%),linear-gradient(160deg,#3b6fd8,#1e40af 55%,#172554)!important;border-color:#fff!important;box-shadow:0 0 0 2px #1e40af,0 6px 14px #1e3a8a4d!important}
+html[data-pb-theme="blue"] .pb-output-btn{border-radius:999px;border-color:#1e40af;background:radial-gradient(circle at 35% 30%,#fff,#eef2f9)}
+/* Sidebar: capsules; the icon sits on a white disc (also on the active, navy capsule). */
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header,.sidebar-subitem,.sidebar-nested-subitem){border-radius:999px!important}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-icon,.sidebar-subitem-icon){display:inline-grid!important;place-items:center;width:30px;height:30px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#e6ecf7)!important;color:#1e40af!important;font-size:18px!important;box-shadow:0 0 0 1.5px #c2cfe6,0 2px 5px #1e3a8a26}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-subitem.active) :is(.sidebar-icon,.sidebar-subitem-icon){color:#1e40af!important;box-shadow:0 0 0 2px #ffffffcc,0 3px 7px #0b153366}
+html[data-pb-theme="blue"] .app-container:not(.login-layout) .app-sidebar .sidebar-group-header{padding-inline-start:5px!important}
 
-/* RED buttons: squircle tiles inside a thick crimson rim; primary ones filled crimson. */
-html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:16px!important;border:3px solid transparent!important;color:#fff!important;text-shadow:0 1px 1px #450a0a80;background:linear-gradient(180deg,#ffffff38,#ffffff00 50%) padding-box,linear-gradient(160deg,#ef4444,#b91c1c 55%,#7f1d1d) padding-box,linear-gradient(135deg,#fecaca,#dc2626 50%,#7f1d1d) border-box!important;box-shadow:0 0 0 2px #fff,0 7px 15px #7f1d1d40,inset 0 -3px 5px #450a0a40!important}
-html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:16px!important;border:3px solid transparent!important;color:#7f1d1d!important;background:linear-gradient(150deg,#fff,#fbf1f1) padding-box,linear-gradient(135deg,#fb7185,#dc2626 50%,#7f1d1d) border-box!important;box-shadow:0 5px 12px #7f1d1d26,inset 2px 2px 3px #fff,inset -2px -3px 5px #7f1d1d14!important}
-html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn){border-width:4px!important;border-radius:17px!important}
+/* ================================================================== RED: rounded squares */
+/* Primary: burgundy squircle inside a thick, lighter rim, with a white outer ring. */
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary),.sp-tab.is-active,.tabs-nav .tab-item.active){border-radius:14px!important;border:3px solid transparent!important;color:#fff!important;text-shadow:0 1px 1px #2b050880;background:linear-gradient(180deg,#ffffff2e,#ffffff00 50%) padding-box,linear-gradient(160deg,#b8323a,#8b1a20 55%,#5c0d12) padding-box,linear-gradient(135deg,#e7a9ac,#9f1d24 50%,#4a0a0f) border-box!important;box-shadow:0 0 0 2px #fff,0 7px 15px #5c0d1240,inset 0 -3px 5px #2b050840!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.save-btn,.submit-progress-btn,.action-button.primary,.add-user-btn,.export-btn,.print-btn,.approve-btn,.quick-action-btn:not(.secondary)):not(.page-header-actions *)>.material-symbols-outlined:first-child{display:inline-grid!important;place-items:center;width:26px;height:26px;margin-inline-end:7px;border-radius:8px;background:#ffffff26;box-shadow:inset 0 0 0 1.5px #ffffff59;font-size:17px!important}
+/* Secondary: white squircle tile inside a thick burgundy rim. */
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.action-button:not(.primary),.cancel-btn,.back-button,.filter-toggle-btn,.grouping-toggle-btn,.quick-action-btn.secondary,.add-team-member-btn,.sp-tab:not(.is-active),.tabs-nav .tab-item:not(.active)){border-radius:14px!important;border:3px solid transparent!important;color:#7a1419!important;background:linear-gradient(150deg,#fff,#f8f3f3) padding-box,linear-gradient(135deg,#d46a70,#9f1d24 50%,#4a0a0f) border-box!important;box-shadow:0 5px 12px #5c0d1226,inset 2px 2px 3px #fff,inset -2px -3px 5px #5c0d1214!important}
+/* Icon-only buttons: squircle tiles in a thick rim (like the reference tiles). */
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.logout-button,.sidebar-toggle-btn),
+html[data-pb-theme="red"] .app-container:not(.login-layout) .page-header-actions :is(button,a):has(>.material-symbols-outlined:only-child){border:4px solid transparent!important;border-radius:12px!important;background:linear-gradient(150deg,#fff,#f3eeee) padding-box,var(--pb-rim) border-box!important;color:#8b1a20!important;box-shadow:0 6px 13px #5c0d1233,inset 2px 2px 3px #fff,inset -2px -3px 5px #5c0d121a!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) .page-header-actions :is(.save-btn,.submit-progress-btn,.action-button.primary):has(>.material-symbols-outlined:only-child){background:linear-gradient(160deg,#b8323a,#8b1a20 55%,#5c0d12) padding-box,linear-gradient(135deg,#e7a9ac,#9f1d24 50%,#4a0a0f) border-box!important}
+html[data-pb-theme="red"] .pb-output-btn{border-width:3.5px;border-radius:14px}
+/* Sidebar: rounded tiles; the icon sits in a small tile of its own. */
+html[data-pb-theme="red"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header,.sidebar-subitem,.sidebar-nested-subitem){border-radius:13px!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-subitem.active){border:2px solid #e7a9ac!important}
+html[data-pb-theme="red"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-icon,.sidebar-subitem-icon){display:inline-grid!important;place-items:center;width:28px;height:28px;flex-shrink:0;border-radius:8px;background:linear-gradient(150deg,#fff,#f4eded)!important;color:#8b1a20!important;font-size:17px!important;box-shadow:inset 0 0 0 1.5px #d9b9bb,0 2px 4px #5c0d121f}
+html[data-pb-theme="red"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-subitem.active) :is(.sidebar-icon,.sidebar-subitem-icon){background:#ffffff26!important;color:#fff!important;box-shadow:inset 0 0 0 1.5px #ffffff73}
+html[data-pb-theme="red"] .app-container:not(.login-layout) .app-sidebar .sidebar-group-header{padding-inline-start:6px!important}
 
 /* Header title: bigger, raised 3D letters, and a 30-second show in three acts, each with its logo move:
    0-10s  a flare of light sweeps across the words  · logo glows
@@ -119,3 +147,7 @@ html .app-container>header .header-logo:hover{animation-play-state:paused}
 @media print{.page-output-bar{display:none!important}}
 /* Forms with the new print / PDF buttons: the old plain PDF button of the toolbar is hidden (one PDF button only). */
 html[data-pb-theme] .app-container:not(.login-layout) :is(.creation-dialog,.main-content:has(> .page-output-bar)) .page-header-actions button:is([title="خروجی PDF"],[title="Export to PDF"]):is(:has(>.material-symbols-outlined),*){display:none!important}
+
+/* Small red icon buttons stay visibly square (a 16px radius on a 34px button reads as a circle). */
+html[data-pb-theme="red"] .app-container:not(.login-layout) :is(.mg-icon-button,.action-icon:not(.delete),.sidebar-toggle-btn){border-radius:10px!important}
+html[data-pb-theme="red"] .app-container>header .logout-button,html[data-pb-theme="red"] .pb-user-avatar{border-radius:9px!important}
