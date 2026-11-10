@@ -29,8 +29,11 @@ export const Header = ({ user, onNavigate }: { user: User, onLogout?: () => void
 };
 
 const toJalaliYear = (date: Date) => Number(new Intl.DateTimeFormat('en-US-u-ca-persian', { year: 'numeric', timeZone: 'Asia/Tehran' }).format(date).replace(/\D/g, ''));
-export const Footer = (): ReactElement => {
+export const Footer = (): ReactElement | null => {
   const { t, language } = useContext(LocalizationContext);
+  // No footer text configured: no empty footer bar either.
+  const configured = t('footerText', { year: '' }).trim();
+  if (!configured || configured === 'footerText') return null;
   return React.createElement("footer", null,
     // The year follows today's date: Shamsi in Persian, Gregorian in English.
     React.createElement("p", null, t('footerText', { year: language === 'fa'

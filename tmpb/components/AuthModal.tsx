@@ -636,9 +636,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Company Footer Info */}
           <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-center space-y-1">
-            <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-              تهیه شده توسط شرکت مدیریت پروژه پارس
-            </p>
             <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center justify-center gap-2 dir-ltr">
               <span>پشتیبانی: ۸۸۷۳۱۶۰۱</span>
               <span className="text-slate-300 dark:text-slate-700">|</span>
