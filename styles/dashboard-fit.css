@@ -1,0 +1,39 @@
+/*
+ * The management dashboard keeps its compact calendar and cards whatever the global type scale is.
+ * typography.css forces 15px on every small text and single-line.css gives every button a 36px one-line box; the calendar's
+ * day cells are buttons full of tiny labels (Gregorian / lunar numbers, holiday names), so both made the calendar about twice
+ * as tall. Sizes here are in px (independent of the root font size). ":not(#pb-fit)" lifts these rules above the global ones,
+ * whose many :not([class*=…]) parts give them a high weight. Loaded last.
+ */
+
+/* day cells: a column (number on top, small dates at the bottom), not a one-line button */
+html body .management-dashboard .mg-day:not(#pb-fit){display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+  gap:1px!important;min-height:44px!important;height:auto!important;padding:4px 2px 3px!important;white-space:normal!important;overflow:hidden!important;line-height:1.2!important;text-overflow:clip!important}
+html body .management-dashboard .mg-day:not(#pb-fit)>span:first-child{font-size:14px!important;line-height:1.25!important}
+html body .management-dashboard .mg-day:not(#pb-fit) small{font-size:9px!important;line-height:1.2!important;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body .management-dashboard .mg-day:not(#pb-fit) .mg-alt-dates{font-size:9.5px!important;line-height:1.1!important;margin-top:auto}
+html body .management-dashboard .mg-day:not(#pb-fit) .mg-alt-dates b{font-size:9.5px!important;line-height:1.1!important;font-weight:500}
+html body .management-dashboard .mg-weekdays:not(#pb-fit) span{font-size:12px!important;padding:2px!important}
+html body .management-dashboard .mg-month-grid:not(#pb-fit),html body .management-dashboard .mg-weekdays:not(#pb-fit){gap:5px!important}
+
+/* month header and legend */
+html body .management-dashboard .mg-month-nav:not(#pb-fit) h4{font-size:15px!important;line-height:1.4!important}
+html body .management-dashboard .mg-month-nav:not(#pb-fit) p,html body .management-dashboard .mg-month-alt:not(#pb-fit) span{font-size:11px!important;line-height:1.4!important}
+html body .management-dashboard .mg-calendar-legend:not(#pb-fit),html body .management-dashboard .mg-calendar-legend:not(#pb-fit) span{font-size:11px!important}
+
+/* stat cards */
+html body .management-dashboard .mg-stat-card:not(#pb-fit) p{font-size:11px!important;line-height:1.4!important}
+html body .management-dashboard .mg-stat-title:not(#pb-fit) span{font-size:13px!important}
+
+/* day agenda: compact rows */
+html body .management-dashboard .mg-agenda-list:not(#pb-fit) h4{font-size:13px!important}
+html body .management-dashboard .mg-agenda-item:not(#pb-fit){min-height:0!important;white-space:normal!important}
+html body .management-dashboard .mg-agenda-item:not(#pb-fit) strong{font-size:13px!important}
+html body .management-dashboard .mg-agenda-item:not(#pb-fit) :is(small,em){font-size:11px!important}
+html body .management-dashboard .mg-agenda-list:not(#pb-fit)>p{font-size:12px!important}
+
+/* the menu under a clicked day */
+html body .management-dashboard .mg-day-menu:not(#pb-fit) button{min-height:0!important;font-size:13px!important}
+
+/* status strip legend */
+html body .management-dashboard .mg-status-summary:not(#pb-fit)>div{font-size:12px!important;min-height:0!important}
