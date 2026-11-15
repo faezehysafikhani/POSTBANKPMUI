@@ -39,3 +39,4 @@ import './styles/typography.css';
 import './styles/single-line.css';
 import './styles/responsive.css';
 import './styles/ui-fixes.css';
+import './styles/dashboard-fit.css';
