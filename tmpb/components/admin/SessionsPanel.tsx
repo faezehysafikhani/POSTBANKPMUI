@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { portalRoot } from '../../utils/portalRoot';
 import { Loader2, LogOut, MonitorSmartphone, Save, ShieldAlert, X } from 'lucide-react';
 import {
   SESSION_END_MESSAGES,
@@ -423,7 +425,7 @@ export const UserSessionsDialog: React.FC<{ userId: string; userName: string; ca
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4" role="dialog" aria-modal="true" dir="rtl">
       <div className="w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">
@@ -438,8 +440,8 @@ export const UserSessionsDialog: React.FC<{ userId: string; userName: string; ca
           </>
         )}
       </div>
-    </div>
-  );
+    </div>,
+    portalRoot());
 };
 
 /** The «نشست‌ها» tab of the settings: the user's own sessions, and the organization's policy for those who may change it. */

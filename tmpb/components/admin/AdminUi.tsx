@@ -1,4 +1,6 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
+import { portalRoot } from '../../utils/portalRoot';
 import { Search, ChevronRight, ChevronLeft, AlertCircle, CheckCircle2, X } from 'lucide-react';
 import { toPersianDigits } from '../../utils/helpers';
 
@@ -247,7 +249,8 @@ export const AdminDialog: React.FC<{ title: string; onClose: () => void; childre
     const el = box.current;
     if (el && !el.contains(document.activeElement)) (el.querySelector<HTMLElement>('input,select,textarea') ?? el).focus();
   }, []);
-  return (
+  // Drawn into the portal root (not inline): inline it sits inside the page's own stacking context, under the product's side menu.
+  return createPortal(
   <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs" onClick={(e) => e.target === e.currentTarget && onClose()}>
     <div ref={box} tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose(); } }} role="dialog" aria-modal="true" aria-label={title} className={`w-full ${compact ? 'max-w-2xl' : wide ? 'max-w-3xl' : 'max-w-xl'} max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 focus:outline-hidden`}>
       <div className={`flex items-center justify-between border-b border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
@@ -259,8 +262,8 @@ export const AdminDialog: React.FC<{ title: string; onClose: () => void; childre
       <div className={compact ? "px-4 py-3 overflow-y-auto overscroll-contain flex-1 space-y-3" : "px-5 py-4 overflow-y-auto flex-1 space-y-4"}>{children}</div>
       <div className={`flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-2.5' : 'px-5 py-3.5'}`}>{footer}</div>
     </div>
-  </div>
-  );
+  </div>,
+  portalRoot());
 };
 
 export const PrimaryButton: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ className = '', ...props }) => (
