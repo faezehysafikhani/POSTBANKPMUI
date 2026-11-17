@@ -1,0 +1,29 @@
+/*
+ * A tighter side menu: narrower, smaller labels and icons, less space between items.
+ * Loaded last; :not(#_) only raises the rules above the global type and icon sizes (no element has that id).
+ */
+:root { --pb-sidebar-w: 236px; }
+@media (min-width: 1921px) { :root { --pb-sidebar-w: 252px; } }
+@media (max-width: 1280px) { :root { --pb-sidebar-w: 224px; } }
+
+html body .app-container .app-sidebar :is(.sidebar-text, .sidebar-group-title, .sidebar-subitem, .sidebar-subitem span, .sidebar-group-header,
+  .sidebar-group-header span, .sidebar-nested-subitem, .sidebar-nested-subitem span, .sidebar-title):not(.material-symbols-outlined):not([class*="badge"]):not(#_):not(#_) {
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+html body .app-container .app-sidebar :is(.sidebar-group-header, .sidebar-subitem, .sidebar-nested-subitem, .sidebar-item) .material-symbols-outlined:not(#_):not(#_) {
+  font-size: 17px !important;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+}
+
+html body .app-container .app-sidebar .sidebar-group-header:not(#_) { padding: 5px 9px !important; gap: 7px !important; min-height: 0 !important; }
+html body .app-container .app-sidebar :is(.sidebar-subitem, .sidebar-nested-subitem):not(#_) { padding: 4px 9px !important; gap: 7px !important; margin-top: 0 !important; min-height: 0 !important; }
+html body .app-container .app-sidebar .sidebar-group-items:not(#_) { gap: 3px !important; margin-top: 3px !important; padding-block: 0 !important; padding-inline-start: 0.45rem !important; margin-inline-start: 0.55rem !important; }
+html body .app-container .app-sidebar .sidebar-group:not(#_) { margin-bottom: 0 !important; }
+html body .app-container .app-sidebar .sidebar-nav:not(#_) { gap: 4px !important; }
+html body .app-container .app-sidebar .sidebar-icon:not(#_):not(#_) { font-size: 17px !important; }
+html body .app-container .app-sidebar .sidebar-logout:not(#_) { margin-top: 4px !important; padding-top: 4px !important; }
+html body .app-container .app-sidebar [class*="badge"]:not(#_) { font-size: 10.5px !important; min-width: 18px; height: 18px; padding: 0 5px; }
