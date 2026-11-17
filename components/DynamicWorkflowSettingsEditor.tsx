@@ -1,5 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { User, WorkflowEntityType, WorkflowStage, DynamicWorkflowSettings } from '../types';
+import { orgChart } from '../services/backend/directory';
+import type { ChartPosition, ChartPost } from '../services/backend/directory';
 import { toPersianDigits } from '../utils';
 import { ThemeContext } from '../context';
 
@@ -38,6 +40,16 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
   showHeaderBanner = true,
   onCloseDrawer
 }) => {
+  // Positions and posts of the organization structure, so a stage can name its approver from the chart.
+  const [chartPositions, setChartPositions] = useState<ChartPosition[]>([]);
+  const [chartPosts, setChartPosts] = useState<ChartPost[]>([]);
+  useEffect(() => {
+    let alive = true;
+    void orgChart.positions().then(r => { if (alive && r.ok) setChartPositions((r.value ?? []).filter(p => p.isActive)); });
+    void orgChart.posts().then(r => { if (alive && r.ok) setChartPosts((r.value ?? []).filter(p => p.isPositionActive)); });
+    return () => { alive = false; };
+  }, []);
+
   const { theme } = useContext(ThemeContext);
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'dark';
   const isFa = language === 'fa';
@@ -164,7 +176,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
     });
   };
 
-  const handleApproverChange = (stageIndex: number, newApproverId: 'ROLE_PM' | 'ROLE_OWNER' | number) => {
+  const handleApproverChange = (stageIndex: number, newApproverId: WorkflowStage['approverId']) => {
     const updatedStages = [...currentStages];
     updatedStages[stageIndex] = {
       ...updatedStages[stageIndex],
@@ -537,14 +549,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                 <td style={{ padding: '0.5rem' }}>
                   <select
                     value={stage.approverId}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      if (val === 'ROLE_PM' || val === 'ROLE_OWNER') {
-                        handleApproverChange(idx, val);
-                      } else {
-                        handleApproverChange(idx, Number(val));
-                      }
-                    }}
+                    onChange={(e) => handleApproverChange(idx, e.target.value)}
                     className="form-control"
                     style={{
                       width: '100%',
@@ -568,10 +573,28 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                           : (isFa ? '⭐ مالک پروژه / اقدام' : '⭐ Project Owner / Action Owner')}
                       </option>
                     </optgroup>
+                    <optgroup label={isFa ? 'ساختار سازمانی' : 'Organization chart'}>
+                      <option value="ORG_MANAGER">{isFa ? '🏢 مدیر مستقیم ارسال‌کننده (در چارت)' : '🏢 Submitter\'s manager (chart)'}</option>
+                      <option value="ORG_MANAGER2">{isFa ? '🏢 مدیرِ مدیر ارسال‌کننده' : '🏢 Submitter\'s manager\'s manager'}</option>
+                    </optgroup>
+                    {chartPositions.length > 0 && (
+                      <optgroup label={isFa ? 'سمت (نزدیک‌ترین دارنده بالای ارسال‌کننده)' : 'Position (nearest holder above the submitter)'}>
+                        {chartPositions.map(p => <option key={p.id} value={`POS:${p.id}`}>{p.title}</option>)}
+                      </optgroup>
+                    )}
+                    {chartPosts.length > 0 && (
+                      <optgroup label={isFa ? 'پست (هر کس در آن پست باشد)' : 'Post (whoever holds it)'}>
+                        {chartPosts.map(p => (
+                          <option key={p.id} value={`POST:${p.id}`}>
+                            {[p.title, p.code, p.unitName].filter(Boolean).join(' · ')}{p.holders[0] ? ` — ${p.holders.map(h => h.displayName).join('، ')}` : (isFa ? ' — خالی' : ' — vacant')}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
                     <optgroup label={isFa ? 'کاربران اختصاصی سامانه' : 'Specific Users'}>
                       {users.map(u => (
                         <option key={u.id} value={u.id}>
-                          {u.name ? `${u.name} (${u.username}) - [${u.role}]` : `${u.username} - [${u.role}]`}
+                          {u.name ? `${u.name} (${u.username})` : u.username}
                         </option>
                       ))}
                     </optgroup>

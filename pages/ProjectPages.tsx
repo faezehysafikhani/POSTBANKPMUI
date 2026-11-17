@@ -1196,7 +1196,8 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
             return titleMatch && statusMatch && unitMatch && pmMatch;
         });
     }, [actions, nameFilter, statusFilter, unitFilter, pmFilter]);
-    const allProjectManagers = useMemo(() => users.filter(u => u.role === 'Project Manager' || u.role === 'Admin'), [users]);
+    // Anyone active may be chosen: what they may do comes from their roles, position and post (the server checks it).
+    const allProjectManagers = useMemo(() => users.filter(u => u.isActive !== false), [users]);
     const statusTranslations: Record<string, TranslationKey> = {
         'Planning': 'planning',
         'In Progress': 'inProgress',

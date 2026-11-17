@@ -569,7 +569,11 @@ export interface WorkflowStage {
   id: string;
   stageNumber: number;
   stageTitle: string; // e.g. "تایید نهایی" or "بررسی اولیه"
-  approverId: 'ROLE_PM' | 'ROLE_OWNER' | string; // 'ROLE_PM': مدیر پروژه/اقدام, 'ROLE_OWNER': مالک پروژه/اقدام, or userId
+  /**
+   * 'ROLE_PM': مدیر پروژه/اقدام, 'ROLE_OWNER': مالک پروژه/اقدام, 'ORG_MANAGER': مدیر مستقیم ارسال‌کننده در چارت,
+   * 'ORG_MANAGER2': مدیرِ مدیر او, 'POST:{id}': دارندهٔ یک پست, 'POS:{id}': نزدیک‌ترین دارندهٔ یک سمت بالای ارسال‌کننده; or a userId.
+   */
+  approverId: 'ROLE_PM' | 'ROLE_OWNER' | 'ORG_MANAGER' | 'ORG_MANAGER2' | string;
 }
 
 export type DynamicWorkflowSettings = Record<WorkflowEntityType, WorkflowStage[]>;

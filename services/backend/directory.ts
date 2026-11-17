@@ -66,6 +66,15 @@ export const organization = {
   units: () => api.get<BackendUnit[]>(`/api/organization/units/${query({ activeOnly: true })}`)
 };
 
+/** Positions («سمت») and posts («پست») of the organization structure, for choosing a workflow approver. */
+export interface ChartPosition { id: string; title: string; isActive: boolean }
+export interface ChartPost { id: string; title: string; code?: string | null; unitName: string | null; isPositionActive: boolean; holders: { userId: string; displayName: string }[] }
+
+export const orgChart = {
+  positions: () => api.get<ChartPosition[]>('/api/org-structure/positions'),
+  posts: () => api.get<ChartPost[]>('/api/org-structure/unit-positions')
+};
+
 // ----------------------------------------------------------------------------------------------- work calendars
 
 export interface BackendCalendarException {

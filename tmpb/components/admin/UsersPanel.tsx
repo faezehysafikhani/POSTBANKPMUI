@@ -9,8 +9,7 @@ import { getAssignment, setAssignment, removeAssignment, Honorific, listTitles, 
 import { toPersianDigits, formatToJalali } from '../../utils/helpers';
 import {
   AdminCard, SearchBox, StatusBadge, IconAction, Pagination, Field, inputClass, Notice,
-  AdminDialog, PrimaryButton, SecondaryButton, toLatinDigits, useDebounced, PillTabs,
-} from './AdminUi';
+  AdminDialog, PrimaryButton, SecondaryButton, toLatinDigits, useDebounced, PillTabs, SelectAllCheckbox, selectAllState } from './AdminUi';
 import { moduleTitle, toggleUserAccess, clearPrerequisiteDenials, clearPrerequisiteDenialsForPermissions, preservePrerequisitesWhenDisabling, preservePermissionPrerequisites, enabledDependentForPrerequisite, hasKnownPermissionDependents, rolePermissionNames, isListedPermission } from '../../utils/permissions';
 import { userErrorMessage } from '../../utils/errorMessages';
 import { LoadingRow } from './orgStructure/orgShared';
@@ -30,12 +29,19 @@ export interface UserAdminRights {
   changeStatus: boolean;
   assignRoles: boolean;
   assignPermissions: boolean;
+  /** users.assign_roles: the «مدیر سیستم» box on the user form (one person gets every administrator permission). */
+  assignAdmin?: boolean;
   viewSessions?: boolean;
   revokeSessions?: boolean;
 }
 
 const ROLE_TITLES: Record<string, string> = { Administrator: 'مدیر سیستم', Member: 'کاربر' };
 export const roleTitle = (name: string) => ROLE_TITLES[name] || name;
+
+/** The built-in administrator role (seeded id, or its name on older databases). */
+const ADMIN_ROLE_ID = '22222222-2222-2222-2222-222222222222';
+const findAdminRole = (roles: AdminRole[]) =>
+  roles.find((r) => r.id === ADMIN_ROLE_ID) ?? roles.find((r) => r.name === 'Administrator') ?? roles.find((r) => r.name === 'مدیر سیستم') ?? null;
 
 function errorText(err: unknown, fallback: string): string {
   return userErrorMessage(err, fallback);
@@ -189,6 +195,8 @@ export const UsersPanel: React.FC<{
         <UserFormDialog
           user={editing === 'new' ? null : editing}
           canAssignRoles={rights.assignRoles}
+          canAssignAdmin={!!rights.assignAdmin}
+          currentUserId={currentUserId}
           showPlacementTab={orgStructureAvailable && canManageOrgAssignments}
           canSeeOrgUnits={canSeeOrgUnits}
           showTitle={orgStructureAvailable && (rights.create || rights.update)}
@@ -222,13 +230,15 @@ export const UsersPanel: React.FC<{
 const UserFormDialog: React.FC<{
   user: AdminUser | null;
   canAssignRoles: boolean;
+  canAssignAdmin: boolean;
+  currentUserId: string;
   showPlacementTab: boolean;
   canSeeOrgUnits: boolean;
   /** The organization-structure module's titles («آقای»، «خانم»...) before the name. */
   showTitle: boolean;
   onClose: () => void;
   onSaved: (message: string) => void;
-}> = ({ user, canAssignRoles, showPlacementTab, canSeeOrgUnits, showTitle: titlesAvailable, onClose, onSaved }) => {
+}> = ({ user, canAssignRoles, canAssignAdmin, currentUserId, showPlacementTab, canSeeOrgUnits, showTitle: titlesAvailable, onClose, onSaved }) => {
   const isNew = user === null;
   const photoInput = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<AdminUserInput>({
@@ -242,6 +252,11 @@ const UserFormDialog: React.FC<{
   });
   const [roles, setRoles] = useState<AdminRole[]>([]);
   const [roleIds, setRoleIds] = useState<string[]>([]);
+  // «مدیر سیستم»: the administrator role given to this one person, apart from positions and posts.
+  const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [originalIsAdmin, setOriginalIsAdmin] = useState(false);
+  const isSelf = !!user && user.id === currentUserId;
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -279,14 +294,19 @@ const UserFormDialog: React.FC<{
   const chosenTitle = titles.find((t) => t.id === titleId)?.title;
 
   useEffect(() => {
-    if (!isNew || !canAssignRoles) return;
+    if (!(isNew && canAssignRoles) && !canAssignAdmin) return;
     listRoles().then((list) => {
       setRoles(list);
       // «کاربر عادی» is every new user's role (the server gives it too); older setups: Member.
       const member = list.find((r) => r.name === 'کاربر عادی') ?? list.find((r) => r.name === 'Member');
-      if (member) setRoleIds([member.id]);
+      if (member && isNew && canAssignRoles) setRoleIds([member.id]);
+      const admin = canAssignAdmin ? findAdminRole(list) : null;
+      setAdminRole(admin);
+      const held = !!admin && !!user && user.roles.includes(admin.name);
+      setIsAdmin(held);
+      setOriginalIsAdmin(held);
     }).catch(() => setRoles([]));
-  }, [isNew, canAssignRoles]);
+  }, [isNew, canAssignRoles, canAssignAdmin, user]);
 
   // The user's current placement, to prefill the «جایگاه سازمانی» tab when editing.
   useEffect(() => {
@@ -340,18 +360,40 @@ const UserFormDialog: React.FC<{
     setError(null);
     try {
       let savedUserId: string;
+      let stored: AdminUser | null = persistedUser;
       if (isNew && !savedId) {
         const created = await adminCreateUser(form, []);
         savedUserId = created.id;
+        stored = created;
         setSavedId(savedUserId);
         setPersistedUser(created);
       } else {
         savedUserId = savedId || user!.id;
-        if (persistedUser) await adminUpdateUser(persistedUser, form);
+        if (persistedUser) {
+          stored = await adminUpdateUser(persistedUser, form);
+          setPersistedUser(stored);
+        }
       }
 
-      // Even with none ticked: the default role the server gave is then taken away.
-      if (isNew && canAssignRoles && roles.length) await setUserRoles(savedUserId, roleIds);
+      const adminChanged = !!adminRole && isAdmin !== originalIsAdmin;
+      const withAdmin = (ids: string[]) => adminRole
+        ? (isAdmin ? [...new Set([...ids, adminRole.id])] : ids.filter((id) => id !== adminRole.id))
+        : ids;
+      if (isNew && canAssignRoles && roles.length) {
+        // Even with none ticked: the default role the server gave is then taken away.
+        await setUserRoles(savedUserId, withAdmin(roleIds));
+        setOriginalIsAdmin(isAdmin);
+      } else if (adminChanged) {
+        // Only the administrator role changes; the user's other roles stay as they are.
+        const heldNames = stored?.roles ?? user?.roles ?? [];
+        let heldIds = roles.filter((r) => heldNames.includes(r.name)).map((r) => r.id);
+        if (isNew && heldIds.length === 0) {
+          const member = roles.find((r) => r.name === 'کاربر عادی') ?? roles.find((r) => r.name === 'Member');
+          if (member) heldIds = [member.id];
+        }
+        await setUserRoles(savedUserId, withAdmin(heldIds));
+        setOriginalIsAdmin(isAdmin);
+      }
 
       // Saving the name rebuilds it from first and last name, so a title is put back each time.
       if (showTitle && (titleId || originalTitleId)) {
@@ -440,6 +482,17 @@ const UserFormDialog: React.FC<{
               </Field>
               <Field label="آدرس" className="sm:col-span-3"><textarea className={inputClass} rows={2} value={form.address || ''} maxLength={1000} onChange={e => setForm(f => ({...f, address: e.target.value}))} /></Field>
             </div>
+            {canAssignAdmin && adminRole && (
+              <label className={`flex items-start gap-2.5 rounded-2xl border p-3 ${isSelf ? 'opacity-60' : 'cursor-pointer'} ${isAdmin ? 'border-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 dark:border-indigo-700' : 'border-slate-200 dark:border-slate-700'}`}>
+                <input type="checkbox" className="mt-0.5" checked={isAdmin} disabled={isSelf || saving} onChange={(e) => setIsAdmin(e.target.checked)} />
+                <span>
+                  <span className="block text-sm font-bold text-slate-800 dark:text-slate-100">مدیر سیستم</span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {isSelf ? 'نقش مدیر سیستم خودتان را از اینجا نمی‌توانید تغییر دهید.' : 'همهٔ دسترسی‌های مدیر سیستم را جدا از سمت و پست به همین شخص می‌دهد.'}
+                  </span>
+                </span>
+              </label>
+            )}
             {isNew && canAssignRoles && roles.length > 0 && (
               <div className="rounded-2xl border border-violet-100 dark:border-violet-900 bg-violet-50/40 dark:bg-violet-950/20 p-3">
                 <span className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">نقش‌ها</span>
@@ -579,6 +632,54 @@ const UserAccessDialog: React.FC<{ user: AdminUser; rights: UserAdminRights; onC
     [access, roles, roleIds],
   );
 
+  // What one permission looks like for the choices (direct, denied) the page holds: does the user end up with it, and is it
+  // locked because another permission the user has needs it. The boxes and the «انتخاب همه» both read it from here.
+  const stateOf = (entry: UserAccess['permissions'][number], directNow: ReadonlySet<string>, deniedNow: ReadonlySet<string>) => {
+    const dependent = enabledDependentForPrerequisite(entry, access?.permissions || [], directNow, deniedNow, selectedRoleNames, selectedRolePermissions);
+    const grantedBySelectedRole = selectedRolePermissions.has(entry.name)
+      || (entry.grantedByRole && entry.grantingRoles.some((roleName) => selectedRoleNames.has(roleName)));
+    const prerequisite = !!dependent || (!!entry.grantedAsPrerequisite && !hasKnownPermissionDependents(entry.name));
+    const effective = !deniedNow.has(entry.permissionId) && (
+      directNow.has(entry.permissionId) || grantedBySelectedRole || entry.grantedByGroup || prerequisite
+    );
+    return { dependent, prerequisite, effective, cannotDisable: !!dependent && effective };
+  };
+
+  const setEntry = (entry: UserAccess['permissions'][number], on: boolean, directNow: Set<string>, deniedNow: Set<string>) => {
+    const next = toggleUserAccess(entry, on, directNow, deniedNow);
+    return on
+      ? { direct: next.direct, denied: clearPrerequisiteDenials(entry, access!.permissions, next.denied) }
+      : { direct: preservePrerequisitesWhenDisabling(entry, access!.permissions, next.direct, next.denied), denied: next.denied };
+  };
+
+  // «انتخاب همه»: every permission shown now (the search narrows it) or those of one section. Each one goes through the same
+  // rule as its own box. Switching on is one pass; switching off repeats until nothing more can go, so a permission another
+  // chosen one needs goes only after that one, and one that stays locked (needed by a permission outside the list) stays on.
+  // Every box can be changed afterwards.
+  const setMany = (entries: UserAccess['permissions'], on: boolean) => {
+    let nextDirect = new Set<string>(direct);
+    let nextDenied = new Set<string>(denied);
+    for (let pass = 0; pass < 10; pass += 1) {
+      let changed = false;
+      for (const entry of entries) {
+        const state = stateOf(entry, nextDirect, nextDenied);
+        if (state.effective === on || (!on && state.cannotDisable)) continue;
+        const next = setEntry(entry, on, nextDirect, nextDenied);
+        nextDirect = next.direct;
+        nextDenied = next.denied;
+        changed = true;
+      }
+      if (on || !changed) break;
+    }
+    setDirect(nextDirect);
+    setDenied(nextDenied);
+  };
+  const boxesOf = (entries: UserAccess['permissions']) => entries.map((entry) => {
+    const state = stateOf(entry, direct, denied);
+    return { checked: state.effective, locked: !rights.assignPermissions || state.cannotDisable };
+  });
+  const allVisible = modules.flatMap(([, entries]) => entries);
+
   const save = async () => {
     if (!access) return;
     setSaving(true);
@@ -666,31 +767,30 @@ const UserAccessDialog: React.FC<{ user: AdminUser; rights: UserAdminRights; onC
             <p className="text-xs text-slate-500 dark:text-slate-400">
               تیک هر مجوز یعنی این کاربر واقعاً آن را دارد. برداشتن تیک مجوزی که از نقش یا گروه می‌آید، آن را فقط برای همین کاربر غیرفعال می‌کند و نقش یا گروه تغییر نمی‌کند؛ با زدن دوباره تیک، دسترسی برمی‌گردد. فقط مجوزهایی را می‌توانید اعطا یا غیرفعال کنید که خودتان دارید.
             </p>
+            {allVisible.length > 0 && (
+              <SelectAllCheckbox
+                testId="select-all-permissions"
+                label="انتخاب همهٔ مجوزها"
+                {...selectAllState(boxesOf(allVisible))}
+                onChange={(on) => setMany(allVisible, on)}
+                className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700"
+              />
+            )}
             <div className="space-y-3">
               {modules.map(([module, entries]) => (
                 <div key={module} className="rounded-xl border border-slate-200 dark:border-slate-700">
-                  <div className="px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-t-xl text-xs font-extrabold text-slate-600 dark:text-slate-300">{moduleTitle(module)}</div>
+                  <div className="px-3 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-t-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 flex items-center justify-between gap-2">
+                    <span>{moduleTitle(module)}</span>
+                    <SelectAllCheckbox
+                      testId={`select-all-${module}`}
+                      label="انتخاب همه"
+                      {...selectAllState(boxesOf(entries))}
+                      onChange={(on) => setMany(entries, on)}
+                    />
+                  </div>
                   <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {entries.map((entry) => {
-                      const dependent = enabledDependentForPrerequisite(
-                        entry,
-                        access.permissions,
-                        direct,
-                        denied,
-                        selectedRoleNames,
-                        selectedRolePermissions,
-                      );
-                      const grantedBySelectedRole = selectedRolePermissions.has(entry.name)
-                        || (entry.grantedByRole && entry.grantingRoles.some((roleName) => selectedRoleNames.has(roleName)));
-                      const prerequisite = !!dependent
-                        || (!!entry.grantedAsPrerequisite && !hasKnownPermissionDependents(entry.name));
-                      const effective = !denied.has(entry.permissionId) && (
-                        direct.has(entry.permissionId)
-                        || grantedBySelectedRole
-                        || entry.grantedByGroup
-                        || prerequisite
-                      );
-                      const cannotDisable = !!dependent && effective;
+                      const { dependent, prerequisite, effective, cannotDisable } = stateOf(entry, direct, denied);
                       return (
                       <label key={entry.permissionId} className={`flex items-center justify-between gap-3 px-3 py-2 ${rights.assignPermissions && !cannotDisable ? 'cursor-pointer' : ''}`}>
                         <span className="flex items-center gap-2 min-w-0">
@@ -700,13 +800,9 @@ const UserAccessDialog: React.FC<{ user: AdminUser; rights: UserAdminRights; onC
                             checked={effective}
                             title={cannotDisable ? `ابتدا مجوز «${dependent.description}» را غیرفعال کنید.` : undefined}
                             onChange={(e) => {
-                              const next = toggleUserAccess(entry, e.target.checked, direct, denied);
-                              setDirect(e.target.checked
-                                ? next.direct
-                                : preservePrerequisitesWhenDisabling(entry, access.permissions, next.direct, next.denied));
-                              setDenied(e.target.checked
-                                ? clearPrerequisiteDenials(entry, access.permissions, next.denied)
-                                : next.denied);
+                              const next = setEntry(entry, e.target.checked, direct, denied);
+                              setDirect(next.direct);
+                              setDenied(next.denied);
                             }}
                           />
                           <span className="min-w-0 text-sm text-slate-800 dark:text-slate-100">{entry.description}</span>

@@ -24,6 +24,18 @@ export function uiRoleOf(user: Pick<BackendUser, 'roles' | 'isSystem'>): UserRol
   return 'Project Team';
 }
 
+/**
+ * What the signed-in person may do, as the screens' three roles - read from their effective permissions, so access
+ * given to their position or post (organization structure) counts the same as a role: whoever may configure the
+ * workflow or the governance acts as the administrator, whoever may create projects as a project manager.
+ */
+export function uiRoleOfSession(user: Pick<BackendUser, 'roles' | 'isSystem'>, permissions: readonly string[]): UserRole {
+  const byRole = uiRoleOf(user);
+  if (byRole === 'Admin' || permissions.includes('Workflow.Configure') || permissions.includes('ProjectGovernance.Configure')) return 'Admin';
+  if (byRole === 'Project Manager' || permissions.includes('Projects.Create')) return 'Project Manager';
+  return 'Project Team';
+}
+
 export function toUiUser(user: BackendUser): User {
   return {
     id: user.id,

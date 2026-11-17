@@ -7,6 +7,7 @@
  */
 
 import { takeActivityFlag } from '../tmpb/utils/sessionActivity';
+import { activePostsHeader } from '../tmpb/utils/activePost';
 
 export interface ApiError {
   status: number;
@@ -156,6 +157,9 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   if (isAuthUrl(url)) Object.assign(headers, sessionHeaders());
   // The server's idle clock moves only for requests the user caused (a click, a key, a scroll), never for polling.
   if (takeActivityFlag()) headers['X-Nexus-Activity'] = '1';
+  // Working as one post (or one unit's posts): the server then counts only what those posts give, besides roles.
+  const activePosts = activePostsHeader();
+  if (activePosts) headers['X-Active-Posts'] = activePosts;
 
   let response: Response;
   try {

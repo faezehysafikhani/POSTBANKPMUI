@@ -11,7 +11,7 @@ import { StrategyProvider, useStrategy } from './directory/StrategyContext';
 import { GovernanceProvider, useGovernance } from './directory/GovernanceContext';
 import { projectErrorText } from './services/backend/errors';
 import type { ProjectOutcome } from './directory/ProjectsContext';
-import { toUiUser } from './services/backend/mappers';
+import { toUiUser, uiRoleOfSession } from './services/backend/mappers';
 import { User, Project, ProjectType, ProjectRisk, ProjectStatusUpdate, ProjectDocument, ProjectActivity, KanbanTask, Calendar, ProjectApprovalStatus, ProjectApprovalRecord, EnrichedProject, ProgressUpdateStatus, ProgressUpdate, EnrichedTask, Strategy, AlignmentLevel, ProjectStrategyAlignment, KnowledgeDocumentType, SpecificHoliday, TaskPriority, KanbanStatus, UserRole, ActionItem, WorkStatus, PROJECT_WORK_STATUSES, KnowledgeDocument, Delegation } from './types';
 import { enrichProjectWithProgress, pickCalendar, getISODateString, getISODateTimeString, calculateScheduleTreeAndProgress, toPersianDigits } from './utils';
 import { LocalizationProvider, LocalizationContext, ThemeProvider } from './context';
@@ -58,7 +58,12 @@ const AppContent = () => {
     // The work statuses are the backend's fixed set (it moves a project between them); they are not editable here.
     const projectStatuses: string[] = PROJECT_WORK_STATUSES;
     // The signed-in person as the directory shows them (with their unit), until the directory has loaded: just what the session says.
-    const currentUser: User | null = useMemo(() => auth.session ? (users.find(u => u.id === auth.session!.user.id) ?? toUiUser(auth.session.user)) : null, [auth.session, users]);
+    // Their role on the screens comes from their effective permissions: roles, and what their position and post give.
+    const currentUser: User | null = useMemo(() => {
+        if (!auth.session) return null;
+        const user = users.find(u => u.id === auth.session!.user.id) ?? toUiUser(auth.session.user);
+        return { ...user, role: uiRoleOfSession(auth.session.user, auth.session.permissions) };
+    }, [auth.session, users]);
     const [page, setPage] = useState('dashboard');
     const [pageContext, setPageContext] = useState<any>(null);
     const [loginError, setLoginError] = useState<string | null>(null);

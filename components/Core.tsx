@@ -1,4 +1,5 @@
 import React, { useContext, ReactElement, useState, useMemo, useEffect } from 'react';
+import { PostSwitcher } from './PostSwitcher';
 import { LoginPortalClock } from './LoginPortalClock';
 import { WorkspaceThemeSwitch } from './WorkspaceTheme';
 import { HeaderUserMenu } from './HeaderUserMenu';
@@ -20,6 +21,7 @@ export const Header = ({ user, onNavigate }: { user: User, onLogout?: () => void
       ),
       React.createElement(LoginPortalClock, { showGregorian: false }),
       React.createElement("div", { className: "user-info" },
+        React.createElement(PostSwitcher, { userId: String(user.id) }),
         React.createElement(WorkspaceThemeSwitch),
         // Sign-out lives at the bottom of the sidebar; this menu opens the person's own pages.
         React.createElement(HeaderUserMenu, { name: user.name || [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username, onNavigate })

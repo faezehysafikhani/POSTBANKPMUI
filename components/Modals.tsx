@@ -143,7 +143,8 @@ export const ActivityDetailsModal = ({ activity, allActivities, onSave, onClose,
     const { t } = useContext(LocalizationContext);
     const [formData, setFormData] = useState<ProjectActivity>(activity);
     const [activeTab, setActiveTab] = useState('general');
-    const approvers = useMemo(() => users.filter(u => u.role === 'Admin' || u.role === 'Project Manager'), [users]);
+    // Anyone active may be chosen: what they may do comes from their roles, position and post (the server checks it).
+    const approvers = useMemo(() => users.filter(u => u.isActive !== false), [users]);
     useEffect(() => {
         const defaultAppr = activity.approver1Id || (approvers.length > 0 ? approvers[0].id : 1);
         setFormData({

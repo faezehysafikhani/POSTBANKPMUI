@@ -173,7 +173,8 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
     isEditing?: boolean;
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
-    const projectManagers = useMemo(() => users.filter(u => u.role === 'Project Manager' || u.role === 'Admin'), [users]);
+    // Anyone active may be chosen: what they may do comes from their roles, position and post (the server checks it).
+    const projectManagers = useMemo(() => users.filter(u => u.isActive !== false), [users]);
     const adminUsers = useMemo(() => users.filter(u => u.role === 'Admin'), [users]);
     const projectOwnerName = useMemo(() => {
         const ownerId = projectData.ownerId || (projectData.id ? 1 : currentUser?.id);

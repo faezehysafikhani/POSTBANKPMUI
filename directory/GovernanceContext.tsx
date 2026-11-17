@@ -84,15 +84,35 @@ const ALL_ON: VisibilitySettings = {
   viewByOwner: true, viewByManagerOrResponsible: true, viewByApprovers: true, viewByResources: true, viewByOrgHeads: true
 };
 
+/** A stage's approver as the server's approver key, and back: project roles and the organization chart. */
+const KEY_OF_STAGE: Record<string, string> = { ROLE_PM: 'Manager', ROLE_OWNER: 'Owner', ORG_MANAGER: 'OrgManager', ORG_MANAGER2: 'OrgManager2' };
+const STAGE_OF_KEY: Record<string, string> = Object.fromEntries(Object.entries(KEY_OF_STAGE).map(([stage, key]) => [key, stage]));
+
+export const approverKeyOf = (approverId: WorkflowStage['approverId']): string | null => {
+  const id = String(approverId);
+  if (KEY_OF_STAGE[id]) return KEY_OF_STAGE[id];
+  if (id.startsWith('POST:')) return 'Post:' + id.slice(5);
+  if (id.startsWith('POS:')) return 'Pos:' + id.slice(4);
+  return null;
+};
+
+const stageApproverOf = (key: string | null | undefined): WorkflowStage['approverId'] => {
+  if (!key) return 'ROLE_PM';
+  if (STAGE_OF_KEY[key]) return STAGE_OF_KEY[key];
+  if (key.startsWith('Post:')) return 'POST:' + key.slice(5);
+  if (key.startsWith('Pos:')) return 'POS:' + key.slice(4);
+  return 'ROLE_PM';
+};
+
 const stageOf = (key: WorkflowEntityType, step: BackendWorkflowStep, index: number): WorkflowStage => ({
   id: `${key}_${index + 1}`,
   stageNumber: index + 1,
   stageTitle: step.name,
-  approverId: step.approverUserId ?? (step.approverKey === 'Owner' ? 'ROLE_OWNER' : 'ROLE_PM')
+  approverId: step.approverUserId ?? stageApproverOf(step.approverKey)
 });
 
 const stepOf = (stage: WorkflowStage): BackendWorkflowStep => {
-  const placeholder = stage.approverId === 'ROLE_PM' ? 'Manager' : stage.approverId === 'ROLE_OWNER' ? 'Owner' : null;
+  const placeholder = approverKeyOf(stage.approverId);
   return {
     name: stage.stageTitle,
     approverUserId: placeholder ? null : String(stage.approverId),

@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect, useRef, FormEvent, MouseEvent, ReactElement, useMemo } from 'react';
 import { LocalizationContext, ThemeContext } from '../context';
 import { User, UserRole, TranslationKey, VisibilitySettings, DynamicWorkflowSettings } from '../types';
-import { useGovernance } from '../directory/GovernanceContext';
+import { useGovernance, approverKeyOf } from '../directory/GovernanceContext';
 import { toPersianDigits, appLogoUrl, appLogoWatermarkUrl } from '../utils';
 import { FeaturesHandbook } from '../components/FeaturesHandbook';
 import { DynamicWorkflowSettingsEditor } from '../components/DynamicWorkflowSettingsEditor';
@@ -437,7 +437,7 @@ export const SettingsPage = ({
   const charterStages = governance.workflow.charter ?? [];
   const isProjectWorkflowEnabled = governance.configured.charter && charterStages.length > 0;
   const firstCharterApprover = charterStages[0]?.approverId;
-  const defaultProjectApproverId = firstCharterApprover && firstCharterApprover !== 'ROLE_PM' && firstCharterApprover !== 'ROLE_OWNER' ? String(firstCharterApprover) : null;
+  const defaultProjectApproverId = firstCharterApprover && !approverKeyOf(firstCharterApprover) ? String(firstCharterApprover) : null;
 
   const report = async (work: Promise<{ ok: boolean; message?: string }>) => {
     const outcome = await work;
