@@ -128,8 +128,8 @@ export interface CalendarSaveBody {
 }
 
 export const calendars = {
-  list: () => api.get<BackendCalendar[]>('/api/calendar/work-calendars/'),
-  create: (tenantId: string, body: CalendarSaveBody) => api.post<BackendCalendar>('/api/calendar/work-calendars/', { tenantId, ...body }),
+  list: () => api.get<BackendCalendar[]>('/api/calendar/work-calendars'),
+  create: (tenantId: string, body: CalendarSaveBody) => api.post<BackendCalendar>('/api/calendar/work-calendars', { tenantId, ...body }),
   update: (id: string, body: CalendarSaveBody) => api.put<BackendCalendar>(`/api/calendar/work-calendars/${id}`, body),
   remove: (id: string) => api.delete<void>(`/api/calendar/work-calendars/${id}`),
   days: (id: string, from: string, to: string) => api.get<BackendCalendarDay[]>(`/api/calendar/work-calendars/${id}/days${query({ from, to })}`),

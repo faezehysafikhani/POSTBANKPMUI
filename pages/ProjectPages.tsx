@@ -1,3 +1,4 @@
+import { ProjectSaveOverlay } from '../components/ProjectSaveOverlay';
 import { PortfolioCreateActions } from '../components/PortfolioCreateActions';
 import React, { useState, useContext, useEffect, useMemo, useCallback, MouseEvent, ReactElement, Fragment, useRef, ChangeEvent } from 'react';
 import { motion, AnimatePresence, animate } from 'framer-motion';
@@ -39,12 +40,13 @@ export const CreateProjectPage = ({ onNavigate }: {
     } as React.HTMLAttributes<HTMLAnchorElement>, React.createElement("span", { className: "material-symbols-outlined" }, type.icon), React.createElement("span", null, type.name))))))));
 };
 // --- ProjectDetailsPage ---
-export const ProjectDetailsPage = ({ projectType, users, onNavigate, onSaveProject, onUpdateProject, onCheckProject, existingProject, calendars, setInfoModal, progressUpdates, onAddKanbanStatusUpdate, actions, owningUnits, projectStatuses, fromPage, initialTab, currentUser, onSaveAction, projects = [] }: {
+export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate, onSaveProject, onUpdateProject, onCheckProject, existingProject, calendars, setInfoModal, progressUpdates, onAddKanbanStatusUpdate, actions, owningUnits, projectStatuses, fromPage, initialTab, currentUser, onSaveAction, projects = [] }: {
+    formActions?: React.ReactNode,
     projectType: ProjectType;
     users: User[];
     onNavigate: (page: string, context?: any) => void;
-    onSaveProject: (project: Project, mode: 'draft' | 'sent') => void;
-    onUpdateProject: (project: Project, mode: 'draft' | 'sent', stayOnPage?: boolean) => void;
+    onSaveProject: (project: Project, mode: 'draft' | 'sent') => Promise<void>;
+    onUpdateProject: (project: Project, mode: 'draft' | 'sent', stayOnPage?: boolean) => Promise<void>;
     onCheckProject?: (project: Project) => Promise<{
         ok: boolean;
         code?: string;
@@ -119,46 +121,45 @@ export const ProjectDetailsPage = ({ projectType, users, onNavigate, onSaveProje
     const setProjectDataField = useCallback((field: keyof Project, value: any) => {
         setProjectData(prev => ({ ...prev, [field]: value }));
     }, []);
+    const saveInProgress = useRef(false);
+    const [isSaving, setIsSaving] = useState(false);
+
     const handleSaveOrUpdateProject = async (e: MouseEvent<HTMLButtonElement>, action: 'save_draft' | 'send' | 'update') => {
         e.preventDefault();
-        // The backend decides whether this project is acceptable (required parts, dates, meaningful text, unique name); nothing is saved by the check.
-        if (onCheckProject) {
-            const checked = await onCheckProject(projectData as Project);
-            if (!checked.ok) {
-                setInfoModal({ title: t('error'), message: projectErrorText({ code: checked.code ?? '', message: checked.message ?? '' }, language, t('projectNameExists')) });
-                setActiveTab('charter');
-                return;
-            }
-        }
-        // (Whether the activities' weights add up to 100 is checked by the backend when the project is sent for approval.)
-        // Whether a sent project waits for approval, and for whom, is the backend's workflow: it decides when the project is sent.
-        if (!isEditing) { // Creating new
-            const baseProject = { id: '', ...projectData };
-            if (action === 'save_draft') {
-                onSaveProject({ ...baseProject, approvalStatus: 'Draft' } as Project, 'draft');
-            }
-            else { // send
-                onSaveProject({ ...baseProject, submissionDate: getISODateTimeString() } as Project, 'sent');
-            }
-        }
-        else { // Editing existing
-            const finalProjectData = { ...projectData } as Project;
-            if (action === 'send') { // Sending a draft for approval
-                onUpdateProject({ ...finalProjectData, submissionDate: getISODateTimeString() }, 'sent');
-            }
-            else { // 'save_draft' or 'update' for an existing project.
-                const shouldStayOnPage = action === 'update' && (activeTab === 'schedule' || activeTab === 'team' || activeTab === 'charter');
-                onUpdateProject(finalProjectData, 'draft', shouldStayOnPage);
-                // Add a success modal for explicit update actions
-                if (action === 'update') {
-                    setInfoModal({
-                        title: t('updateProject'),
-                        message: language === 'fa'
-                            ? 'اطلاعات و وظایف پروژه با موفقیت ذخیره و بروزرسانی گردید.'
-                            : t('projectTasksSent')
-                    });
+        if (saveInProgress.current) return;
+
+        saveInProgress.current = true;
+        setIsSaving(true);
+        try {
+            if (onCheckProject) {
+                const checked = await onCheckProject(projectData as Project);
+                if (!checked.ok) {
+                    setInfoModal({ title: t('error'), message: projectErrorText({ code: checked.code ?? '', message: checked.message ?? '' }, language, t('projectNameExists')) });
+                    setActiveTab('charter');
+                    return;
                 }
             }
+
+            const project = { id: '', ...projectData } as Project;
+            const mode = action === 'send' ? 'sent' : 'draft';
+            if (mode === 'sent') project.submissionDate = getISODateTimeString();
+
+            if (!isEditing) {
+                if (mode === 'draft') project.approvalStatus = 'Draft';
+                await onSaveProject(project, mode);
+                return;
+            }
+
+            const stayOnPage = action === 'update' && ['schedule', 'team', 'charter'].includes(activeTab);
+            await onUpdateProject(project, mode, stayOnPage);
+        } catch {
+            setInfoModal({
+                title: t('error'),
+                message: language === 'fa' ? 'ثبت پروژه انجام نشد. دوباره تلاش کنید.' : 'Could not save the project. Please try again.',
+            });
+        } finally {
+            saveInProgress.current = false;
+            setIsSaving(false);
         }
     };
     // --- Modal Handlers ---
@@ -724,7 +725,7 @@ export const ProjectDetailsPage = ({ projectType, users, onNavigate, onSaveProje
         delayReason: editingDelay
     }), React.createElement("div", { className: "page-header", style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' } }, React.createElement("h2", { style: { margin: 0 } }, isEditing
         ? (projectData.name || (language === 'fa' ? `ویرایش ${t(projectTypeTranslations[projectType])}` : `${t('edit')} ${t(projectTypeTranslations[projectType])}`))
-        : (language === 'fa' ? `${t(projectTypeTranslations[projectType])} جدید` : `${t('newProject')} ${t(projectTypeTranslations[projectType])}`)), React.createElement("div", { className: "page-header-actions", style: { display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' } }, renderProjectActions(), React.createElement("button", { onClick: () => onNavigate(backTarget), className: "back-button", title: isEditing ? t('backToPortfolio') : t('backToProjectTypes'), "aria-label": isEditing ? t('backToPortfolio') : t('backToProjectTypes') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, backIcon)))), React.createElement("nav", { className: "tabs-nav" }, projectTabs.map(tab => {
+        : (language === 'fa' ? `${t(projectTypeTranslations[projectType])} جدید` : `${t('newProject')} ${t(projectTypeTranslations[projectType])}`)), React.createElement("div", { className: "page-header-actions form-header-actions", style: { display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' } }, formActions, renderProjectActions(), React.createElement("button", { onClick: () => onNavigate(backTarget), className: "back-button", title: isEditing ? t('backToPortfolio') : t('backToProjectTypes'), "aria-label": isEditing ? t('backToPortfolio') : t('backToProjectTypes') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, backIcon)))), React.createElement("nav", { className: "tabs-nav" }, projectTabs.map(tab => {
         const isCharter = tab.id === 'charter';
         let isDisabled = !isCharter && !projectData.id;
         let disabledTitle = isDisabled ? t('charterSaveFirst') : '';
@@ -741,7 +742,7 @@ export const ProjectDetailsPage = ({ projectType, users, onNavigate, onSaveProje
             disabled: isDisabled,
             title: disabledTitle
         } as React.HTMLAttributes<HTMLButtonElement>, tab.name);
-    })), React.createElement("div", { className: "tab-content" }, renderActiveTabContent())));
+    })), React.createElement("div", { className: "tab-content" }, renderActiveTabContent()), isSaving && React.createElement(ProjectSaveOverlay, { isPersian: language === 'fa' })));
 };
 // --- ProjectPortfolioPage ---
 export const ProjectPortfolioPage = ({ projects, actions, users, currentUser, onNavigate, progressUpdates, owningUnits, onDeleteProject, onDeleteAction }: {
@@ -1015,12 +1016,18 @@ export const ProjectPortfolioPage = ({ projects, actions, users, currentUser, on
     }), React.createElement("div", { className: "page-header" }, React.createElement("h2", null, language === 'fa' ? 'سبد پروژه‌ها و اقدامات' : 'Projects & Actions Portfolio'), React.createElement("div", { className: "page-header-actions" }, React.createElement("button", {
         type: "button",
         className: `filter-toggle-btn ${isFilterOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-label": language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-expanded": isFilterOpen,
         onClick: () => setIsFilterOpen(!isFilterOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt"), React.createElement("span", null, language === 'fa' ? 'فیلترها' : 'Filters'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isFilterOpen ? "expand_less" : "expand_more")), React.createElement("button", {
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt")), React.createElement("button", {
         type: "button",
         className: `grouping-toggle-btn ${isGroupingOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-label": language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-expanded": isGroupingOpen,
         onClick: () => setIsGroupingOpen(!isGroupingOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema"), React.createElement("span", null, language === 'fa' ? 'گروه‌بندی' : 'Grouping'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isGroupingOpen ? "expand_less" : "expand_more")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", {
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", {
         className: "action-button no-print",
         onClick: () => exportDashboardToLandscapePdf('Project_Portfolio'),
         title: language === 'fa' ? 'خروجی PDF سبد پروژه‌ها' : 'Export Portfolio to PDF',
@@ -1309,8 +1316,11 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
     }, React.createElement("span", { className: "material-symbols-outlined", style: { color: '#fff' } }, "picture_as_pdf")), React.createElement("button", {
         type: "button",
         className: `filter-toggle-btn ${isFilterOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-label": language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-expanded": isFilterOpen,
         onClick: () => setIsFilterOpen(!isFilterOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "tune"), React.createElement("span", null, language === 'fa' ? 'فیلترها' : 'Filters'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isFilterOpen ? "expand_less" : "expand_more")))), isFilterOpen && React.createElement("div", { className: "dashboard-filters" }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "nameFilter" }, language === 'fa' ? 'نام / عنوان' : 'Name / Title'), React.createElement("input", { type: "text", id: "nameFilter", value: nameFilter, onChange: (e: React.ChangeEvent<HTMLInputElement>) => setNameFilter(e.target.value), placeholder: language === 'fa' ? 'جستجو پروژه یا اقدام...' : 'Search projects or actions...' })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "itemTypeFilter" }, language === 'fa' ? 'فیلتر نوع' : 'Type Filter'), React.createElement("select", { id: "itemTypeFilter", value: itemTypeFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setItemTypeFilter(e.target.value as any) }, React.createElement("option", { value: "all" }, language === 'fa' ? 'همه (پروژه و اقدام)' : 'All (Projects & Actions)'), React.createElement("option", { value: "project" }, language === 'fa' ? 'پروژه' : 'Projects'), React.createElement("option", { value: "action" }, language === 'fa' ? 'اقدام' : 'Actions'))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "statusFilter" }, t('status')), React.createElement("select", { id: "statusFilter", value: statusFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allStatuses')), ...projectStatuses.map(statusKey => (React.createElement("option", { key: statusKey, value: statusKey }, t(statusTranslations[statusKey as WorkStatus] || (statusKey as any))))))), React.createElement("div", { className: "form-group unit-filter-group" }, React.createElement("label", { htmlFor: "unitFilter" }, t('owningUnit')), React.createElement("select", { id: "unitFilter", value: unitFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setUnitFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allUnits')), ...unitFilterOptions.map(unit => React.createElement("option", { key: unit, value: unit }, unit))))), React.createElement("div", { className: "dashboard-stats-grid" }, React.createElement("div", { className: "stat-card-stack" }, (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalProjectCount, title: t('projectsCount') })), (itemTypeFilter === 'all' || itemTypeFilter === 'action') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalActionsCount, title: t('totalActions') })), (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressProjectsCount, title: t('inProgressProjects') })), (itemTypeFilter === 'all' || itemTypeFilter === 'action') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressActionsCount, title: t('inProgressActions') })))), React.createElement("div", { className: "dashboard-charts-row" }, (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement(SwitchableChartCard, { title: t('projectsByStatus'), data: statusDoughnutChartData }), React.createElement(SwitchableChartCard, { title: t('projectsByOwningUnit'), data: unitPieChartData, defaultChartType: 'bar' }), (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement(SwitchableChartCard, { title: language === 'fa' ? 'پروژه‌ها بر اساس مدیر پروژه' : t('projectManager'), data: pmChartData, defaultChartType: 'pie', pieType: 'pie' })),
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "tune")))), isFilterOpen && React.createElement("div", { className: "dashboard-filters" }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "nameFilter" }, language === 'fa' ? 'نام / عنوان' : 'Name / Title'), React.createElement("input", { type: "text", id: "nameFilter", value: nameFilter, onChange: (e: React.ChangeEvent<HTMLInputElement>) => setNameFilter(e.target.value), placeholder: language === 'fa' ? 'جستجو پروژه یا اقدام...' : 'Search projects or actions...' })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "itemTypeFilter" }, language === 'fa' ? 'فیلتر نوع' : 'Type Filter'), React.createElement("select", { id: "itemTypeFilter", value: itemTypeFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setItemTypeFilter(e.target.value as any) }, React.createElement("option", { value: "all" }, language === 'fa' ? 'همه (پروژه و اقدام)' : 'All (Projects & Actions)'), React.createElement("option", { value: "project" }, language === 'fa' ? 'پروژه' : 'Projects'), React.createElement("option", { value: "action" }, language === 'fa' ? 'اقدام' : 'Actions'))), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "statusFilter" }, t('status')), React.createElement("select", { id: "statusFilter", value: statusFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allStatuses')), ...projectStatuses.map(statusKey => (React.createElement("option", { key: statusKey, value: statusKey }, t(statusTranslations[statusKey as WorkStatus] || (statusKey as any))))))), React.createElement("div", { className: "form-group unit-filter-group" }, React.createElement("label", { htmlFor: "unitFilter" }, t('owningUnit')), React.createElement("select", { id: "unitFilter", value: unitFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setUnitFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allUnits')), ...unitFilterOptions.map(unit => React.createElement("option", { key: unit, value: unit }, unit))))), React.createElement("div", { className: "dashboard-stats-grid" }, React.createElement("div", { className: "stat-card-stack" }, (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalProjectCount, title: t('projectsCount') })), (itemTypeFilter === 'all' || itemTypeFilter === 'action') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalActionsCount, title: t('totalActions') })), (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressProjectsCount, title: t('inProgressProjects') })), (itemTypeFilter === 'all' || itemTypeFilter === 'action') && React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressActionsCount, title: t('inProgressActions') })))), React.createElement("div", { className: "dashboard-charts-row" }, (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement(SwitchableChartCard, { title: t('projectsByStatus'), data: statusDoughnutChartData }), React.createElement(SwitchableChartCard, { title: t('projectsByOwningUnit'), data: unitPieChartData, defaultChartType: 'bar' }), (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement(SwitchableChartCard, { title: language === 'fa' ? 'پروژه‌ها بر اساس مدیر پروژه' : t('projectManager'), data: pmChartData, defaultChartType: 'pie', pieType: 'pie' })),
     // PROJECTS SECTION
     (itemTypeFilter === 'all' || itemTypeFilter === 'project') && React.createElement(Fragment, null,
     // Waterfall projects table
@@ -1593,8 +1603,11 @@ export const ActionDashboardPage = ({ actions, users, onNavigate, owningUnits, p
     return React.createElement("div", { className: "content-container" }, React.createElement("div", { className: "page-header" }, React.createElement("h2", null, t('overallActionDashboard')), React.createElement("button", {
         type: "button",
         className: `filter-toggle-btn ${isFilterOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-label": language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-expanded": isFilterOpen,
         onClick: () => setIsFilterOpen(!isFilterOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "tune"), React.createElement("span", null, language === 'fa' ? 'فیلترها' : 'Filters'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isFilterOpen ? "expand_less" : "expand_more"))), isFilterOpen && React.createElement("div", { className: "dashboard-filters" }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "actionNameFilter" }, t('filterByActionName')), React.createElement("input", { type: "text", id: "actionNameFilter", value: nameFilter, onChange: (e: React.ChangeEvent<HTMLInputElement>) => setNameFilter(e.target.value), placeholder: t('filterByActionName') })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "actionStatusFilter" }, t('status')), React.createElement("select", { id: "actionStatusFilter", value: statusFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allStatuses')), Object.keys(statusTranslations).map(statusKey => React.createElement("option", { key: statusKey, value: statusKey }, t(statusTranslations[statusKey as WorkStatus]))))), React.createElement("div", { className: "form-group unit-filter-group" }, React.createElement("label", { htmlFor: "actionUnitFilter" }, t('owningUnit')), React.createElement("select", { id: "actionUnitFilter", value: unitFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setUnitFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allUnits')), unitFilterOptions.map(unit => React.createElement("option", { key: unit, value: unit }, unit))))), React.createElement("div", { className: "dashboard-stats-grid", style: { gridTemplateColumns: 'repeat(3, 1fr)' } }, React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalActionsCount, title: t('totalActions') })), React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressActionsCount, title: t('inProgressActions') })), React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: planningActionsCount, title: t('planningActions') }))), React.createElement("div", { className: "dashboard-stats-grid" }, React.createElement(SwitchableChartCard, { title: t('actionsByStatus'), data: statusChartData }), React.createElement(SwitchableChartCard, { title: t('actionsByResponsible'), data: responsibleChartData }), React.createElement(SwitchableChartCard, { title: t('actionsByOwningUnit'), data: unitChartData })),
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "tune"))), isFilterOpen && React.createElement("div", { className: "dashboard-filters" }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "actionNameFilter" }, t('filterByActionName')), React.createElement("input", { type: "text", id: "actionNameFilter", value: nameFilter, onChange: (e: React.ChangeEvent<HTMLInputElement>) => setNameFilter(e.target.value), placeholder: t('filterByActionName') })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "actionStatusFilter" }, t('status')), React.createElement("select", { id: "actionStatusFilter", value: statusFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allStatuses')), Object.keys(statusTranslations).map(statusKey => React.createElement("option", { key: statusKey, value: statusKey }, t(statusTranslations[statusKey as WorkStatus]))))), React.createElement("div", { className: "form-group unit-filter-group" }, React.createElement("label", { htmlFor: "actionUnitFilter" }, t('owningUnit')), React.createElement("select", { id: "actionUnitFilter", value: unitFilter, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => setUnitFilter(e.target.value) }, React.createElement("option", { value: "" }, t('allUnits')), unitFilterOptions.map(unit => React.createElement("option", { key: unit, value: unit }, unit))))), React.createElement("div", { className: "dashboard-stats-grid", style: { gridTemplateColumns: 'repeat(3, 1fr)' } }, React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: totalActionsCount, title: t('totalActions') })), React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: inProgressActionsCount, title: t('inProgressActions') })), React.createElement("div", { className: "chart-card" }, React.createElement(ProjectCountCard, { count: planningActionsCount, title: t('planningActions') }))), React.createElement("div", { className: "dashboard-stats-grid" }, React.createElement(SwitchableChartCard, { title: t('actionsByStatus'), data: statusChartData }), React.createElement(SwitchableChartCard, { title: t('actionsByResponsible'), data: responsibleChartData }), React.createElement(SwitchableChartCard, { title: t('actionsByOwningUnit'), data: unitChartData })),
     // Grouping Toolbar for Actions
     React.createElement("div", { className: "grouping-toolbar" }, React.createElement("div", { className: "grouping-control" }, React.createElement("label", null, React.createElement("span", { className: "material-symbols-outlined" }, "schema"), language === 'fa' ? 'گروه‌بندی سبد اقدامات بر اساس:' : 'Group Actions By:'), React.createElement("select", { value: groupBy, onChange: (e) => setGroupBy(e.target.value as any) }, React.createElement("option", { value: "owningUnit" }, t('owningUnit')), React.createElement("option", { value: "status" }, t('status')), React.createElement("option", { value: "responsible" }, t('responsiblePerson')), React.createElement("option", { value: "none" }, language === 'fa' ? 'بدون گروه‌بندی (جدول ساده)' : 'Flat Table View'))), React.createElement("div", { className: "group-pill highlight" }, React.createElement("span", { className: "material-symbols-outlined" }, "checklist"), `${filteredActions.length} ${t('totalActions')}`)),
     // Render Grouped Accordion Cards for Actions

@@ -544,7 +544,7 @@ const AppContent = () => {
         setInfoModal({ title: t('deactivate'), message: t('delegationDeactivatedSuccess') });
     };
     // --- RENDER LOGIC ---
-    const renderPage = () => {
+    const renderPage = (formActions?: React.ReactNode) => {
         if (auth.restoring) {
             return <div className="content-container" style={{ textAlign: 'center', padding: '3rem' }}>...</div>;
         }
@@ -576,7 +576,7 @@ const AppContent = () => {
                 return <CreateProjectPage onNavigate={handleNavigate}/>;
             case 'create_waterfall_details':
             case 'create_agile_details':
-                return <ProjectDetailsPage projectType={pageContext.type} users={users} currentUser={currentUser} onNavigate={handleNavigate} onSaveProject={handleSaveProject} onUpdateProject={handleUpdateProject} onCheckProject={projectsState.checkProject} existingProject={pageContext.project} fromPage={pageContext.from} initialTab={pageContext.initialTab} calendars={calendars} setInfoModal={setInfoModal} progressUpdates={progressUpdates} onAddKanbanStatusUpdate={handleAddKanbanStatusUpdate} actions={actions} owningUnits={owningUnits} projectStatuses={projectStatuses} onSaveAction={handleSaveAction} projects={projects}/>;
+                return <ProjectDetailsPage formActions={formActions} projectType={pageContext.type} users={users} currentUser={currentUser} onNavigate={handleNavigate} onSaveProject={handleSaveProject} onUpdateProject={handleUpdateProject} onCheckProject={projectsState.checkProject} existingProject={pageContext.project} fromPage={pageContext.from} initialTab={pageContext.initialTab} calendars={calendars} setInfoModal={setInfoModal} progressUpdates={progressUpdates} onAddKanbanStatusUpdate={handleAddKanbanStatusUpdate} actions={actions} owningUnits={owningUnits} projectStatuses={projectStatuses} onSaveAction={handleSaveAction} projects={projects}/>;
             case 'portfolio':
                 return <ProjectPortfolioPage projects={projects} actions={actions} users={users} currentUser={currentUser} onNavigate={handleNavigate} progressUpdates={progressUpdates} owningUnits={owningUnits} onDeleteProject={handleDeleteProject} onDeleteAction={handleDeleteAction}/>;
             case 'delete_projects':
@@ -607,7 +607,7 @@ const AppContent = () => {
             case 'knowledge_management':
                 return <KnowledgeManagementPage onNavigate={handleNavigate} knowledgeDocuments={knowledgeDocuments} onSave={handleSaveKnowledgeDoc} onDelete={handleDeleteKnowledgeDoc} onDownload={handleDownloadKnowledgeDoc}/>;
             case 'define_action':
-                return <ActionDefinitionPage onNavigate={handleNavigate} onSaveAction={handleSaveAction} users={users} calendars={calendars} projects={projects} existingAction={pageContext?.action} pageContext={pageContext} setInfoModal={setInfoModal} owningUnits={owningUnits} currentUser={currentUser}/>;
+                return <ActionDefinitionPage formActions={formActions} onNavigate={handleNavigate} onSaveAction={handleSaveAction} users={users} calendars={calendars} projects={projects} existingAction={pageContext?.action} pageContext={pageContext} setInfoModal={setInfoModal} owningUnits={owningUnits} currentUser={currentUser}/>;
             case 'view_snapshot':
                 return <ScheduleSnapshotPage pageContext={pageContext} onNavigate={handleNavigate} users={users}/>;
             default:
@@ -623,6 +623,13 @@ const AppContent = () => {
         if (sourceProject) handleNavigate(`create_${sourceProject.type}_details`, { project: sourceProject, type: sourceProject.type, initialTab: 'actions', from: 'portfolio' });
         else handleNavigate(pageContext?.from || 'portfolio');
     };
+    const pageOutput = currentUser && FORM_PAGES.includes(page) ? (
+        <OutputButtons compact={page !== 'project_dashboard_details'} fileBase={page === 'define_action' ? 'action-form' : 'project-form'}
+            target={() => document.querySelector<HTMLElement>('.main-content > .content-container') ?? document.querySelector<HTMLElement>('.main-content')}
+            title={() => document.querySelector('.main-content .page-header h2')?.textContent?.trim() || 'فرم'}
+            kind={() => { const tab = document.querySelector('.main-content .tabs-nav .tab-item.active')?.textContent?.trim(); return tab ? `بخش: ${tab}` : ''; }} />
+    ) : undefined;
+
     return (<div className={`app-container ${language}${!currentUser ? ' login-layout' : ''}${page === 'settings_profile' ? ' settings-preview-layout' : ''}${page === 'dashboard' ? ' management-layout' : ''}`}>
             {currentUser && <Header user={currentUser} onLogout={handleLogout} onNavigate={handleNavigate}/>}
             <div className="app-body">
@@ -631,18 +638,14 @@ const AppContent = () => {
                     {currentUser && creationKind ? <>
                         <ProjectPortfolioPage projects={projects} actions={actions} users={users} currentUser={currentUser} onNavigate={handleNavigate} progressUpdates={progressUpdates} owningUnits={owningUnits} onDeleteProject={handleDeleteProject} onDeleteAction={handleDeleteAction}/>
                         <CreationDialog kind={creationKind} onClose={closeCreation}>
-                            {renderPage()}
+                            {formActions => <>
+                                {renderPage(formActions)}
                             {infoModal && <InfoModal title={infoModal.title} message={infoModal.message} onClose={() => setInfoModal(null)}/>}
+                            </>}
                         </CreationDialog>
                     </> : <>
-                        {/* Editing an existing project or action is a page of its own: it gets the same print / PDF. */}
-                        {currentUser && FORM_PAGES.includes(page) && <div className="page-output-bar">
-                            <OutputButtons fileBase={page === 'define_action' ? 'action-form' : 'project-form'}
-                                target={() => document.querySelector<HTMLElement>('.main-content > .content-container') ?? document.querySelector<HTMLElement>('.main-content')}
-                                title={() => document.querySelector('.main-content .page-header h2')?.textContent?.trim() || 'فرم'}
-                                kind={() => { const tab = document.querySelector('.main-content .tabs-nav .tab-item.active')?.textContent?.trim(); return tab ? `بخش: ${tab}` : ''; }} />
-                        </div>}
-                        {renderPage()}
+                        {page === 'project_dashboard_details' && pageOutput && <div className="page-output-bar">{pageOutput}</div>}
+                        {renderPage(page === 'project_dashboard_details' ? undefined : pageOutput)}
                     </>}
                 </main>
             </div>

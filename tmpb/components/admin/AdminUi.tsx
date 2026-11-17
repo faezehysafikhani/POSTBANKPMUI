@@ -243,26 +243,28 @@ export const Notice: React.FC<{ type: 'success' | 'error' | 'info'; children: Re
 
 /** A modal dialog for the administration forms. */
 export const AdminDialog: React.FC<{ title: string; onClose: () => void; children: React.ReactNode; footer: React.ReactNode; wide?: boolean; compact?: boolean }> = ({ title, onClose, children, footer, wide, compact = false }) => {
-  const box = React.useRef<HTMLDivElement>(null);
+  const box = React.useRef<HTMLDialogElement>(null);
   React.useEffect(() => {
-    // Focus lands in the dialog (its first field, else the dialog itself) so the keyboard — Esc included — works at once.
-    const el = box.current;
-    if (el && !el.contains(document.activeElement)) (el.querySelector<HTMLElement>('input,select,textarea') ?? el).focus();
+    const dialog = box.current!;
+    dialog.showModal();
+    return () => dialog.close();
   }, []);
-  // Drawn into the portal root (not inline): inline it sits inside the page's own stacking context, under the product's side menu.
   return createPortal(
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs" onClick={(e) => e.target === e.currentTarget && onClose()}>
-    <div ref={box} tabIndex={-1} onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose(); } }} role="dialog" aria-modal="true" aria-label={title} className={`w-full ${compact ? 'max-w-2xl' : wide ? 'max-w-3xl' : 'max-w-xl'} max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 focus:outline-hidden`}>
-      <div className={`flex items-center justify-between border-b border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
+    <dialog ref={box} dir="rtl" aria-label={title}
+      className="pb-admin-dialog"
+      onCancel={event => { event.preventDefault(); onClose(); }}
+      onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+      <div className={`pb-admin-dialog-panel ${compact ? 'is-compact' : wide ? 'is-wide' : ''} flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800`}>
+      <div className={`flex shrink-0 items-center justify-between border-b border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-3' : 'px-5 py-4'}`}>
         <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{title}</h3>
         <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" aria-label="بستن">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className={compact ? "px-4 py-3 overflow-y-auto overscroll-contain flex-1 space-y-3" : "px-5 py-4 overflow-y-auto flex-1 space-y-4"}>{children}</div>
-      <div className={`flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-2.5' : 'px-5 py-3.5'}`}>{footer}</div>
+      <div className={compact ? "px-4 py-3 min-h-0 overflow-y-auto overscroll-contain flex-1 space-y-3" : "px-5 py-4 min-h-0 overflow-y-auto overscroll-contain flex-1 space-y-4"}>{children}</div>
+      <div className={`flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800 ${compact ? 'px-4 py-2.5' : 'px-5 py-3.5'}`}>{footer}</div>
     </div>
-  </div>,
+  </dialog>,
   portalRoot());
 };
 

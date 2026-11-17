@@ -790,12 +790,18 @@ export const TaskCenterPage = ({ projects, actions, users, currentUser, progress
     React.createElement("div", { className: "page-header" }, React.createElement("h2", null, t('myTasks')), React.createElement("div", { className: "page-header-actions" }, React.createElement("button", {
         type: "button",
         className: `filter-toggle-btn ${isFilterOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-label": language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-expanded": isFilterOpen,
         onClick: () => setIsFilterOpen(!isFilterOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt"), React.createElement("span", null, language === 'fa' ? 'فیلترها' : 'Filters'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isFilterOpen ? "expand_less" : "expand_more")), React.createElement("button", {
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt")), React.createElement("button", {
         type: "button",
         className: `grouping-toggle-btn ${isGroupingOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-label": language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-expanded": isGroupingOpen,
         onClick: () => setIsGroupingOpen(!isGroupingOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema"), React.createElement("span", null, language === 'fa' ? 'گروه‌بندی' : 'Grouping'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isGroupingOpen ? "expand_less" : "expand_more")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", { onClick: () => setIsMyDelegationsModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "assignment_ind"), t('myDelegations')))),
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", { onClick: () => setIsMyDelegationsModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "assignment_ind"), t('myDelegations')))),
     // FILTERS PANEL
     isFilterOpen && React.createElement("div", { className: "dashboard-filters portfolio-filters", style: { padding: '1rem', backgroundColor: 'var(--secondary-color)', marginBottom: '1rem', borderRadius: '8px', display: 'flex', flexWrap: 'wrap', gap: '1rem' } }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "taskSearchFilter" }, language === 'fa' ? 'جستجوی عنوان / شرح' : 'Search Title / Description'), React.createElement("input", {
         type: "text",
@@ -1557,12 +1563,18 @@ export const ApprovalCenterPage = ({ progressUpdates, projects, actions, users, 
     React.createElement("div", { className: "page-header" }, React.createElement("h2", null, t('approvalCenter')), React.createElement("div", { className: "page-header-actions" }, React.createElement("button", {
         type: "button",
         className: `filter-toggle-btn ${isFilterOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-label": language === 'fa' ? 'فیلترها' : 'Filters',
+        "aria-expanded": isFilterOpen,
         onClick: () => setIsFilterOpen(!isFilterOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt"), React.createElement("span", null, language === 'fa' ? 'فیلترها' : 'Filters'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isFilterOpen ? "expand_less" : "expand_more")), React.createElement("button", {
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "filter_alt")), React.createElement("button", {
         type: "button",
         className: `grouping-toggle-btn ${isGroupingOpen ? 'active' : ''}`,
+        title: language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-label": language === 'fa' ? 'گروه‌بندی' : 'Grouping',
+        "aria-expanded": isGroupingOpen,
         onClick: () => setIsGroupingOpen(!isGroupingOpen)
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema"), React.createElement("span", null, language === 'fa' ? 'گروه‌بندی' : 'Grouping'), React.createElement("span", { className: "material-symbols-outlined expand-arrow" }, isGroupingOpen ? "expand_less" : "expand_more")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", { onClick: () => setIsApprovalHistoryModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "history"), t('history')))),
+    }, React.createElement("span", { className: "material-symbols-outlined" }, "schema")), React.createElement("button", { onClick: handleExpandAll, className: "action-icon", title: t('expandAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_more")), React.createElement("button", { onClick: handleCollapseAll, className: "action-icon", title: t('collapseAll') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "unfold_less")), React.createElement("button", { onClick: () => setIsApprovalHistoryModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "history"), t('history')))),
     // FILTERS PANEL
     isFilterOpen && React.createElement("div", { className: "dashboard-filters portfolio-filters", style: { padding: '1rem', backgroundColor: 'var(--secondary-color)', marginBottom: '1rem', borderRadius: '8px', display: 'flex', flexWrap: 'wrap', gap: '1rem' } }, React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "apprSearchFilter" }, language === 'fa' ? 'جستجوی عنوان / شرح' : 'Search Title / Description'), React.createElement("input", {
         type: "text",

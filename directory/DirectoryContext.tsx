@@ -185,8 +185,19 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
       : Promise.resolve(fail('Moving a unit to the top level is done in the organization structure.')),
     deleteUnit: id => run(() => organization.deactivateUnit(id)),
 
-    saveCalendar: calendar => run(() =>
-      calendar.id ? calendarsApi.update(calendar.id, toCalendarBody(calendar)) : calendarsApi.create(tenantId!, toCalendarBody(calendar))),
+    saveCalendar: async calendar => {
+      if (!calendar.id && !tenantId) return fail('سازمان حساب کاربری مشخص نیست. دوباره وارد سامانه شوید.');
+      const body = toCalendarBody(calendar);
+      return run(async () => {
+        const result = calendar.id
+          ? await calendarsApi.update(calendar.id, body)
+          : await calendarsApi.create(tenantId!, body);
+        if (result.error?.status === 403) {
+          return { ok: false, error: { message: 'حساب شما مجوز ثبت یا ویرایش تقویم را ندارد.' } };
+        }
+        return result;
+      });
+    },
     deleteCalendar: id => run(() => calendarsApi.remove(id))
   }), [loading, error, users, calendars, units, unitIdByPath, unitPathById, tenantId, reload, run, applyRoleAndUnit]);
 

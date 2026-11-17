@@ -72,7 +72,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const [calendar, setCalendar] = useState<Calendar>(
-        existingCalendar || { id: '', name: '', workingDays: [6, 0, 1, 2, 3], specificHolidays: [], applyOfficialHolidays: true }
+        existingCalendar || { id: '', name: '', workingDays: [6, 0, 1, 2, 3], specificHolidays: [], applyOfficialHolidays: true, workHoursPerDay: 8 }
     );
     const [currentDate, setCurrentDate] = useState(new Date());
     const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
@@ -110,20 +110,30 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
         return () => { cancelled = true; };
     }, [currentDate]);
 
+    const [saveError, setSaveError] = useState('');
     const handleSave = async () => {
-        if(!calendar.name.trim()){
-            alert(t('fillRequiredFields'));
+        if (saving) return;
+        const name = calendar.name.trim();
+        if (!name) {
+            setSaveError(t('fillRequiredFields'));
             return;
         }
+
+        setSaveError('');
         setSaving(true);
-        const outcome = await onSave(calendar);
-        setSaving(false);
-        if (!outcome.ok) {
-            alert(outcome.message ?? t('error'));
-            return;
+        try {
+            const outcome = await onSave({ ...calendar, name });
+            if (!outcome.ok) {
+                setSaveError(outcome.message ?? t('error'));
+                return;
+            }
+            onNavigate('calendar_management');
+        } catch {
+            setSaveError(language === 'fa' ? 'ثبت تقویم کامل نشد. فهرست تقویم‌ها را بررسی کنید.' : 'The save could not be completed. Check the calendar list.');
+        } finally {
+            setSaving(false);
         }
-        onNavigate('calendar_management');
-    }
+    };
 
     const toggleWorkingDay = (dayIndex: number) => {
         const jsDayIndex = isShamsi ? (dayIndex + 6) % 7 : dayIndex; // Sat=0 -> 6, Sun=1 -> 0
@@ -281,6 +291,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                     t('backToCalendars')
                 )
             ),
+            saveError && React.createElement("p", { role: "alert", className: "calendar-save-error" }, saveError),
             React.createElement("div", { className: "edit-calendar-container" },
                 React.createElement("div", { className: "calendar-sidebar" },
                     React.createElement("div", null,
@@ -313,7 +324,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                     ),
                     React.createElement("div", { className: "calendar-sidebar-actions" },
                         React.createElement("button", { onClick: () => setIsHolidaysListModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, t('holidays')),
-                        React.createElement("button", { onClick: handleSave, className: "save-btn", disabled: saving } as React.HTMLAttributes<HTMLButtonElement>, t('save'))
+                        React.createElement("button", { onClick: handleSave, className: "save-btn", disabled: saving } as React.HTMLAttributes<HTMLButtonElement>, saving ? (language === 'fa' ? 'در حال ذخیره…' : 'Saving…') : t('save'))
                     )
                 ),
                 React.createElement("div", { className: "calendar-main" },

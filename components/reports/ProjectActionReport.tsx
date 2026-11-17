@@ -67,10 +67,10 @@ function MultiSelect<T extends string>({ label, icon, options, value, onChange, 
 }
 
 // ======================================================================= filter bar
-function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOptions, open, setOpen }: {
+function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOptions, open, setOpen, onApply }: {
   filters: ReportFilters; setFilters: (f: ReportFilters) => void;
   unitOptions: string[]; peopleOptions: { value: string; label: string }[]; projectOptions: { value: string; label: string }[];
-  open: boolean; setOpen: (o: boolean) => void;
+  open: boolean; setOpen: (o: boolean) => void; onApply: () => void;
 }) {
   const set = <K extends keyof ReportFilters>(key: K, value: ReportFilters[K]) => setFilters({ ...filters, [key]: value });
   const preset = (p: DatePreset) => { const [from, to] = presetRange(p); setFilters({ ...filters, from, to }); };
@@ -93,9 +93,8 @@ function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOpt
 
   return <section className="par-filters no-print" aria-label="فیلترهای گزارش">
     <div className="par-filter-head">
-      <button type="button" className="filter-toggle-btn" aria-expanded={open} onClick={() => setOpen(!open)}>
-        <span className="material-symbols-outlined" aria-hidden="true">filter_alt</span>فیلترها{count > 0 && <b className="par-count">{fa(count)}</b>}
-        <span className="material-symbols-outlined" aria-hidden="true" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>expand_more</span>
+      <button type="button" className="filter-toggle-btn" title="فیلترها" aria-label="فیلترها" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <span className="material-symbols-outlined" aria-hidden="true">filter_alt</span>{count > 0 && <b className="par-count">{fa(count)}</b>}
       </button>
       <div className="par-search"><span className="material-symbols-outlined" aria-hidden="true">search</span>
         <input type="search" placeholder="جستجو در نام یا کد…" value={filters.search} onChange={e => set('search', e.target.value)} aria-label="جستجو در نام یا کد" /></div>
@@ -133,6 +132,10 @@ function FilterBar({ filters, setFilters, unitOptions, peopleOptions, projectOpt
       <div className="par-field"><span className="par-label"><span className="material-symbols-outlined" aria-hidden="true">payments</span>هزینه (ریال)</span>
         <div className="par-cost"><input inputMode="numeric" placeholder="از" value={filters.costMin} onChange={e => set('costMin', e.target.value)} aria-label="حداقل هزینه" />
           <input inputMode="numeric" placeholder="تا" value={filters.costMax} onChange={e => set('costMax', e.target.value)} aria-label="حداکثر هزینه" /></div></div>
+      <div className="par-filter-actions">
+        <button type="button" className="save-btn" onClick={onApply}><span className="material-symbols-outlined" aria-hidden="true">check</span>اعمال فیلتر</button>
+        <button type="button" className="cancel-btn" onClick={() => setOpen(false)}>انصراف</button>
+      </div>
     </div>}
   </section>;
 }
@@ -390,14 +393,17 @@ export function ProjectActionReport({ projects, actions, users, owningUnits = []
   const keyBase = `par:${currentUserId || 'me'}`;
   const [tab, setTab] = useState<'list' | 'dashboard'>(() => (store.get(`${keyBase}:ui`, { tab: 'dashboard' as 'list' | 'dashboard' })).tab);
   const [filters, setFilters] = useState<ReportFilters>(() => store.get(`${keyBase}:filters`, EMPTY_FILTERS));
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [draftFilters, setDraftFilters] = useState<ReportFilters | null>(null);
+  const filtersOpen = draftFilters !== null;
+  const hasPendingFilters = filtersOpen && JSON.stringify(draftFilters) !== JSON.stringify(filters);
+  const setFiltersOpen = (open: boolean) => setDraftFilters(open ? filters : null);
   const [views, setViews] = useState<SavedView[]>(() => store.getList<SavedView>(`${keyBase}:views`));
   const [naming, setNaming] = useState(false); const [viewName, setViewName] = useState('');
   const content = useRef<HTMLDivElement | null>(null); const root = useRef<HTMLElement | null>(null);
   const [busy, setBusy] = useState<'' | 'pdf' | 'print'>('');
   /** Print or PDF of the shown tab, with the active filters written on top. */
   async function output(kind: 'pdf' | 'print') {
-    if (!content.current || busy) return;
+    if (!content.current || busy || hasPendingFilters) return;
     const filters = Array.from(root.current?.querySelectorAll<HTMLElement>('.par-chip') ?? []).map((c: HTMLElement) => (c.textContent || '').replace(/close$/, '').trim());
     const meta = { title: 'گزارش پروژه‌ها و اقدامات', kind: tab === 'list' ? 'نمای لیستی' : 'نمای داشبوردی', filters };
     setBusy(kind);
@@ -449,13 +455,14 @@ export function ProjectActionReport({ projects, actions, users, owningUnits = []
       </div>
       <p className="par-count-line">{fa(rows.length)} از {fa(allRows.length)} مورد</p>
       <div className="par-output no-print">
-        <button type="button" className="cancel-btn" onClick={() => output('print')} disabled={!!busy || allRows.length === 0} title="چاپ گزارش با سربرگ، تاریخ، ساعت و IP">
+        <button type="button" className="cancel-btn" onClick={() => output('print')} disabled={!!busy || hasPendingFilters || rows.length === 0} title="چاپ گزارش با سربرگ، تاریخ، ساعت و IP">
           <span className="material-symbols-outlined" aria-hidden="true">print</span>{busy === 'print' ? 'آماده‌سازی…' : 'چاپ'}</button>
-        <button type="button" className="save-btn" onClick={() => output('pdf')} disabled={!!busy || allRows.length === 0} title="دریافت فایل PDF با سربرگ، تاریخ، ساعت و IP">
+        <button type="button" className="save-btn" onClick={() => output('pdf')} disabled={!!busy || hasPendingFilters || rows.length === 0} title="دریافت فایل PDF با سربرگ، تاریخ، ساعت و IP">
           <span className="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>{busy === 'pdf' ? 'در حال ساخت PDF…' : 'PDF'}</button>
       </div>
     </div>
-    <FilterBar filters={filters} setFilters={setFilters} unitOptions={unitOptions} peopleOptions={peopleOptions} projectOptions={projectOptions} open={filtersOpen} setOpen={setFiltersOpen} />
+    <FilterBar filters={draftFilters ?? filters} setFilters={filtersOpen ? setDraftFilters : setFilters} onApply={() => { if (draftFilters) setFilters(draftFilters); setDraftFilters(null); }} unitOptions={unitOptions} peopleOptions={peopleOptions} projectOptions={projectOptions} open={filtersOpen} setOpen={setFiltersOpen} />
+    {hasPendingFilters && <p role="status" className="par-pending">برای به‌روزرسانی نتایج و دریافت خروجی، «اعمال فیلتر» را بزنید.</p>}
     <div ref={content} className="par-content">
     {allRows.length === 0 ? <div className="par-first-run"><span className="material-symbols-outlined" aria-hidden="true">query_stats</span>
       <strong>هنوز پروژه یا اقدامی ثبت نشده است.</strong>با ثبت اولین پروژه یا اقدام، گزارش و نمودارها همین‌جا ساخته می‌شوند.</div>

@@ -1,28 +1,24 @@
-/* Fixes found on the project creation screens. */
+/* Keep the form toolbar in the header flow for both create and edit. */
+html .app-container .page-header > .form-header-actions {
+  display: flex; flex-wrap: nowrap !important; align-items: center; gap: 8px;
+  width: auto; max-width: 100%; overflow-x: auto; padding-block: 3px;
+}
+.form-header-actions > *, .form-header-actions .pb-output-buttons > * { flex-shrink: 0; }
+html .app-container:not(.login-layout) .form-header-actions:has(.pb-output-buttons) button:is([title="خروجی PDF"], [title="Export to PDF"]):not(.pb-output-btn) { display: none !important; }
+html:root:root:root body .form-header-actions :is(button, .pb-output-btn):has(> .material-symbols-outlined:only-child) {
+  box-sizing: border-box; width: 36px !important; min-width: 36px !important;
+  height: 36px !important; min-height: 36px !important; padding: 0 !important;
+  display: inline-flex; align-items: center; justify-content: center;
+}
 
-/* 1. The six icon buttons at the top of a creation form (close, PDF, print, back, send, save): one size, one row. */
-html:root:root:root body .creation-dialog :is(.creation-dialog-close, .pb-output-btn, .creation-dialog-form .page-header-actions > button) {
-  width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important;
-  padding: 0 !important; border-radius: 50% !important; box-sizing: border-box !important;
-  display: inline-flex !important; align-items: center; justify-content: center; flex: 0 0 40px;
+/* Give native controls enough room for Persian glyphs and descenders. */
+html body .app-container :is(select, input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="hidden"], [type="button"], [type="submit"], [type="reset"])) {
+  box-sizing: border-box; height: auto; min-height: 40px; line-height: 1.5;
+  padding-block: 5px !important;
 }
-html .creation-dialog :is(.creation-dialog-close, .pb-output-btn, .creation-dialog-form .page-header-actions > button) .material-symbols-outlined {
-  font-size: 22px !important; width: 22px !important; height: 22px !important; flex: 0 0 22px !important; line-height: 1;
-}
-html .creation-dialog .pb-output-buttons { gap: 8px; }
-html .creation-dialog .creation-dialog-form .page-header-actions { gap: 8px !important; flex-wrap: nowrap; }
-html .creation-dialog .creation-dialog-close-floating { top: 26px !important; left: 26px !important; }
-html .creation-dialog .creation-dialog-output { top: 26px; left: 74px; }
-/* the form's own buttons are placed from the same corner as close / PDF / print, so the six always form one row */
-html:root:root:root body .creation-dialog .creation-dialog-form :is(.content-container, .page-header, .creation-dialog-shell) { position: static !important; }
-html:root:root:root body .creation-dialog .creation-dialog-form .page-header-actions {
-  position: absolute !important; top: 3px !important; left: 147px !important; right: auto !important; margin: 0 !important;
-  display: flex !important; align-items: center; gap: 8px !important; z-index: 20;
-}
-/* the title keeps clear of the buttons */
-html .creation-dialog .creation-dialog-form .page-header:first-child, html .creation-dialog .creation-dialog-form>.content-container>.page-header { min-height: 48px; }
-html .creation-dialog .creation-dialog-form>.content-container>.page-header,
-html .creation-dialog .creation-dialog-form .page-header:first-child { padding-inline-end: 0; }
+html body :is(input, textarea, select, option, [contenteditable="true"]),
+html body :is(input, textarea)::placeholder,
+html body input::file-selector-button { font-family: var(--pb-font) !important; }
 
 /* 2. The "+" on the create cards is a true circle. */
 html .app-container .portfolio-create-button .portfolio-create-plus {
@@ -36,3 +32,92 @@ html body .tabs-nav .tab-item, html body .creation-form .tabs-nav .tab-item {
   flex: 0 0 auto !important; overflow: visible !important; text-overflow: clip !important;
   padding: 10px 22px !important; min-height: 42px; line-height: 1.5;
 }
+
+/* Keep the document still while the modal handles any necessary scrolling. */
+html:has(.creation-dialog[open]) { overflow: hidden; }
+html body .creation-dialog { overscroll-behavior: contain; }
+.creation-dialog-shell { padding: 12px; }
+html .app-container .creation-dialog .creation-form > .page-header {
+  justify-content: space-between;
+  min-height: 0;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+}
+html .app-container .creation-dialog .form-header-actions { margin-left: 0; margin-right: auto; }
+.creation-dialog .form-header-actions > .creation-dialog-close { order: 1; align-self: center; }
+html .app-container .creation-dialog .creation-form > .tabs-nav { margin-bottom: 6px; }
+html body .creation-dialog .creation-form .tabs-nav .tab-item {
+  padding: 5px 10px !important;
+  min-height: 34px;
+}
+html .app-container .creation-dialog .creation-form > .tab-content {
+  padding: 10px 12px;
+  margin-top: 0 !important;
+}
+html .app-container .creation-dialog :is(.charter-form, .action-form) {
+  row-gap: 6px !important;
+}
+html .app-container .creation-dialog :is(.charter-form, .action-form) .form-group {
+  margin-bottom: 0;
+}
+html .app-container .creation-dialog .form-group label { margin-bottom: 3px !important; }
+html .app-container .creation-dialog .charter-form textarea { height: 58px; min-height: 48px; }
+html .app-container :is(.filter-toggle-btn, .grouping-toggle-btn)[aria-label] {
+  min-width: 36px;
+  padding-inline: 8px !important;
+}
+
+/* Administration forms live in the browser's top layer, above workspace navigation. */
+html:has(.pb-admin-dialog[open]) { overflow: hidden; }
+html body .pb-admin-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(44rem, calc(100vw - 24px));
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  overflow: visible;
+}
+html body .pb-admin-dialog:has(.is-wide) { width: min(56rem, calc(100vw - 24px)); }
+html body .pb-admin-dialog:has(.is-compact) { width: min(52rem, calc(100vw - 24px)); }
+.pb-admin-dialog::backdrop { background: #16352780; backdrop-filter: blur(3px); }
+.pb-admin-dialog-panel { max-height: calc(100dvh - 24px); min-width: 0; }
+html .app-container .tw-scope .sp-tab-list.sp-fit { flex-wrap: wrap; overflow: visible; }
+html .app-container .tw-scope .sp-tab-list.sp-fit .sp-tab { flex: 0 0 auto; padding: 5px 10px !important; min-height: 34px; }
+html .app-container .tw-scope .pb-new-user { min-height: 36px; padding: 6px 12px; }
+.par-filter-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.par-pending { color: var(--pb-heading, #245339); }
+
+html:has(.project-save-overlay[open]) { overflow: hidden; }
+.project-save-overlay {
+  width: min(22rem, calc(100vw - 32px));
+  box-sizing: border-box;
+  margin: auto;
+  padding: 28px 20px;
+  border: 1px solid #fff;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff, #e6f4eb);
+  color: #174632;
+  box-shadow: 0 20px 60px #07432645;
+}
+.project-save-overlay::backdrop { background: #16352780; backdrop-filter: blur(4px); }
+.project-save-status { display: grid; justify-items: center; gap: 8px; text-align: center; }
+html body .project-save-status strong { font-weight: 700; }
+.project-save-spinner {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 8px;
+  border: 4px solid #c6e6d3;
+  border-top-color: #008744;
+  border-radius: 50%;
+  animation: project-save-spin .85s linear infinite;
+}
+@keyframes project-save-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .project-save-spinner { animation: none; }
+}
+html body .calendar-save-error { color: #992e35; background: #fff0f0; padding: 8px 12px; border-radius: 8px; }

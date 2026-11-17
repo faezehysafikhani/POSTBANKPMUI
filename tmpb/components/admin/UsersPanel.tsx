@@ -95,9 +95,9 @@ export const UsersPanel: React.FC<{
       <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 p-5">
         <SearchBox value={search} onChange={setSearch} placeholder="جستجو در نام، کد ملی، موبایل، ایمیل، نقش..." />
         {rights.create && (
-          <PrimaryButton onClick={() => setEditing('new')}>
+          <PrimaryButton className="pb-new-user" onClick={() => setEditing('new')}>
             <UserPlus className="w-4 h-4" />
-            <span>کاربر جدید</span>
+            <span>ایجاد کاربر جدید</span>
           </PrimaryButton>
         )}
       </div>

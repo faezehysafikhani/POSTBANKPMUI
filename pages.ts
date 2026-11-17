@@ -3,7 +3,7 @@
 export const i18nStrings = {
   en: {
     // General
-    mainTitle: 'Post Bank Project Management',
+    mainTitle: 'Post Bank Iran Project Management',
     login: 'Login',
     logout: 'Logout',
     username: 'Username',
@@ -488,7 +488,7 @@ export const i18nStrings = {
   },
   fa: {
     // General
-    mainTitle: 'سامانه مدیریت پروژه پست بانک',
+    mainTitle: 'سامانه مدیریت پروژه پست بانک ایران',
     login: 'ورود',
     logout: 'خروج',
     username: 'نام کاربری',

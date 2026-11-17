@@ -7,7 +7,8 @@ import { getISODateString, formatDate } from '../utils';
 import { ActionForm } from '../components/Forms';
 
 
-export const ActionDefinitionPage = ({ onNavigate, onSaveAction, users, calendars, projects, existingAction, pageContext, setInfoModal, owningUnits, currentUser }: {
+export const ActionDefinitionPage = ({ formActions, onNavigate, onSaveAction, users, calendars, projects, existingAction, pageContext, setInfoModal, owningUnits, currentUser }: {
+    formActions?: React.ReactNode;
     onNavigate: (page: string, context?: any) => void;
     onSaveAction: (action: ActionItem, context?: any) => void;
     users: User[];
@@ -81,7 +82,8 @@ export const ActionDefinitionPage = ({ onNavigate, onSaveAction, users, calendar
     return (
         React.createElement("div", { className: "content-container creation-form" },
             React.createElement("div", { className: "page-header" },
-                React.createElement("h2", null, isEditing ? t('edit') : t('defineAction'))
+                React.createElement("h2", null, isEditing ? t('edit') : t('defineAction')),
+                formActions && React.createElement('div', { className: 'page-header-actions form-header-actions' }, formActions)
             ),
             React.createElement("div", { className: "tab-content", style: { marginTop: '1rem' } },
                 React.createElement(ActionForm, {
