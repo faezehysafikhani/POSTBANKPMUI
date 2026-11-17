@@ -19,7 +19,6 @@ export interface NewUserForm {
   password: string;
   email?: string;
   role: UserRole;
-  unitPath?: string;
 }
 
 export interface EditUserForm {
@@ -30,7 +29,6 @@ export interface EditUserForm {
   email?: string;
   password?: string;      // only when it is being changed
   role: UserRole;
-  unitPath?: string;
   isActive: boolean;
 }
 
@@ -52,11 +50,6 @@ interface DirectoryState {
   updateUser: (id: string, form: EditUserForm) => Promise<Outcome>;
   setUserActive: (id: string, isActive: boolean) => Promise<Outcome>;
   deleteUser: (id: string) => Promise<Outcome>;
-
-  createUnit: (name: string, parentId: string | null) => Promise<Outcome>;
-  renameUnit: (id: string, name: string) => Promise<Outcome>;
-  moveUnit: (id: string, parentId: string | null) => Promise<Outcome>;
-  deleteUnit: (id: string) => Promise<Outcome>;
 
   saveCalendar: (calendar: Calendar) => Promise<Outcome>;
   deleteCalendar: (id: string) => Promise<Outcome>;
@@ -81,14 +74,14 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
   const reload = React.useCallback(async () => {
     if (!session) return;
     setLoading(true);
-    const [u, r, un, m, c] = await Promise.all([
-      usersApi.list(), rolesApi.list(), organization.units(), organization.members(), calendarsApi.list()
+    // The units are the organization structure's (the same rows its chart edits); they are read here, never changed.
+    const [u, r, un, c] = await Promise.all([
+      usersApi.list(), rolesApi.list(), organization.units(), calendarsApi.list()
     ]);
-    const firstError = [u, r, un, m, c].find(result => !result.ok);
+    const firstError = [u, r, un, c].find(result => !result.ok);
     setError(firstError ? firstError.error?.message ?? 'Loading failed.' : null);
 
-    const members = new Map((m.value ?? []).map(member => [member.userId, member]));
-    if (u.ok) setUsers((u.value ?? []).map(user => toUiUser(user, members)));
+    if (u.ok) setUsers((u.value ?? []).map(user => toUiUser(user)));
     if (r.ok) setRoles(r.value ?? []);
     if (un.ok) setUnits(un.value ?? []);
     if (c.ok) setCalendars((c.value ?? []).map(toUiCalendar));
@@ -121,19 +114,13 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
     return { ok: true };
   }, [reload]);
 
-  const applyRoleAndUnit = React.useCallback(async (userId: string, role: UserRole, unitPath?: string): Promise<Outcome> => {
+  // A person's place (unit, post) is set only in the organization structure, never here.
+  const applyRole = React.useCallback(async (userId: string, role: UserRole): Promise<Outcome> => {
     const roleId = roleIdByName.get(UI_ROLE_TO_BACKEND_ROLE[role]);
     if (!roleId) return fail(`نقش «${UI_ROLE_TO_BACKEND_ROLE[role]}» در سرور تعریف نشده است.`);
     const assigned = await usersApi.setRoles(userId, [roleId]);
-    if (!assigned.ok) return fail(assigned.error?.message);
-    if (unitPath !== undefined) {
-      const unitId = unitPath ? unitIdByPath.get(unitPath) ?? null : null;
-      if (unitPath && !unitId) return fail('واحد سازمانی انتخاب‌شده پیدا نشد.');
-      const placed = await organization.setUserUnit(userId, unitId);
-      if (!placed.ok) return fail(placed.error?.message);
-    }
-    return { ok: true };
-  }, [roleIdByName, unitIdByPath]);
+    return assigned.ok ? { ok: true } : fail(assigned.error?.message);
+  }, [roleIdByName]);
 
   const value = React.useMemo<DirectoryState>(() => ({
     loading,
@@ -153,7 +140,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
         phoneNumber: form.phoneNumber, password: form.password, email: form.email || undefined
       });
       if (!created.ok || !created.value) return fail(created.error?.message);
-      const applied = await applyRoleAndUnit(created.value.id, form.role, form.unitPath);
+      const applied = await applyRole(created.value.id, form.role);
       await reload();
       return applied.ok ? { ok: true } : { ok: false, message: `کاربر ساخته شد اما: ${applied.message}` };
     },
@@ -165,25 +152,13 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
         firstName: form.firstName, lastName: form.lastName
       });
       if (!updated.ok) return fail(updated.error?.message);
-      const applied = await applyRoleAndUnit(id, form.role, form.unitPath);
+      const applied = await applyRole(id, form.role);
       await reload();
       return applied.ok ? { ok: true } : fail(applied.message);
     },
 
     setUserActive: (id, isActive) => run(() => usersApi.setStatus(id, isActive)),
     deleteUser: id => run(() => usersApi.remove(id)),
-
-    createUnit: (name, parentId) => run(() =>
-      tenantId ? organization.createUnit({ tenantId, name, parentId }) : Promise.resolve({ ok: false })),
-    renameUnit: (id, name) => {
-      const unit = units.find(u => u.id === id);
-      return unit ? run(() => organization.updateUnit(id, { name, managerUserId: unit.managerUserId, isActive: true })) : Promise.resolve(fail());
-    },
-    // Moving to the top of the chart needs a company, which only the organization structure screens know: not offered here.
-    moveUnit: (id, parentId) => parentId
-      ? run(() => organization.moveUnit(id, parentId))
-      : Promise.resolve(fail('Moving a unit to the top level is done in the organization structure.')),
-    deleteUnit: id => run(() => organization.deactivateUnit(id)),
 
     saveCalendar: async calendar => {
       if (!calendar.id && !tenantId) return fail('سازمان حساب کاربری مشخص نیست. دوباره وارد سامانه شوید.');
@@ -199,7 +174,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
       });
     },
     deleteCalendar: id => run(() => calendarsApi.remove(id))
-  }), [loading, error, users, calendars, units, unitIdByPath, unitPathById, tenantId, reload, run, applyRoleAndUnit]);
+  }), [loading, error, users, calendars, units, unitIdByPath, unitPathById, tenantId, reload, run, applyRole]);
 
   return <DirectoryContext.Provider value={value}>{children}</DirectoryContext.Provider>;
 };

@@ -335,69 +335,6 @@ export const ProjectHistoryModal = ({ project, onClose }: {
     };
     return (React.createElement("div", { className: "modal-overlay", onClick: () => onClose() }, React.createElement("div", { className: "modal-content", onClick: (e: MouseEvent<HTMLDivElement>) => e.stopPropagation(), style: { maxWidth: '850px', width: '92%' } }, React.createElement("div", { className: "modal-header" }, React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, React.createElement("span", { className: "material-symbols-outlined", style: { color: 'var(--primary-color, #46e588)' } }, "history"), React.createElement("h3", { style: { margin: 0 } }, `${t('projectHistory')}: ${project.name}`)), React.createElement("button", { onClick: onClose, className: "modal-close-button" }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))), React.createElement("div", { className: "modal-body" }, history.length === 0 ? (React.createElement("p", null, t('noHistoryFound'))) : (React.createElement("div", { className: "table-responsive" }, React.createElement("table", { className: "users-table" }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, isFa ? 'تاریخ و ساعت' : 'Date & Time'), React.createElement("th", null, isFa ? 'مرحله گردش کار' : 'Workflow Stage'), React.createElement("th", null, isFa ? 'تاییدکننده / اقدام‌کننده' : 'Approver / Actor'), React.createElement("th", null, isFa ? 'تصمیم / وضعیت' : 'Decision / Status'), React.createElement("th", null, isFa ? 'علت و توضیحات' : 'Comment / Reason'))), React.createElement("tbody", null, history.map((item, index) => (React.createElement("tr", { key: index }, React.createElement("td", null, formatDateTime(item.date, language)), React.createElement("td", { style: { fontWeight: 500 } }, item.stageTitle || (item.action === 'Submitted' ? (isFa ? 'ارسال اولیه' : 'Submission') : (isFa ? 'بررسی مرحله' : 'Stage Review'))), React.createElement("td", { style: { fontWeight: 600, color: 'var(--text-color, #1e3b2a)' } }, item.actor || '-'), React.createElement("td", null, getActionBadge(item.action)), React.createElement("td", { style: { whiteSpace: 'pre-wrap', fontSize: '0.88rem' } }, item.comment || '-'))))))))))));
 };
-export const UserEditModal = ({ user, isOpen, onClose, onSave, owningUnits = [] }: {
-    user: User | null;
-    isOpen: boolean;
-    onClose: () => void;
-    /** Saves through the backend; resolves with its answer so a refusal can be shown here. */
-    onSave: (form: EditUserForm) => Promise<Outcome>;
-    owningUnits?: string[];
-}): ReactElement | null => {
-    const { t, language } = useContext(LocalizationContext);
-    const [formData, setFormData] = useState<Partial<User> & {
-        password?: string;
-    }>({});
-    const [error, setError] = useState<string | null>(null);
-    const [busy, setBusy] = useState(false);
-    const availableUnits = owningUnits;
-    useEffect(() => {
-        if (user) {
-            // The password is never pre-filled; it is only sent when something is typed.
-            setFormData({ ...user, password: '' });
-            setError(null);
-        }
-    }, [user]);
-    if (!isOpen || !user)
-        return null;
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        if (!formData.owningUnit) {
-            setError(language === 'fa' ? 'انتخاب واحد سازمانی (ساختار شکست سازمانی) اجباری است.' : 'Selecting an Organizational Unit is required.');
-            return;
-        }
-        setBusy(true);
-        const outcome = await onSave({
-            username: formData.username || '',
-            firstName: formData.firstName || '',
-            lastName: formData.lastName || '',
-            phoneNumber: formData.phoneNumber || '',
-            email: formData.email,
-            password: formData.password || undefined,
-            role: (formData.role || user.role) as UserRole,
-            unitPath: formData.owningUnit,
-            isActive: user.isActive
-        });
-        setBusy(false);
-        if (!outcome.ok)
-            setError(outcome.message ?? 'ذخیره انجام نشد.');
-    };
-    const roleTranslations: Record<UserRole, TranslationKey> = {
-        Admin: 'admin',
-        'Project Manager': 'projectManagerRole',
-        'Project Team': 'projectTeamRole'
-    };
-    return (React.createElement("div", { className: "modal-overlay", onClick: () => onClose() }, React.createElement("div", { className: "modal-content", onClick: (e: MouseEvent<HTMLDivElement>) => e.stopPropagation(), style: { maxWidth: '500px', width: '90%', overflow: 'visible' } }, React.createElement("div", { className: "modal-header" }, React.createElement("h3", null, t('editUser')), React.createElement("button", { onClick: onClose, className: "modal-close-button" }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))), React.createElement("div", { className: "modal-body", style: { overflow: 'visible' } }, React.createElement("form", { onSubmit: handleSubmit, className: "user-edit-form" }, error && React.createElement("div", { className: "login-error-banner", role: "alert" }, React.createElement("span", null, error)), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-username" }, (language === 'fa' ? 'نام کاربری (کد ملی)' : 'Username (national code)') + '*'), React.createElement("input", { type: "text", id: "edit-username", name: "username", inputMode: "numeric", value: formData.username || '', onChange: handleChange, required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-firstname" }, (language === 'fa' ? 'نام' : 'First name') + '*'), React.createElement("input", { type: "text", id: "edit-firstname", name: "firstName", value: formData.firstName || '', onChange: handleChange, required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-lastname" }, (language === 'fa' ? 'نام خانوادگی' : 'Last name') + '*'), React.createElement("input", { type: "text", id: "edit-lastname", name: "lastName", value: formData.lastName || '', onChange: handleChange, required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-phone" }, (language === 'fa' ? 'شماره موبایل' : 'Mobile number') + '*'), React.createElement("input", { type: "tel", id: "edit-phone", name: "phoneNumber", inputMode: "tel", value: formData.phoneNumber || '', onChange: handleChange, required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-password" }, t('password')), React.createElement("input", { type: "password", id: "edit-password", name: "password", value: formData.password || '', onChange: handleChange, placeholder: t('passwordHint') })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "edit-role" }, t('role')), React.createElement("select", { id: "edit-role", name: "role", value: formData.role || '', onChange: handleChange }, React.createElement("option", { value: "Admin" }, t('admin')), React.createElement("option", { value: "Project Manager" }, t('projectManagerRole')), React.createElement("option", { value: "Project Team" }, t('projectTeamRole')))), React.createElement("div", { className: "form-group", style: { position: 'relative', zIndex: 20 } }, React.createElement("label", { htmlFor: "edit-owningUnit" }, (language === 'fa' ? 'واحد سازمانی (ساختار شکست سازمانی)' : 'Organizational Unit') + '*'), React.createElement(OwningUnitTreeSelect, {
-        id: "edit-owningUnit",
-        value: formData.owningUnit || '',
-        onChange: (val: string) => setFormData(prev => ({ ...prev, owningUnit: val })),
-        owningUnits: availableUnits,
-        placeholder: language === 'fa' ? 'انتخاب واحد سازمانی...' : 'Select Org Unit...'
-    })), React.createElement("div", { className: "form-actions" }, React.createElement("button", { type: "submit", className: "save-btn" }, t('update')), React.createElement("button", { type: "button", onClick: onClose, className: "cancel-btn" }, t('cancel'))))))));
-};
 export const KanbanTaskModal = ({ isOpen, onClose, onSave, task, teamMembers, sprintCount }: {
     isOpen: boolean;
     onClose: () => void;

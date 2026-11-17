@@ -58,7 +58,7 @@ const AppContent = () => {
     // The work statuses are the backend's fixed set (it moves a project between them); they are not editable here.
     const projectStatuses: string[] = PROJECT_WORK_STATUSES;
     // The signed-in person as the directory shows them (with their unit), until the directory has loaded: just what the session says.
-    const currentUser: User | null = useMemo(() => auth.session ? (users.find(u => u.id === auth.session!.user.id) ?? toUiUser(auth.session.user, new Map())) : null, [auth.session, users]);
+    const currentUser: User | null = useMemo(() => auth.session ? (users.find(u => u.id === auth.session!.user.id) ?? toUiUser(auth.session.user)) : null, [auth.session, users]);
     const [page, setPage] = useState('dashboard');
     const [pageContext, setPageContext] = useState<any>(null);
     const [loginError, setLoginError] = useState<string | null>(null);

@@ -1,6 +1,6 @@
 import type { Calendar, OwningUnitTreeNode, Project, ProjectApprovalStatus, ProjectType, User, UserRole, WorkStatus } from '../../types';
 import type { BackendUser } from './auth';
-import type { BackendCalendar, BackendMember, BackendUnit, CalendarSaveBody } from './directory';
+import type { BackendCalendar, BackendUnit, CalendarSaveBody } from './directory';
 import { BackendApprovalStatus, BackendProjectStatus, BackendProjectType } from './projects';
 import type { BackendProject, ProjectSaveBody } from './projects';
 
@@ -24,14 +24,13 @@ export function uiRoleOf(user: Pick<BackendUser, 'roles' | 'isSystem'>): UserRol
   return 'Project Team';
 }
 
-export function toUiUser(user: BackendUser, memberByUser: Map<string, BackendMember>): User {
+export function toUiUser(user: BackendUser): User {
   return {
     id: user.id,
     username: user.username || user.email || user.id,
     name: user.displayName,
     role: uiRoleOf(user),
     isActive: user.isActive,
-    owningUnit: memberByUser.get(user.id)?.unitPath,
     firstName: user.firstName ?? undefined,
     lastName: user.lastName ?? undefined,
     phoneNumber: user.phoneNumber ?? undefined,

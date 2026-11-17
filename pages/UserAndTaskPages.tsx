@@ -2,134 +2,13 @@ import React, { useState, useContext, useEffect, useMemo, FormEvent, ChangeEvent
 import { LocalizationContext } from '../context';
 import { User, Project, ProjectActivity, KanbanTask, ProgressUpdate, EnrichedTask, KanbanStatus, UserRole, TranslationKey, ProgressUpdateStatus, TaskPriority, EnrichedKanbanTask, ActionItem, WorkStatus, Delegation, ProjectApprovalRecord, WorkflowEntityType } from '../types';
 import { useGovernance } from '../directory/GovernanceContext';
-import { UserEditModal, TaskSubmissionModal, ActivityHistoryModal, KanbanStatusUpdateModal, KanbanHistoryModal, ProjectHistoryModal, ActionStatusUpdateModal, ActionHistoryModal, ApprovalHistoryModal, DelegationModal, MyDelegationsModal, ApprovalCommentModal, TabItemHistoryModal } from '../components/Modals';
+import { TaskSubmissionModal, ActivityHistoryModal, KanbanStatusUpdateModal, KanbanHistoryModal, ProjectHistoryModal, ActionStatusUpdateModal, ActionHistoryModal, ApprovalHistoryModal, DelegationModal, MyDelegationsModal, ApprovalCommentModal, TabItemHistoryModal } from '../components/Modals';
 import { formatDate, toPersianDigits, getISODateString, getISODateTimeString } from '../utils';
 import { useProjects } from '../directory/ProjectsContext';
 import type { RegisterKind } from '../services/backend/registers';
 import { ProgressBar } from '../components/Indicators';
 import { OwningUnitTreeSelect } from '../components/Forms';
 import type { EditUserForm, NewUserForm, Outcome } from '../directory/DirectoryContext';
-// --- UserManagementPage ---
-export const UserManagementPage = ({ users, onNavigate, owningUnits = [], onCreate, onUpdate, onSetActive, onDelete }: {
-    users: User[];
-    onNavigate: (page: string) => void;
-    owningUnits?: string[];
-    onCreate: (form: NewUserForm) => Promise<Outcome>;
-    onUpdate: (id: string, form: EditUserForm) => Promise<Outcome>;
-    onSetActive: (id: string, isActive: boolean) => Promise<Outcome>;
-    onDelete: (id: string) => Promise<Outcome>;
-}): ReactElement => {
-    const { t, language } = useContext(LocalizationContext);
-    const [username, setUsername] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState<UserRole>('Project Team');
-    const [userOwningUnit, setUserOwningUnit] = useState('');
-    const [editingUser, setEditingUser] = useState<User | null>(null);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [formError, setFormError] = useState<string | null>(null);
-    const [busy, setBusy] = useState(false);
-    // The units come from the organisation chart held by the backend.
-    const availableUnits = owningUnits;
-    const backIcon = language === 'fa' ? 'arrow_forward' : 'arrow_back';
-    const handleAddUser = async (e: FormEvent) => {
-        e.preventDefault();
-        if (!userOwningUnit) {
-            setFormError(language === 'fa' ? 'انتخاب واحد سازمانی (ساختار شکست سازمانی) اجباری است.' : 'Selecting an Organizational Unit is required.');
-            return;
-        }
-        setBusy(true);
-        const outcome = await onCreate({ username, firstName, lastName, phoneNumber, password, role, unitPath: userOwningUnit });
-        setBusy(false);
-        if (!outcome.ok) {
-            setFormError(outcome.message ?? 'ثبت کاربر انجام نشد.');
-            return;
-        }
-        setUsername('');
-        setFirstName('');
-        setLastName('');
-        setPhoneNumber('');
-        setPassword('');
-        setRole('Project Team');
-        setUserOwningUnit('');
-        setFormError(null);
-        setIsAddModalOpen(false);
-    };
-    const handleDeleteUser = async (userId: string) => {
-        if (window.confirm(t('confirmUserDelete'))) {
-            const outcome = await onDelete(userId);
-            if (!outcome.ok)
-                alert(outcome.message ?? 'حذف انجام نشد.');
-        }
-    };
-    const handleToggleStatus = async (user: User) => {
-        const outcome = await onSetActive(user.id, !user.isActive);
-        if (!outcome.ok)
-            alert(outcome.message ?? 'تغییر وضعیت انجام نشد.');
-    };
-    const handleEditUserClick = (userToEdit: User) => {
-        setEditingUser(userToEdit);
-        setIsEditModalOpen(true);
-    };
-    const handleUpdateUser = async (form: EditUserForm): Promise<Outcome> => {
-        if (!editingUser)
-            return { ok: false };
-        const outcome = await onUpdate(editingUser.id, form);
-        if (outcome.ok) {
-            setIsEditModalOpen(false);
-            setEditingUser(null);
-        }
-        return outcome;
-    };
-    const roleTranslations: Record<UserRole, TranslationKey> = {
-        Admin: 'admin',
-        'Project Manager': 'projectManagerRole',
-        'Project Team': 'projectTeamRole'
-    };
-    const filteredUsers = useMemo(() => {
-        if (!searchTerm.trim())
-            return users;
-        const term = searchTerm.toLowerCase();
-        return users.filter(user => {
-            const roleName = (roleTranslations[user.role] && t(roleTranslations[user.role])) || user.role;
-            const statusName = user.isActive ? t('active') : t('inactive');
-            const unitName = user.owningUnit || '';
-            return user.username.toLowerCase().includes(term) ||
-                (user.name || '').toLowerCase().includes(term) ||
-                roleName.toLowerCase().includes(term) ||
-                statusName.toLowerCase().includes(term) ||
-                unitName.toLowerCase().includes(term);
-        });
-    }, [users, searchTerm, t]);
-    return (React.createElement(Fragment, null, React.createElement(UserEditModal, {
-        isOpen: isEditModalOpen,
-        onClose: () => setIsEditModalOpen(false),
-        onSave: handleUpdateUser,
-        user: editingUser,
-        owningUnits: availableUnits
-    }), isAddModalOpen && React.createElement("div", { className: "modal-overlay", onClick: () => setIsAddModalOpen(false) }, React.createElement("div", { className: "modal-content", onClick: (e: React.MouseEvent) => e.stopPropagation(), style: { maxWidth: '480px', width: '90%', overflow: 'visible' } }, React.createElement("div", { className: "modal-header" }, React.createElement("h3", null, language === 'fa' ? 'مورد جدید - تعریف کاربر' : t('createUser')), React.createElement("button", { onClick: () => setIsAddModalOpen(false), className: "modal-close-button" }, React.createElement("span", { className: "material-symbols-outlined" }, "close"))), React.createElement("form", { onSubmit: handleAddUser, style: { display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' } }, formError && React.createElement("div", { className: "login-error-banner", role: "alert" }, React.createElement("span", null, formError)), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-username" }, (language === 'fa' ? 'نام کاربری (کد ملی)' : 'Username (national code)') + '*'), React.createElement("input", { type: "text", id: "modal-username", inputMode: "numeric", value: username, onChange: (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value), required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-firstname" }, (language === 'fa' ? 'نام' : 'First name') + '*'), React.createElement("input", { type: "text", id: "modal-firstname", value: firstName, onChange: (e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value), required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-lastname" }, (language === 'fa' ? 'نام خانوادگی' : 'Last name') + '*'), React.createElement("input", { type: "text", id: "modal-lastname", value: lastName, onChange: (e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value), required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-phone" }, (language === 'fa' ? 'شماره موبایل' : 'Mobile number') + '*'), React.createElement("input", { type: "tel", id: "modal-phone", inputMode: "tel", value: phoneNumber, onChange: (e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value), required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-password" }, t('password') + '*'), React.createElement("input", { type: "password", id: "modal-password", value: password, onChange: (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value), required: true })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "modal-role" }, t('role')), React.createElement("select", { id: "modal-role", value: role, onChange: (e: ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as UserRole) }, React.createElement("option", { value: "Admin" }, t('admin')), React.createElement("option", { value: "Project Manager" }, t('projectManagerRole')), React.createElement("option", { value: "Project Team" }, t('projectTeamRole')))), React.createElement("div", { className: "form-group", style: { position: 'relative', zIndex: 20 } }, React.createElement("label", { htmlFor: "modal-owning-unit" }, (language === 'fa' ? 'واحد سازمانی (ساختار شکست سازمانی)' : 'Organizational Unit') + '*'), React.createElement(OwningUnitTreeSelect, {
-        id: "modal-owning-unit",
-        value: userOwningUnit,
-        onChange: (val: string) => setUserOwningUnit(val),
-        owningUnits: availableUnits,
-        placeholder: language === 'fa' ? 'انتخاب واحد سازمانی...' : 'Select Org Unit...'
-    })), React.createElement("div", { style: { display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' } }, React.createElement("button", { type: "button", className: "cancel-btn", onClick: () => setIsAddModalOpen(false) }, language === 'fa' ? 'انصراف' : 'Cancel'), React.createElement("button", { type: "submit", className: "action-button", disabled: busy }, React.createElement("span", { className: "material-symbols-outlined" }, "person_add"), t('addUser')))))), React.createElement("div", { className: "content-container" }, React.createElement("div", { className: "page-header" }, React.createElement("h2", null, t('userManagement'))), React.createElement("div", { className: "page-top-bar" }, React.createElement("div", { className: "search-filter-box" }, React.createElement("span", { className: "material-symbols-outlined" }, "search"), React.createElement("input", {
-        type: "text",
-        className: "search-filter-input",
-        placeholder: language === 'fa' ? 'فیلتر و جستجوی کاربر (نام، نقش، واحد سازمانی، وضعیت)...' : 'Search users...',
-        value: searchTerm,
-        onChange: (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
-    })), React.createElement("button", {
-        className: "action-button",
-        onClick: () => setIsAddModalOpen(true),
-        style: { display: 'flex', alignItems: 'center', gap: '0.4rem' }
-    }, React.createElement("span", { className: "material-symbols-outlined" }, "add"), language === 'fa' ? 'مورد جدید' : 'New Item')), React.createElement("div", { className: "list-section" }, React.createElement("h3", null, t('existingUsers')), React.createElement("div", { className: "table-responsive" }, React.createElement("table", { className: "users-table" }, React.createElement("thead", null, React.createElement("tr", null, React.createElement("th", null, t('username')), React.createElement("th", null, t('role')), React.createElement("th", null, language === 'fa' ? 'واحد سازمانی (ساختار شکست سازمانی)' : 'Organizational Unit'), React.createElement("th", null, t('status')), React.createElement("th", { className: "th-actions no-print" }, t('actions')))), React.createElement("tbody", null, filteredUsers.length === 0 ? (React.createElement("tr", null, React.createElement("td", { colSpan: 5, style: { textAlign: 'center', padding: '2rem' } }, language === 'fa' ? 'هیچ کاربری یافت نشد.' : 'No users found.'))) : (filteredUsers.map((user, idx) => (React.createElement("tr", { key: `user-${user.id}-${idx}`, className: !user.isActive ? 'inactive' : '' }, React.createElement("td", null, user.username), React.createElement("td", null, t(roleTranslations[user.role])), React.createElement("td", null, user.owningUnit || '-'), React.createElement("td", null, user.isActive ? t('active') : t('inactive')), React.createElement("td", { className: "action-cell no-print" }, React.createElement("button", { onClick: () => handleEditUserClick(user), className: "action-icon edit", "aria-label": t('editUser') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "edit")), React.createElement("button", { onClick: () => handleToggleStatus(user), className: `action-icon ${user.isActive ? 'deactivate' : 'activate'}`, "aria-label": t('toggleUserStatus') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, user.isActive ? 'toggle_off' : 'toggle_on')), React.createElement("button", { onClick: () => handleDeleteUser(user.id), className: "action-icon delete", "aria-label": t('deleteUser') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "delete"))))))))))))));
-};
-// --- TaskCenterPage ---
 export const TaskCenterPage = ({ projects, actions, users, currentUser, progressUpdates, onAddProgressUpdate, onAddKanbanStatusUpdate, onAddActionStatusUpdate, onUpdateRiskResponseStatus, onNavigate, allProcessedActivities, delegations, onDelegateTask, onDeactivateDelegation }: {
     projects: Project[];
     actions: ActionItem[];
