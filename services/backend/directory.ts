@@ -20,16 +20,24 @@ interface Page<T> {
 }
 
 export const users = {
-  /** Every user of the tenant (the backend pages them; this walks the pages). */
+  /**
+   * Every user of the tenant (the backend pages them; this walks the pages). Without «مشاهده کاربران» the people
+   * directory is read instead: the same people (of one's own company where that rule is on), names only - enough to
+   * pick a responsible person or an approver and to show names.
+   */
   async list(): Promise<ApiResult<BackendUser[]>> {
-    const all: BackendUser[] = [];
-    for (let page = 1; page < 1000; page++) {
-      const result = await api.get<Page<BackendUser>>(`/api/identity/users/${query({ pageNumber: page, pageSize: 200 })}`);
-      if (!result.ok || !result.value) return { ok: false, error: result.error };
-      all.push(...result.value.items);
-      if (all.length >= result.value.totalCount || result.value.items.length === 0) break;
-    }
-    return { ok: true, value: all };
+    const walk = async (path: string): Promise<ApiResult<BackendUser[]>> => {
+      const all: BackendUser[] = [];
+      for (let page = 1; page < 1000; page++) {
+        const result = await api.get<Page<BackendUser>>(`${path}${query({ pageNumber: page, pageSize: 200 })}`);
+        if (!result.ok || !result.value) return { ok: false, error: result.error };
+        all.push(...result.value.items);
+        if (all.length >= result.value.totalCount || result.value.items.length === 0) break;
+      }
+      return { ok: true, value: all };
+    };
+    const full = await walk('/api/identity/users/');
+    return full.ok || full.error?.status !== 403 ? full : walk('/api/identity/users/directory');
   },
 
   create: (body: { tenantId: string; username: string; firstName: string; lastName: string; phoneNumber: string; password: string; isActive?: boolean; email?: string }) =>
