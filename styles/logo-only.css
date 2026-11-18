@@ -1,2 +1,1 @@
-/* The login brand panel shows the logo without the name beside it. */
-html #login-container-root .pb-brand-mark { margin-bottom:34px; }
+/* The login brand panel shows the bank's name under the logo. */
