@@ -4,8 +4,6 @@ import { parseDateSafely } from '../utils/jalali';
 import * as nexusApi from './nexusApi';
 
 
-/** Origin of the NexusCore API all data comes from. */
-export const ACTIVE_DATA_SERVER_URL = nexusApi.NEXUS_API_BASE_URL;
 const LOCAL_TEAMS_PREFIX = 'parstask_teams_';
 
 export function getCurrentUser(): User | null {

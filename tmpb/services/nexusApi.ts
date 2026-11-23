@@ -61,10 +61,13 @@ declare global {
   }
 }
 
-const runtimeConfig: RuntimeConfig =
-  typeof window !== 'undefined' && window.__TMPB_RUNTIME_CONFIG__
-    ? window.__TMPB_RUNTIME_CONFIG__
-    : {};
+/**
+ * The deployment's settings, read at call time. bootRuntimeConfig.ts fills window.__TMPB_RUNTIME_CONFIG__ after an
+ * await, and a top-level await does not hold back the modules imported next to it: this module is evaluated before
+ * the file has been read. Reading the settings once here would freeze the defaults (same origin) in place.
+ */
+const runtimeConfig = (): RuntimeConfig =>
+  (typeof window !== 'undefined' && window.__TMPB_RUNTIME_CONFIG__) || {};
 
 function cleanBaseUrl(value: unknown): string {
   return typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
@@ -73,23 +76,25 @@ function cleanBaseUrl(value: unknown): string {
 const isDevelopment = env.DEV === true || env.MODE === 'development';
 
 /** Backend origin. Empty means same-origin: /api/... */
-export const NEXUS_API_BASE_URL = cleanBaseUrl(
-  runtimeConfig.apiBaseUrl || (isDevelopment ? env.VITE_DEV_API_BASE_URL : '')
+export const nexusApiBaseUrl = (): string => cleanBaseUrl(
+  runtimeConfig().apiBaseUrl || (isDevelopment ? env.VITE_DEV_API_BASE_URL : '')
 );
 
 /** SignalR origin. Empty means same-origin: /hubs/... */
-export const NEXUS_SIGNALR_BASE_URL = cleanBaseUrl(
-  runtimeConfig.signalRBaseUrl
-  || runtimeConfig.apiBaseUrl
+const nexusSignalRBaseUrl = (): string => cleanBaseUrl(
+  runtimeConfig().signalRBaseUrl
+  || runtimeConfig().apiBaseUrl
   || (isDevelopment ? env.VITE_DEV_SIGNALR_BASE_URL || env.VITE_DEV_API_BASE_URL : '')
 );
 
 /** Optional tenant slug sent with login. Leave empty for a single-tenant install. */
-const NEXUS_TENANT_SLUG = String(runtimeConfig.tenantSlug || env.VITE_NEXUS_TENANT_SLUG || '').trim();
+const nexusTenantSlug = (): string => String(runtimeConfig().tenantSlug || env.VITE_NEXUS_TENANT_SLUG || '').trim();
 
-const timeoutFromRuntime = Number(runtimeConfig.requestTimeoutMs);
-const timeoutFromEnv = Number(env.VITE_API_TIMEOUT_MS);
-const REQUEST_TIMEOUT_MS = timeoutFromRuntime > 0 ? timeoutFromRuntime : (timeoutFromEnv > 0 ? timeoutFromEnv : 30000);
+const requestTimeoutMs = (): number => {
+  const fromRuntime = Number(runtimeConfig().requestTimeoutMs);
+  const fromEnv = Number(env.VITE_API_TIMEOUT_MS);
+  return fromRuntime > 0 ? fromRuntime : (fromEnv > 0 ? fromEnv : 30000);
+};
 
 
 /** Name of the seeded system role (NexusCore.Infrastructure/Persistence/DefaultDataSeeder.cs). */
@@ -575,7 +580,7 @@ interface RequestOptions {
 }
 
 function buildUrl(path: string, query?: RequestOptions['query']): string {
-  const url = `${NEXUS_API_BASE_URL}${path}`;
+  const url = `${nexusApiBaseUrl()}${path}`;
   if (!query) return url;
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
@@ -627,7 +632,7 @@ async function request<T>(method: string, path: string, options: RequestOptions 
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), requestTimeoutMs());
 
   let response: Response;
   try {
@@ -1151,7 +1156,7 @@ export async function login(
       body: {
         identifier,
         password,
-        tenantSlug: NEXUS_TENANT_SLUG || null,
+        tenantSlug: nexusTenantSlug() || null,
         captchaId: captcha?.captchaId || null,
         captchaAnswer: captcha?.answer?.trim() || null,
       },
@@ -1907,7 +1912,7 @@ export async function requestPasswordReset(identifier: string): Promise<{ messag
   return request('POST', '/api/identity/auth/forgot-password', {
     auth: false,
     retryOnUnauthorized: false,
-    body: { identifier: identifier.trim(), tenantSlug: NEXUS_TENANT_SLUG || null },
+    body: { identifier: identifier.trim(), tenantSlug: nexusTenantSlug() || null },
   });
 }
 
@@ -1919,7 +1924,7 @@ export async function verifyPasswordResetCode(identifier: string, code: string):
   const result = await request<{ resetToken: string; expiresAtUtc: string }>('POST', '/api/identity/auth/forgot-password/verify', {
     auth: false,
     retryOnUnauthorized: false,
-    body: { identifier: identifier.trim(), code: code.trim(), tenantSlug: NEXUS_TENANT_SLUG || null },
+    body: { identifier: identifier.trim(), code: code.trim(), tenantSlug: nexusTenantSlug() || null },
   });
   return result.resetToken;
 }
@@ -2797,7 +2802,7 @@ function startTaskHub(userId: string): void {
   const hub = new HubConnectionBuilder()
     // The token travels as access_token; no cookies are needed. With credentials the browser's
     // negotiate request is refused by the API's CORS policy and live updates never connect.
-    .withUrl(`${NEXUS_SIGNALR_BASE_URL}/hubs/task-management`, { accessTokenFactory: hubAccessToken, withCredentials: false })
+    .withUrl(`${nexusSignalRBaseUrl()}/hubs/task-management`, { accessTokenFactory: hubAccessToken, withCredentials: false })
     .withAutomaticReconnect()
     // The library's own console errors (a dropped or refused connection) are expected and handled
     // here: one warning, then a retry while anyone is still listening.

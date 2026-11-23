@@ -1,7 +1,7 @@
 // The system's name, logo and browser-tab icon, as the administrator set them in «ظاهر سامانه»
 // (GET /api/platform/branding, readable before sign-in). Nothing set: the product's own.
 import { useSyncExternalStore } from 'react';
-import { NEXUS_API_BASE_URL, apiRequest } from '../services/nexusApi';
+import { nexusApiBaseUrl, apiRequest } from '../services/nexusApi';
 
 export const DEFAULT_SYSTEM_NAME = 'مدیریت پروژه (PM)';
 export const DEFAULT_LOGO = '/logo.svg';
@@ -103,7 +103,7 @@ function applyFavicon(href: string) {
 async function asDataUrl(path: string | null): Promise<string | null> {
   if (!path) return null;
   try {
-    const response = await fetch(`${NEXUS_API_BASE_URL}${path}`, { credentials: 'omit' });
+    const response = await fetch(`${nexusApiBaseUrl()}${path}`, { credentials: 'omit' });
     if (!response.ok) return null;
     const blob = await response.blob();
     return await new Promise<string | null>((resolve) => {
