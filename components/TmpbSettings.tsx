@@ -3,7 +3,7 @@ import { FeaturesHandbook } from './FeaturesHandbook';
 import { refreshBranding } from '../tmpb/utils/branding';
 import { SettingsView } from '../tmpb/components/SettingsView';
 import type { User } from '../tmpb/types';
-import { adoptExternalSession, forgetExternalSession, getSessionUser, updateMyProfile } from '../tmpb/services/nexusApi';
+import { adoptExternalSession, forgetExternalSession, getSessionUser, isExternalSessionBound, updateMyProfile } from '../tmpb/services/nexusApi';
 import { refreshSession, tokenStore } from '../services/api';
 import referenceCss from '../tmpb/generated.css?inline';
 
@@ -21,21 +21,21 @@ function useReferenceStyles() {
 
 /**
  * The reference screens talk to the backend with their own client. The product has already signed the person in, so
- * the client adopts that session once (same cookie, same backend) and is cleared when the person signs out.
+ * the client is bound to the product's session: every request sends the product's current token, so a new sign-in
+ * (after a session ended) is picked up at once. Cleared when the person signs out.
  */
 function useAdoptedSession(userId: string): { user: User | null; failed: boolean } {
   const [user, setUser] = useState<User | null>(() => {
     const known = getSessionUser();
-    return known && known.id === userId ? known : null;
+    return known && known.id === userId && isExternalSessionBound() ? known : null;
   });
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (user) return;
     let cancelled = false;
-    const access = tokenStore.access;
-    if (!access) { setFailed(true); return; }
-    void adoptExternalSession(access, async () => ((await refreshSession()) ? tokenStore.access : null)).then(adopted => {
+    if (!tokenStore.access) { setFailed(true); return; }
+    void adoptExternalSession(() => tokenStore.access, async () => ((await refreshSession()) ? tokenStore.access : null)).then(adopted => {
       if (cancelled) return;
       if (adopted && adopted.id === userId) setUser(adopted); else setFailed(true);
     });

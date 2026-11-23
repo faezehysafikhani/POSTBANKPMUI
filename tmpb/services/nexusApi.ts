@@ -447,6 +447,11 @@ function saveAuthResponse(auth: AuthResponse): void {
 /** An access token that is good for at least a little longer, renewed from the cookie when it is not. */
 async function ensureAccessToken(): Promise<string | null> {
   if (!readSession()) return null;
+  // PM product: the product's own client owns the session; its current token is always the one sent (never a copy that
+  // may belong to a session that has since ended and been replaced by a new sign-in).
+  if (externalAccess) {
+    return externalAccess() ?? ((await refreshSession()) ? externalAccess() : null);
+  }
   if (tokens && new Date(tokens.accessTokenExpiresAtUtc).getTime() - Date.now() > 20_000) {
     return tokens.accessToken;
   }
@@ -469,10 +474,7 @@ async function refreshSession(): Promise<boolean> {
   refreshInFlight = withRefreshLock(async () => {
     if (!readSession()) return false;
     if (externalRefresh) {
-      const accessToken = await externalRefresh();
-      if (!accessToken) return false;
-      tokens = { accessToken, accessTokenExpiresAtUtc: new Date(Date.now() + 10 * 60_000).toISOString() };
-      return true;
+      return !!(await externalRefresh());
     }
     try {
       const auth = await request<AuthResponse>('POST', '/api/identity/auth/refresh', {
@@ -573,8 +575,9 @@ async function request<T>(method: string, path: string, options: RequestOptions 
 
   const headers: Record<string, string> = { Accept: responseType === 'json' ? 'application/json' : '*/*' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
+  let accessToken: string | null = null;
   if (auth) {
-    const accessToken = await ensureAccessToken();
+    accessToken = await ensureAccessToken();
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
     // Only a request that follows a real interaction (click, key, scroll, touch, mouse move) tells
     // the server the user is there. Polling and background calls never do.
@@ -618,6 +621,10 @@ async function request<T>(method: string, path: string, options: RequestOptions 
   // page (and anything half-filled in it) stays where it is. Any other reason ends the session.
   if (endedReason === 'session.absolute_expired' && absoluteReauth && retryOnUnauthorized) {
     if (await absoluteReauth()) return request<T>(method, path, { ...options, retryOnUnauthorized: false });
+  }
+  // PM product: the product signed in again while this request was on its way with the previous session's token.
+  if (endedReason && externalAccess && retryOnUnauthorized && externalAccess() && externalAccess() !== accessToken) {
+    return request<T>(method, path, { ...options, retryOnUnauthorized: false });
   }
   if (endedReason) {
     endSession(endedReason);
@@ -1198,14 +1205,26 @@ export async function refreshCurrentUser(): Promise<User | null> {
  */
 /** PM product only: how the product renews its own session; the adopted session renews through it (one session, one token). */
 let externalRefresh: (() => Promise<string | null>) | null = null;
+/** PM product only: the product's current access token (read on every request, never copied). */
+let externalAccess: (() => string | null) | null = null;
 
-export async function adoptExternalSession(accessToken: string, refresh?: () => Promise<string | null>): Promise<User | null> {
-  externalRefresh = refresh ?? null;
+/** PM product only: whether this client is bound to the product's session (in this page load). */
+export const isExternalSessionBound = (): boolean => externalAccess !== null;
+
+/**
+ * PM product only: binds this client to the session the product already holds. `currentAccess` returns the product's
+ * access token as it is now, `refresh` renews it through the product's own client.
+ */
+export async function adoptExternalSession(currentAccess: () => string | null, refresh?: () => Promise<string | null>): Promise<User | null> {
+  const accessToken = currentAccess();
+  if (!accessToken) return null;
   try {
     const response = await fetch(buildUrl('/api/identity/auth/me'), { headers: { Authorization: `Bearer ${accessToken}` } });
     if (!response.ok) return null;
     const me = (await response.json()) as CurrentUserResponse;
-    tokens = { accessToken, accessTokenExpiresAtUtc: new Date(Date.now() + 10 * 60_000).toISOString() };
+    externalAccess = currentAccess;
+    externalRefresh = refresh ?? null;
+    tokens = null;
     writeSession({ user: me.user, permissions: me.permissions || [] });
     return { ...mapUserDto(me.user), permissions: me.permissions || [] };
   } catch {
@@ -1216,6 +1235,7 @@ export async function adoptExternalSession(accessToken: string, refresh?: () => 
 /** PM product only: forgets the adopted session when the product signs the person out (no server call: the product did it). */
 export function forgetExternalSession(): void {
   externalRefresh = null;
+  externalAccess = null;
   tokens = null;
   writeSession(null);
   clearPrivateData();
