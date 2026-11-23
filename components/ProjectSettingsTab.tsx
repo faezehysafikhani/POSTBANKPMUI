@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { formatDate, toPersianDigits } from '../utils';
 import { DynamicWorkflowSettingsEditor } from './DynamicWorkflowSettingsEditor';
-import { emptyWorkflowSettings, useGovernance } from '../directory/GovernanceContext';
+import { emptyWorkflowSettings, TABS_OF_ENTITY, useGovernance } from '../directory/GovernanceContext';
 
 export const ProjectSettingsTab = ({
     project,
@@ -145,6 +145,24 @@ export const ProjectSettingsTab = ({
             ...prev,
             [tabId]: directValue !== undefined ? directValue : !prev[tabId]
         }));
+    };
+
+    /**
+     * A chain edited here (a stage added, removed, renamed, its approver changed) is this project's own chain: its
+     * section switches to «منحصربفرد پروژه». Only such sections are saved for the project, so an edit made while the
+     * section still followed the organisation's chain was dropped on save, with a success message.
+     */
+    const handleUpdateWorkflowSettings = (next: DynamicWorkflowSettings) => {
+        const edited = (Object.keys(next) as WorkflowEntityType[])
+            .filter(key => JSON.stringify(next[key] ?? []) !== JSON.stringify(localCustomWorkflowSettings[key] ?? []));
+        setLocalCustomWorkflowSettings(next);
+        if (edited.length) {
+            setLocalTabWorkflows(prev => {
+                const updated = { ...prev };
+                for (const key of edited) for (const tab of TABS_OF_ENTITY[key] ?? []) updated[tab] = true;
+                return updated;
+            });
+        }
     };
 
     const handleSave = async () => {
@@ -543,7 +561,7 @@ export const ProjectSettingsTab = ({
                                         },
                                             React.createElement(DynamicWorkflowSettingsEditor, {
                                                 settings: localCustomWorkflowSettings,
-                                                onUpdateSettings: setLocalCustomWorkflowSettings,
+                                                onUpdateSettings: handleUpdateWorkflowSettings,
                                                 users: users || [],
                                                 language: language,
                                                 isDark: isDark,
