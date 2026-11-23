@@ -6,18 +6,19 @@ Plan and the list of backend additions: `docs/ui-integration/PLAN.md` in the bac
 
 ## Running it
 
-1. Backend: run the SQL scripts from `docs/upgrade` of the backend repository, then start `PostBank.Api` (NOT `NexusCore.Api`: that host does not register the project-management modules) (default `http://localhost:5251`).
-2. UI: `npm install`, copy `.env.example` to `.env.local`, set `BACKEND_URL` if the backend is elsewhere, `npm run dev` (http://localhost:3000).
-   `server.ts` forwards every `/api` request that is not an AI route to the backend, so the browser never talks to it directly (no CORS).
+1. Backend: run the SQL scripts from `docs/upgrade` of the backend repository, then start `PostBank.Api` (NOT `NexusCore.Api`: that host does not register the project-management modules) (its https address, e.g. `https://localhost:7443`, goes into `apiBaseUrl` below).
+2. UI: `npm install`, set the backend's address in `public/config/runtime-config.json` (`apiBaseUrl`, default `https://localhost:7443`), `npm run dev` (http://localhost:3000).
+   That file is the only place the address is set: every API call and the SignalR hub use it, and `server.ts` reads it to allow it in the Content-Security-Policy.
+   The browser calls the backend directly, so the backend's CORS settings must allow the UI's origin.
 3. Sign in with the backend's administrator account (a username - the national code - and password; after a failed attempt a CAPTCHA is asked for).
 
 ## Security (what the UI side does, and what a deployment must set)
 
 * **Tokens:** the access token lives in memory only (never in localStorage / sessionStorage); the refresh token is the backend's HttpOnly cookie. A reload renews the token through that cookie.
 * **Headers (`server.ts`, every answer):** Content-Security-Policy (production: scripts from this origin only, nothing from other origins, `frame-ancestors 'none'`), X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, Cross-Origin-Opener/Resource-Policy; HSTS when served over HTTPS. No `X-Powered-By`.
-* **Proxy:** only paths under `/api` reach the backend (`..`, encoded dots and backslashes are refused with 400); a client-sent `X-Forwarded-For` is ignored unless `TRUST_PROXY=1`; bodies above `MAX_BODY_MB` get 413; a backend failure answers with a generic message (details only in the server log).
+* **Backend address:** only `apiBaseUrl` of `config/runtime-config.json`; the CSP lets the page connect to that origin (and its websocket) and nowhere else. A build can further restrict it with `VITE_ALLOWED_API_ORIGINS`.
 * **Production files:** `dist/server.cjs`, its source map and any `.map` are never served.
-* **Deployment must:** serve the BFF over HTTPS (the refresh cookie is `Secure` outside Development); set `TRUST_PROXY=1` only behind a reverse proxy that sets X-Forwarded-For / -Proto; keep the backend port reachable only from the BFF (it listens on localhost by default); give the backend a real `Jwt__SigningKey` (the committed one is a placeholder the backend refuses in production); turn `Database:SeedOnStartup` off after the first setup; set `AllowedHosts` to the real host name.
+* **Deployment must:** serve the UI over HTTPS (the refresh cookie is `Secure` outside Development); set `TRUST_PROXY=1` only behind a reverse proxy that sets X-Forwarded-For / -Proto; allow only the UI's origin in the backend's CORS settings; give the backend a real `Jwt__SigningKey` (the committed one is a placeholder the backend refuses in production); turn `Database:SeedOnStartup` off after the first setup; set `AllowedHosts` to the real host name.
 
 ## Where the connection lives
 

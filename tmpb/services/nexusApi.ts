@@ -38,6 +38,7 @@ import { iranDateTimeToISO, isoToIranDateTimeParts } from '../utils/jalali';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { NETWORK_ERROR, TIMEOUT_ERROR, persianApiMessage } from '../utils/errorMessages';
 import { normalizeAvatar } from '../utils/avatars';
+import { apiBaseUrl, requestTimeoutMs, tenantSlug } from '../runtimeConfig';
 import { activePostsHeader } from '../utils/activePost';
 import { clearPrivateData } from '../utils/privateStorage';
 import type { ServerNotificationDto } from '../utils/serverNotifications';
@@ -46,55 +47,11 @@ import type { ServerNotificationDto } from '../utils/serverNotifications';
 // Configuration
 // ---------------------------------------------------------------------------
 
-const env = ((import.meta as any).env || {}) as Record<string, string | undefined | boolean>;
-
-interface RuntimeConfig {
-  apiBaseUrl?: string;
-  signalRBaseUrl?: string;
-  tenantSlug?: string;
-  requestTimeoutMs?: number | string;
-}
-
-declare global {
-  interface Window {
-    __TMPB_RUNTIME_CONFIG__?: RuntimeConfig;
-  }
-}
-
-/**
- * The deployment's settings, read at call time. bootRuntimeConfig.ts fills window.__TMPB_RUNTIME_CONFIG__ after an
- * await, and a top-level await does not hold back the modules imported next to it: this module is evaluated before
- * the file has been read. Reading the settings once here would freeze the defaults (same origin) in place.
- */
-const runtimeConfig = (): RuntimeConfig =>
-  (typeof window !== 'undefined' && window.__TMPB_RUNTIME_CONFIG__) || {};
-
-function cleanBaseUrl(value: unknown): string {
-  return typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
-}
-
-const isDevelopment = env.DEV === true || env.MODE === 'development';
-
-/** Backend origin. Empty means same-origin: /api/... */
-export const nexusApiBaseUrl = (): string => cleanBaseUrl(
-  runtimeConfig().apiBaseUrl || (isDevelopment ? env.VITE_DEV_API_BASE_URL : '')
-);
-
-/** SignalR origin. Empty means same-origin: /hubs/... */
-const nexusSignalRBaseUrl = (): string => cleanBaseUrl(
-  runtimeConfig().signalRBaseUrl
-  || runtimeConfig().apiBaseUrl
-  || (isDevelopment ? env.VITE_DEV_SIGNALR_BASE_URL || env.VITE_DEV_API_BASE_URL : '')
-);
-
-/** Optional tenant slug sent with login. Leave empty for a single-tenant install. */
-const nexusTenantSlug = (): string => String(runtimeConfig().tenantSlug || env.VITE_NEXUS_TENANT_SLUG || '').trim();
-
-const requestTimeoutMs = (): number => {
-  const fromRuntime = Number(runtimeConfig().requestTimeoutMs);
-  const fromEnv = Number(env.VITE_API_TIMEOUT_MS);
-  return fromRuntime > 0 ? fromRuntime : (fromEnv > 0 ? fromEnv : 30000);
-};
+/** Backend origin: `apiBaseUrl` of config/runtime-config.json (tmpb/runtimeConfig.ts). Empty means same-origin. */
+export const nexusApiBaseUrl = (): string => apiBaseUrl().replace(/\/+$/, '');
+/** The SignalR hub lives on the same backend. */
+const nexusSignalRBaseUrl = nexusApiBaseUrl;
+const nexusTenantSlug = (): string => tenantSlug().trim();
 
 
 /** Name of the seeded system role (NexusCore.Infrastructure/Persistence/DefaultDataSeeder.cs). */

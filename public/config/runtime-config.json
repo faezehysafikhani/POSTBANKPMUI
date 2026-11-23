@@ -1,6 +1,5 @@
 {
-  "apiBaseUrl": "",
-  "signalRBaseUrl": "",
+  "apiBaseUrl": "https://localhost:7443",
   "tenantSlug": "",
   "requestTimeoutMs": 30000
 }

@@ -12,8 +12,9 @@ npm run dev
 
 Open http://localhost:3000. Run only one development server per port.
 
-This branch retains the existing NexusCore/.NET backend integration and server-side API proxy.
-Start the API separately (default `http://localhost:5251`), or set `BACKEND_URL` when running the UI server.
+Start the API separately. Which backend the UI talks to is set in one place only: `apiBaseUrl` in
+`public/config/runtime-config.json` (default `https://localhost:7443`; `dist/config/runtime-config.json` once built).
+The browser calls that address directly, so the backend must allow this UI's origin (CORS).
 Use an account registered in the backend; local demo users are not used on this branch.
 
 The Post Bank interface includes compact glass dashboard cards, a unified portfolio,

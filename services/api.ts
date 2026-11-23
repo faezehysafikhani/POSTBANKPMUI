@@ -1,6 +1,6 @@
 /**
  * The only door to the backend. The UI holds no business rules: it sends what the user typed and shows what the
- * backend answers. Requests go to this app's own origin; server.ts forwards /api to the .NET backend.
+ * backend answers. Requests go to the backend named by `apiBaseUrl` in config/runtime-config.json.
  *
  * Errors: the backend answers failures as RFC 7807 problem details (`title` is the error code such as "conflict",
  * `detail` the message). They are returned as `ApiError` so screens can show the backend's own message.
@@ -8,6 +8,7 @@
 
 import { takeActivityFlag } from '../tmpb/utils/sessionActivity';
 import { activePostsHeader } from '../tmpb/utils/activePost';
+import { apiBaseUrl } from '../tmpb/runtimeConfig';
 
 export interface ApiError {
   status: number;
@@ -30,8 +31,8 @@ dropLegacyTokens();
 /** The refresh token, kept in the page only in "body" mode (see usesBodyToken); in cookie mode it is the backend's HttpOnly cookie. */
 const REFRESH_KEY = 'pms_session_refresh';
 
-/** The API's address from config/runtime-config.json: empty means this page's own origin (the default). */
-export const apiBaseUrl = (): string => String((window as any).__TMPB_RUNTIME_CONFIG__?.apiBaseUrl || '');
+/** The API's address: `apiBaseUrl` of config/runtime-config.json (see tmpb/runtimeConfig.ts), the only place it is set. */
+export { apiBaseUrl };
 /** Absolute address of an /api path: the page's origin, or the API site named in the runtime config. */
 export const apiUrl = (url: string): string => (url.startsWith('/api/') || url === '/api' ? apiBaseUrl() + url : url);
 

@@ -1,4 +1,8 @@
 /**
+ * THE ONE PLACE that says which backend the UI talks to: `apiBaseUrl` in /config/runtime-config.json
+ * (public/config in development, dist/config once built). Every API call, the SignalR hub and server.ts's
+ * Content-Security-Policy take the address from there; nothing else (no .env, no VITE_* variable) names it.
+ *
  * The deployment's settings (API address, tenant, timeout) come from /config/runtime-config.json,
  * a plain data file an operator edits on the server without rebuilding. It is data, not a
  * script: a script file that anyone with write access to the web folder could extend would run
@@ -10,10 +14,28 @@
  */
 export interface RuntimeConfig {
   apiBaseUrl?: string;
-  signalRBaseUrl?: string;
   tenantSlug?: string;
   requestTimeoutMs?: number;
 }
+
+declare global {
+  interface Window {
+    __TMPB_RUNTIME_CONFIG__?: RuntimeConfig;
+  }
+}
+
+/**
+ * The settings, read at call time. bootRuntimeConfig.ts fills them after an await, and a top-level await does not hold
+ * back the modules imported next to it, so a value read once at module load would still be the empty default.
+ */
+const current = (): RuntimeConfig => (typeof window !== 'undefined' && window.__TMPB_RUNTIME_CONFIG__) || {};
+
+/** The backend's origin, e.g. https://localhost:7443. Empty means the page's own origin. */
+export const apiBaseUrl = (): string => current().apiBaseUrl || '';
+/** Optional tenant slug sent with login. Empty for a single-tenant install. */
+export const tenantSlug = (): string => current().tenantSlug || '';
+/** How long an API request may take. */
+export const requestTimeoutMs = (): number => current().requestTimeoutMs || 30000;
 
 /** Same origin as the page: the safe default. */
 const SAME_ORIGIN = '';
@@ -38,7 +60,6 @@ export function sanitizeRuntimeConfig(raw: unknown, allowedOrigins: string[] = [
   const source = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
   const config: RuntimeConfig = {
     apiBaseUrl: cleanAddress(source.apiBaseUrl, allowedOrigins, pageOrigin),
-    signalRBaseUrl: cleanAddress(source.signalRBaseUrl, allowedOrigins, pageOrigin),
   };
   if (typeof source.tenantSlug === 'string' && /^[A-Za-z0-9-]{0,80}$/.test(source.tenantSlug.trim())) {
     config.tenantSlug = source.tenantSlug.trim();
