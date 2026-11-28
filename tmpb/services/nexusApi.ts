@@ -625,7 +625,8 @@ async function exchange<T>(method: string, path: string, options: RequestOptions
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), requestTimeoutMs());
+  const limit = requestTimeoutMs();
+  const timer = limit > 0 ? setTimeout(() => controller.abort(), limit) : undefined;
 
   let response: Response;
   try {

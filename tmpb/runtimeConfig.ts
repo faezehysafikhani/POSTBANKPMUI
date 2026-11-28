@@ -34,8 +34,8 @@ const current = (): RuntimeConfig => (typeof window !== 'undefined' && window.__
 export const apiBaseUrl = (): string => current().apiBaseUrl || '';
 /** Optional tenant slug sent with login. Empty for a single-tenant install. */
 export const tenantSlug = (): string => current().tenantSlug || '';
-/** How long an API request may take. */
-export const requestTimeoutMs = (): number => current().requestTimeoutMs || 30000;
+/** How long an API request may take before this client gives up on it; 0 (the default) means it waits for the server's answer. */
+export const requestTimeoutMs = (): number => current().requestTimeoutMs ?? 0;
 
 /** Same origin as the page: the safe default. */
 const SAME_ORIGIN = '';
@@ -65,7 +65,7 @@ export function sanitizeRuntimeConfig(raw: unknown, allowedOrigins: string[] = [
     config.tenantSlug = source.tenantSlug.trim();
   }
   const timeout = Number(source.requestTimeoutMs);
-  if (Number.isFinite(timeout) && timeout >= 1000 && timeout <= 120_000) {
+  if (Number.isFinite(timeout) && (timeout === 0 || (timeout >= 1000 && timeout <= 120_000))) {
     config.requestTimeoutMs = Math.round(timeout);
   }
   return config;
