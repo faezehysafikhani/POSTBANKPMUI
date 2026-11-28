@@ -418,6 +418,19 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
     const isPMOrOwnerOrAdmin = !!(currentUser && (currentUser.role === 'Admin' ||
         String(projectData.projectManagerId) === String(currentUser.id) ||
         String(projectData.ownerId || 1) === String(currentUser.id)));
+    // The approval state decides what can be done (the same rules the backend enforces).
+    const isPendingApproval = projectData.approvalStatus === 'Pending Approval';
+    const approvalNotice = isPendingApproval
+        ? React.createElement("div", { className: "info-banner", role: "status", style: { margin: '0 0 1rem', padding: '0.75rem 1rem', borderRadius: '10px', background: 'var(--secondary-color)', border: '1px solid var(--border-color)' } },
+            language === 'fa' ? 'منشور این پروژه در انتظار تأیید است و تا پایان بررسی قابل ویرایش نیست.' : 'The charter is waiting for approval and cannot be edited until it is decided.')
+        : projectData.approvalStatus === 'Rejected'
+            ? React.createElement("div", { className: "info-banner", role: "alert", style: { margin: '0 0 1rem', padding: '0.75rem 1rem', borderRadius: '10px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b' } },
+                React.createElement("strong", null, language === 'fa' ? 'منشور رد شد. ' : 'The charter was rejected. '),
+                projectData.approvalComment
+                    ? (language === 'fa' ? `دلیل: ${projectData.approvalComment}` : `Reason: ${projectData.approvalComment}`)
+                    : (language === 'fa' ? 'دلیلی ثبت نشده است.' : 'No reason was given.'),
+                React.createElement("div", { style: { marginTop: '0.35rem' } }, language === 'fa' ? 'منشور را اصلاح کنید و دوباره برای تأیید ارسال کنید.' : 'Correct the charter and send it for approval again.'))
+            : null;
     const renderActiveTabContent = () => {
         const isPMOrAdmin = isPMOrOwnerOrAdmin;
         const getFilteredTabItems = <T extends {
@@ -440,7 +453,8 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
         };
         switch (activeTab) {
             case 'charter':
-                return React.createElement(ProjectCharterForm, { projectData: projectData, setProjectData: setProjectData, users: users, calendars: calendars, owningUnits: owningUnits, projectStatuses: projectStatuses, currentUser: currentUser, isReadOnly: !isPMOrOwnerOrAdmin, isEditing: isEditing });
+                // The backend refuses charter edits while the charter is with the approvers (project.pending_approval).
+                return React.createElement(Fragment, null, approvalNotice, React.createElement(ProjectCharterForm, { projectData: projectData, setProjectData: setProjectData, users: users, calendars: calendars, owningUnits: owningUnits, projectStatuses: projectStatuses, currentUser: currentUser, isReadOnly: !isPMOrOwnerOrAdmin || isPendingApproval, isEditing: isEditing }));
             case 'team':
                 return React.createElement(ProjectTeamTab, {
                     allUsers: users,
@@ -684,7 +698,7 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
         else {
             return React.createElement(Fragment, null,
             /* Main buttons first for draft/new projects */
-            isPMOrOwnerOrAdmin && React.createElement("button", { onClick: (e) => handleSaveOrUpdateProject(e, isEditing ? 'update' : 'save_draft'), className: "save-btn", title: isEditing ? t('updateProject') : t('saveInformation'), "aria-label": isEditing ? t('updateProject') : t('saveInformation') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "save")), isPMOrOwnerOrAdmin && projectData.approvalStatus !== 'Pending Approval' && React.createElement("button", { onClick: (e) => handleSaveOrUpdateProject(e, 'send'), className: "action-button send-approval-btn", disabled: false, title: false ? (language === 'fa' ? 'در حال صحه‌سنجی هوشمند...' : 'Validating Charter...') : t('sendForApproval'), "aria-label": false ? (language === 'fa' ? 'در حال صحه‌سنجی هوشمند...' : 'Validating Charter...') : t('sendForApproval') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: `material-symbols-outlined ${false ? 'spin' : ''}` }, false ? "sync" : "send")), React.createElement("button", {
+            isPMOrOwnerOrAdmin && !isPendingApproval && React.createElement("button", { onClick: (e) => handleSaveOrUpdateProject(e, isEditing ? 'update' : 'save_draft'), className: "save-btn", title: isEditing ? t('updateProject') : t('saveInformation'), "aria-label": isEditing ? t('updateProject') : t('saveInformation') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: "material-symbols-outlined" }, "save")), isPMOrOwnerOrAdmin && projectData.approvalStatus !== 'Pending Approval' && React.createElement("button", { onClick: (e) => handleSaveOrUpdateProject(e, 'send'), className: "action-button send-approval-btn", disabled: false, title: false ? (language === 'fa' ? 'در حال صحه‌سنجی هوشمند...' : 'Validating Charter...') : t('sendForApproval'), "aria-label": false ? (language === 'fa' ? 'در حال صحه‌سنجی هوشمند...' : 'Validating Charter...') : t('sendForApproval') } as React.HTMLAttributes<HTMLButtonElement>, React.createElement("span", { className: `material-symbols-outlined ${false ? 'spin' : ''}` }, false ? "sync" : "send")), React.createElement("button", {
                 className: "action-button no-print",
                 onClick: () => exportDashboardToLandscapePdf(`${projectData.name || 'Project'}_${activeTab}`),
                 title: language === 'fa' ? 'خروجی PDF' : 'Export to PDF',
@@ -729,10 +743,6 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
         const isCharter = tab.id === 'charter';
         let isDisabled = !isCharter && !projectData.id;
         let disabledTitle = isDisabled ? t('charterSaveFirst') : '';
-        if (tab.id === 'schedule' && projectData.type === 'agile' && projectData.approvalStatus !== 'Approved') {
-            isDisabled = true;
-            disabledTitle = t('projectMustBeApproved');
-        }
         return React.createElement("button", {
             key: tab.id,
             className: `tab-item ${activeTab === tab.id ? 'active' : ''}`,

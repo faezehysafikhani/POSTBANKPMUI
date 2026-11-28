@@ -95,6 +95,9 @@ const ProjectsContext = React.createContext<ProjectsState>(null as unknown as Pr
 
 const fail = (message?: string, code?: string): ProjectOutcome => ({ ok: false, message, code });
 
+/** Workflow's status of an approval that still waits for a decision. */
+const WORKFLOW_IN_PROGRESS = 0;
+
 /**
  * Transitional: the AI summary / relevance notes on a document are not held by the backend (the AI features are not part of this
  * connection); they stay in this browser, keyed by item id, and are put back on the documents the backend returns.
@@ -187,7 +190,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
       return null;
     }
 
-    const list = visible.value ?? [];
+    let list = visible.value ?? [];
     const members = list.length ? await projectTeam.forProjects(list.map(p => p.id)) : { ok: true, value: [] as BackendProjectMember[] };
     setError(members.ok ? null : members.error?.message ?? 'Loading the teams failed.');
 
@@ -203,6 +206,16 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
       const found = await approvals.forSubjects(SubjectType.project, sentProjects);
       // The newest comes first: that one is the project's current approval.
       for (const instance of found.value ?? []) if (!projectFlow.has(instance.subjectId)) projectFlow.set(instance.subjectId, instance);
+
+      // A project still "pending" whose approval is no longer running (decided, or withdrawn after a failure): the backend
+      // puts its state right, and that state is what is shown.
+      const stale = list.filter(p => p.approvalStatus === BackendApprovalStatus.PendingApproval
+        && (!projectFlow.has(p.id) || projectFlow.get(p.id)!.status !== WORKFLOW_IN_PROGRESS));
+      if (stale.length) {
+        const repaired = await Promise.all(stale.map(p => projectsApi.syncApproval(p.id)));
+        const byId = new Map(repaired.filter(r => r.ok && r.value).map(r => [r.value!.id, r.value!]));
+        list = list.map(p => byId.get(p.id) ?? p);
+      }
     }
 
     const registers = await loadRegisters(list.map(p => p.id), people);
@@ -276,8 +289,9 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
     if (submit) {
       const submitted = await projectsApi.submit(id);
       if (!submitted.ok) {
-        await load();
-        return fail(submitted.error?.message, submitted.error?.code);
+        // The project itself is saved: the screen opens it for editing instead of offering to create it again.
+        const list = await load();
+        return { ...fail(submitted.error?.message, submitted.error?.code), project: list?.find(p => p.id === id) };
       }
     }
 
@@ -498,11 +512,21 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
       if (!created.ok || !created.value) return fail(created.error?.message, created.error?.code);
       // A project that arrives with register items already filled in (the AI assistant builds them) has them saved with it.
       const synced = await registerOps.syncRegisters(created.value.id, {}, project, { planned: 0, actual: 0 });
-      if (!synced.ok) console.warn('Some register items of the new project were not saved:', synced.message);
       // Activities / tasks / sprints that arrive with the new project (the AI assistant builds them) go in before it is submitted, so the
       // backend's checks on submission see them.
       const planned = await planningOps.syncNewProjectPlan(created.value.id, project);
-      if (!planned.ok) console.warn('Some planning items of the new project were not saved:', planned.message);
+      if (!synced.ok || !planned.ok) {
+        // The project exists, but part of what came with it did not save: it is not sent for approval incomplete. The user is told
+        // what failed and the project opens for editing (finish without submitting still sets the team).
+        const kept = await finish(created.value.id, project, false);
+        const what = [!synced.ok ? synced.message : null, !planned.ok ? planned.message : null].filter(Boolean).join(' ');
+        return {
+          ok: false,
+          code: 'project.partially_saved',
+          message: `پروژه ذخیره شد، ولی بخشی از اطلاعات همراه آن ثبت نشد${what ? ` (${what})` : ''}. پروژه برای تأیید ارسال نشد؛ آن را کامل کنید و دوباره ارسال کنید.`,
+          project: kept.project
+        };
+      }
       return finish(created.value.id, project, submit);
     },
 

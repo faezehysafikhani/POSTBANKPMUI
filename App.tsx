@@ -266,8 +266,10 @@ const AppContent = () => {
         const outcome = await projectsState.saveProject(project, mode === 'sent');
         if (!outcome.ok) {
             setInfoModal({ title: t('error'), message: projectFailureMessage(outcome) });
+            // The project was created but not sent (or not everything with it saved): it opens for editing, so trying again
+            // updates and sends it instead of creating it a second time (which the backend refuses: project.name_exists).
             if (outcome.project)
-                handleNavigate('portfolio');
+                handleNavigate(`create_${outcome.project.type}_details`, { project: outcome.project, type: outcome.project.type });
             return;
         }
         if (mode === 'draft') {
@@ -292,7 +294,17 @@ const AppContent = () => {
             setInfoModal({ title: t('error'), message: projectFailureMessage(outcome) });
             return;
         }
-        if (mode === 'sent') {
+        // «تصمیم ۲»: changing the manager, dates, cost, goal or requirements of an approved charter sends it for approval again.
+        const before = projects.find(p => p.id === project.id);
+        if (mode !== 'sent' && before?.approvalStatus === 'Approved' && outcome.project?.approvalStatus === 'Pending Approval') {
+            setInfoModal({
+                title: t('updateProject'),
+                message: language === 'fa'
+                    ? 'تغییرات ذخیره شد. چون مدیر، تاریخ‌ها، هزینه، هدف یا نیازمندی‌های منشور تغییر کرد، منشور دوباره برای تأیید ارسال شد. پروژه در این مدت فعال می‌ماند.'
+                    : 'Saved. The manager, dates, cost, goal or requirements changed, so the charter was sent for approval again. The project stays active meanwhile.'
+            });
+        }
+        else if (mode === 'sent') {
             setInfoModal(outcome.project?.approvalStatus === 'Approved'
                 ? { title: t('updateProject'), message: language === 'fa' ? 'پروژه با موفقیت فعال گردید.' : 'Project has been successfully activated.' }
                 : { title: t('sendForApproval'), message: t('projectSubmittedForApproval') });
