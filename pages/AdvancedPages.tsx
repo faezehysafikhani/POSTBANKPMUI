@@ -67,7 +67,7 @@ export const CalendarManagementPage = ({ calendars, onNavigate, onDelete }: {
 
 export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     onNavigate: (page: string, context?: any) => void,
-    onSave: (calendar: Calendar) => Promise<Outcome>,
+    onSave: (calendar: Calendar, confirmed?: boolean) => Promise<Outcome & { needsConfirm?: boolean }>,
     existingCalendar?: Calendar | null
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
@@ -111,7 +111,9 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
     }, [currentDate]);
 
     const [saveError, setSaveError] = useState('');
-    const handleSave = async () => {
+    // Set when saving would move the plan of approved projects: the save waits for the user's «ذخیره» on this warning.
+    const [confirmMessage, setConfirmMessage] = useState('');
+    const handleSave = async (confirmed = false) => {
         if (saving) return;
         const name = calendar.name.trim();
         if (!name) {
@@ -120,9 +122,14 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
         }
 
         setSaveError('');
+        setConfirmMessage('');
         setSaving(true);
         try {
-            const outcome = await onSave({ ...calendar, name });
+            const outcome = await onSave({ ...calendar, name }, confirmed);
+            if (!outcome.ok && outcome.needsConfirm) {
+                setConfirmMessage(outcome.message ?? '');
+                return;
+            }
             if (!outcome.ok) {
                 setSaveError(outcome.message ?? t('error'));
                 return;
@@ -292,6 +299,11 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                 )
             ),
             saveError && React.createElement("p", { role: "alert", className: "calendar-save-error" }, saveError),
+            confirmMessage && React.createElement("div", { id: "calendar-impact-warning", role: "alertdialog",
+                style: { padding: '0.75rem 1rem', margin: '0 0 0.75rem 0', borderRadius: '8px', background: '#fffbeb', border: '1px solid #fcd34d', color: '#92400e', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' } },
+                React.createElement("span", { style: { flex: 1 } }, confirmMessage),
+                React.createElement("button", { id: "calendar-impact-confirm", type: "button", className: "btn btn-primary", disabled: saving, onClick: () => handleSave(true) }, language === 'fa' ? 'ذخیره' : 'Save'),
+                React.createElement("button", { id: "calendar-impact-cancel", type: "button", className: "btn btn-secondary", onClick: () => setConfirmMessage('') }, language === 'fa' ? 'انصراف' : 'Cancel')),
             React.createElement("div", { className: "edit-calendar-container" },
                 React.createElement("div", { className: "calendar-sidebar" },
                     React.createElement("div", null,
@@ -324,7 +336,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                     ),
                     React.createElement("div", { className: "calendar-sidebar-actions" },
                         React.createElement("button", { onClick: () => setIsHolidaysListModalOpen(true), className: "action-button" } as React.HTMLAttributes<HTMLButtonElement>, t('holidays')),
-                        React.createElement("button", { onClick: handleSave, className: "save-btn", disabled: saving } as React.HTMLAttributes<HTMLButtonElement>, saving ? (language === 'fa' ? 'در حال ذخیره…' : 'Saving…') : t('save'))
+                        React.createElement("button", { onClick: () => handleSave(false), className: "save-btn", disabled: saving } as React.HTMLAttributes<HTMLButtonElement>, saving ? (language === 'fa' ? 'در حال ذخیره…' : 'Saving…') : t('save'))
                     )
                 ),
                 React.createElement("div", { className: "calendar-main" },

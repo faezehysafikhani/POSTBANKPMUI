@@ -447,10 +447,12 @@ const AppContent = () => {
         const { type, id, status: defaultStatus } = approvalCommentModalState;
         const status = statusOverride || defaultStatus;
         setApprovalCommentModalState(null);
+        // After a decision the inbox is read again, so the decided item leaves the approval list at once.
+        const refreshInbox = () => void governance.refreshInbox();
         if (type === 'project') {
             projectsState.decide('project', id, id, status === 'Approved', comment).then(outcome => setInfoModal(outcome.ok
                 ? { title: t('updateStatus'), message: t('projectApprovalReviewed') }
-                : { title: t('error'), message: outcome.message || t('error') }));
+                : { title: t('error'), message: outcome.message || t('error') })).finally(refreshInbox);
             return;
         }
         const update = progressUpdates.find(up => up.id === id);
@@ -465,27 +467,33 @@ const AppContent = () => {
                             ? `پیشرفت اعلامی رد شد اما درصد پیشرفت تاییدی (${toPersianDigits(options!.approvedProgress!)}٪) ثبت گردید و ملاک تمام محاسبات قرار گرفت.`
                             : `Submitted progress was rejected, but confirmed progress (${options!.approvedProgress}%) was saved and used for calculations.`)
                         : t('reviewComplete') }
-                : { title: t('error'), message: outcome.message || t('error') }));
+                : { title: t('error'), message: outcome.message || t('error') })).finally(refreshInbox);
             return;
         }
         // A request to change an action's status.
         if (update.actionId) {
             actionsState.decide(update.id, status === 'Approved', comment).then(outcome => setInfoModal(outcome.ok
                 ? { title: t('updateStatus'), message: t('reviewComplete') }
-                : { title: t('error'), message: outcome.message || t('error') }));
+                : { title: t('error'), message: outcome.message || t('error') })).finally(refreshInbox);
         }
     };
     ;
     // --- CALENDAR & ADVANCED HANDLERS ---
-    const handleSaveCalendar = async (calendar: Calendar) => {
+    const handleSaveCalendar = async (calendar: Calendar, confirmed = false) => {
         // «تصمیم ۴»: changing a calendar moves the computed plan of every project on it; their saved baselines stay as they are.
-        if (calendar.id) {
+        // The warning is shown on the page itself (not a browser dialog) and the save waits for an explicit «ذخیره».
+        if (calendar.id && !confirmed) {
             const usage = await projectsApi.calendarUsage(String(calendar.id));
-            const approved = usage.ok ? usage.value?.approvedProjects ?? 0 : 0;
-            if (approved > 0 && !window.confirm(language === 'fa'
-                ? `این تقویم در ${toPersianDigits(approved)} پروژه‌ی تأییدشده استفاده می‌شود. با ذخیره‌ی تغییرات، برنامه‌ی زمان‌بندی محاسبه‌شده‌ی این پروژه‌ها تغییر می‌کند (خط‌های مبنای ذخیره‌شده تغییر نمی‌کنند). ادامه می‌دهید؟`
-                : `${approved} approved project(s) use this calendar. Saving changes their computed schedules (saved baselines do not change). Continue?`)) {
-                return { ok: false, message: language === 'fa' ? 'ذخیره انجام نشد.' : 'Not saved.' };
+            if (!usage.ok) {
+                return { ok: false, needsConfirm: true, message: language === 'fa'
+                    ? 'بررسی پروژه‌هایی که از این تقویم استفاده می‌کنند انجام نشد. ممکن است برنامه‌ی زمان‌بندی پروژه‌های تأییدشده تغییر کند. ذخیره شود؟'
+                    : 'Could not check which projects use this calendar. Approved projects\' schedules may change. Save anyway?' };
+            }
+            const approved = usage.value?.approvedProjects ?? 0;
+            if (approved > 0) {
+                return { ok: false, needsConfirm: true, message: language === 'fa'
+                    ? `این تقویم در ${toPersianDigits(approved)} پروژه‌ی تأییدشده استفاده می‌شود. با ذخیره‌ی تغییرات، برنامه‌ی زمان‌بندی محاسبه‌شده‌ی این پروژه‌ها تغییر می‌کند (خط‌های مبنای ذخیره‌شده تغییر نمی‌کنند). ذخیره شود؟`
+                    : `${approved} approved project(s) use this calendar. Saving changes their computed schedules (saved baselines do not change). Save?` };
             }
         }
         return directory.saveCalendar(calendar);

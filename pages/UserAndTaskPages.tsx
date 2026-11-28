@@ -954,8 +954,9 @@ export const ApprovalCenterPage = ({ progressUpdates, projects, actions, users, 
                 window.alert(outcome.message || (language === 'fa' ? 'انجام نشد.' : 'The decision could not be recorded.'));
         }
     };
-    const handleApproveTabItem = (projectId: string, tabId: string, itemId: string, comment?: string) => void decideTabItem(projectId, tabId, itemId, true, comment);
-    const handleRejectTabItem = (projectId: string, tabId: string, itemId: string, comment?: string) => void decideTabItem(projectId, tabId, itemId, false, comment);
+    // After a decision the inbox is read again, so the decided item leaves the list at once (no second click on it).
+    const handleApproveTabItem = (projectId: string, tabId: string, itemId: string, comment?: string) => void decideTabItem(projectId, tabId, itemId, true, comment).finally(() => void governance.refreshInbox());
+    const handleRejectTabItem = (projectId: string, tabId: string, itemId: string, comment?: string) => void decideTabItem(projectId, tabId, itemId, false, comment).finally(() => void governance.refreshInbox());
     const pendingActivityApprovals = useMemo(() => {
         return progressUpdates
             .filter(up => up.status === 'Pending Approval' && up.activityId && mine(up.id))
