@@ -730,3 +730,11 @@ export interface SCurveDataPoint {
     dayIndex: number;
 }
 
+
+
+/**
+ * «تصمیم ۱» (M8): the one definition of an active project, the same as the backend's dashboard and analytics: an approved charter
+ * and a working status (in progress or on hold).
+ */
+export const isActiveProject = (project: { approvalStatus?: string; status?: string }): boolean =>
+  project.approvalStatus === 'Approved' && (project.status === 'In Progress' || project.status === 'On Hold');

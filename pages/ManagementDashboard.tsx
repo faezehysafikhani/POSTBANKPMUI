@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ActionItem, Calendar, Project, User } from '../types';
 import { PieDoughnutChart } from '../components/Charts';
-import { getOfficialHolidayReason, toPersianDigits } from '../utils';
+import { getOfficialHolidayReason, isActiveProject, toPersianDigits } from '../utils';
 import { gregorianDay, monthGrid, moveMonth, PERSIAN_MONTHS, persianDateKey, tehranDay } from '../components/managementCalendar';
 import './management-dashboard.css';
 
@@ -60,7 +60,7 @@ export function ManagementDashboard({ projects, actions, calendars, user, onNavi
   const grid = monthGrid(month.year,month.month);
   const todayKey = persianDateKey(today.jy,today.jm,today.jd);
   const workCalendar = calendars.find(calendar=>calendar.isDefault) || calendars[0];
-  const active = projects.filter(project=>project.status==='In Progress').length;
+  const active = projects.filter(isActiveProject).length;
   const openActions = actions.filter(action=>action.status!=='Completed').length;
   const percentage = projects.length ? Math.round(active/projects.length*100) : 0;
   const stats = [

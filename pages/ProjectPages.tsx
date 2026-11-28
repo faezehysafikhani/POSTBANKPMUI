@@ -10,7 +10,7 @@ import { useGovernance } from '../directory/GovernanceContext';
 import type { RegisterKind } from '../services/backend/registers';
 import { getRuntimeUnitTree } from '../services/backend/runtimeDirectory';
 import { projectErrorText } from '../services/backend/errors';
-import { pickCalendar, getISODateString, getISODateTimeString, enrichProjectWithProgress, calculateScheduleTreeAndProgress, formatDate, toPersianDigits, getUnitLevel1And2, exportDashboardToLandscapePdf } from '../utils';
+import { pickCalendar, getISODateString, getISODateTimeString, enrichProjectWithProgress, calculateScheduleTreeAndProgress, formatDate, toPersianDigits, getUnitLevel1And2, exportDashboardToLandscapePdf, isActiveProject } from '../utils';
 import { OrgChartModal, ProjectHistoryModal, ActionHistoryModal, RiskModal, StakeholderModal, StatusUpdateModal, DelayReasonModal, DocumentModal } from '../components/Modals';
 import { ProjectTeamTab, ProjectRisksTab, ProjectStakeholdersTab, ProjectStatusTab, ProjectDelayReasonsTab, ProjectDocumentsTab, ProjectScheduleTab, ProjectKanbanTab, ProjectActionsTab, ProjectSettingsTab, ProjectSprintsTab, ProjectContractsTab, ProjectInvoicesTab } from '../components/ProjectTabs';
 import { ProjectCharterForm } from '../components/Forms';
@@ -1239,7 +1239,7 @@ export const ProjectDashboardPage = ({ projects, actions = [], users, calendars,
     const totalProjectCount = useMemo(() => allFilteredProjects.length, [allFilteredProjects]);
     const totalActionsCount = useMemo(() => filteredActions.length, [filteredActions]);
     const inProgressProjectsCount = useMemo(() => {
-        return allFilteredProjects.filter(p => p.status === 'In Progress').length;
+        return allFilteredProjects.filter(isActiveProject).length;
     }, [allFilteredProjects]);
     const inProgressActionsCount = useMemo(() => {
         return filteredActions.filter(a => a.status === 'In Progress').length;
