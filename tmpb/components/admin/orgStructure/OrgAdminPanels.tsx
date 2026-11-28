@@ -66,7 +66,8 @@ export const CompaniesPanel: React.FC<{ canManage: boolean; canSeeUnits: boolean
             <h3 className="text-base font-extrabold text-slate-900 dark:text-white">شرکت‌ها</h3>
             <p className="text-xs text-slate-500 mt-0.5">شرکت‌های این سازمان و معاونت‌هایی که هر کدام در اختیار دارد.</p>
           </div>
-          {canManage && (
+          {/* The system holds one company: the button is only there while none exists (the server refuses another anyway). */}
+          {canManage && data.data && data.data.companies.length === 0 && (
             <PrimaryButton onClick={() => setEditing(null)}>
               <Plus className="w-4 h-4" /> شرکت جدید
             </PrimaryButton>
