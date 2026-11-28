@@ -68,7 +68,7 @@ export const SCurveChartInline = ({
                             React.createElement(CartesianGrid, { strokeDasharray: "3 3", stroke: "var(--border-color, #e2f0e8)" }),
                             React.createElement(XAxis, {
                                 dataKey: "dateLabel",
-                                tick: { fontSize: 10, fill: 'var(--text-color, #648b74)' },
+                                tick: { fontSize: 11, fill: 'var(--text-color, #648b74)' },
                                 angle: -90,
                                 textAnchor: "start",
                                 height: 75,

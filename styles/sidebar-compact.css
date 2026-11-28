@@ -26,7 +26,7 @@ html body .app-container .app-sidebar .sidebar-group:not(#_) { margin-bottom: 0 
 html body .app-container .app-sidebar .sidebar-nav:not(#_) { gap: 4px !important; }
 html body .app-container .app-sidebar .sidebar-icon:not(#_):not(#_) { font-size: 17px !important; }
 html body .app-container .app-sidebar .sidebar-logout:not(#_) { margin-top: 4px !important; padding-top: 4px !important; }
-html body .app-container .app-sidebar [class*="badge"]:not(#_) { font-size: 10.5px !important; min-width: 18px; height: 18px; padding: 0 5px; }
+html body .app-container .app-sidebar [class*="badge"]:not(#_) { font-size:11px !important; min-width: 18px; height: 18px; padding: 0 5px; }
 
 /* Approve / reject in a table row (approval centre, register tabs): one size and one shape, only the colour differs -
    the themes paint .approve-btn as a raised primary tile and .reject-btn as a flat one, which did not match. */

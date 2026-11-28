@@ -256,7 +256,7 @@ export const EditCalendarPage = ({ onNavigate, onSave, existingCalendar }: {
                         ),
                         (officialHolidayReason || specificHoliday?.reason) && React.createElement("div", {
                             style: {
-                                fontSize: '10px',
+                                fontSize: '11px',
                                 color: '#dc3545',
                                 lineHeight: '1.2',
                                 overflow: 'hidden',

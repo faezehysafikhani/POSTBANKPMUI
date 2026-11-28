@@ -292,7 +292,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
                 {/* Custom Workflow Badge if in project context */}
                 {projectContext?.tabWorkflows && (
                   <span style={{
-                    fontSize: '10px',
+                    fontSize: '11px',
                     padding: '0.1rem 0.4rem',
                     borderRadius: '6px',
                     fontWeight: 600,
@@ -305,7 +305,7 @@ export const DynamicWorkflowSettingsEditor: React.FC<DynamicWorkflowSettingsEdit
 
                 {/* Stage Count Badge */}
                 <span style={{
-                  fontSize: '10px',
+                  fontSize: '11px',
                   padding: '0.1rem 0.4rem',
                   borderRadius: '10px',
                   backgroundColor: isActive

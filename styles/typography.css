@@ -63,3 +63,16 @@ html .app-container > header .header-title-group h1 { font-size: var(--pb-h3) !i
 html #login-container-root .login-main-title { font-size: var(--pb-h2) !important; }
 /* Settings screens (Tailwind, rem on a 13px root): text-xs would be 9.75px; keep it at the data size. */
 html body .tw-scope .text-xs { font-size: var(--pb-text-size) !important; }
+
+/* One size per heading level on every page. «:not(#pb-heading)» only raises the weight of these rules above the page and
+   component styles (and inline sizes) that set their own heading sizes. */
+html body h3:not(#pb-heading) { font-size: var(--pb-h3) !important; }
+html body :is(h4, h5, h6):not(#pb-heading) { font-size: var(--pb-h4) !important; }
+/* The words of a heading take the heading's size; icons keep theirs. */
+html body :is(h1, h2, h3, h4, h5, h6) :is(span, strong, b, em, div):not([class*="material-symbols"]):not([class*="material-icons"]):not(.pb-count):not(#pb-heading) { font-size: inherit !important; }
+/* A counter next to a heading («۵ مورد») is data: text size, regular weight. */
+html body .pb-count.pb-count:not(#pb-heading) { font-size: var(--pb-text-size) !important; font-weight: 400 !important; }
+/* Nothing smaller than the data size: chart legends and axis text included. */
+html body .recharts-wrapper :is(.recharts-legend-item-text, .recharts-cartesian-axis-tick-value, .recharts-text):not(#pb-heading) { font-size: var(--pb-text-size) !important; }
+html body .recharts-wrapper .recharts-legend-wrapper :is(span, li):not(#pb-heading) { font-size: var(--pb-text-size) !important; }
+html body :is(.doughnut-chart-legend, .chart-legend, [class*="legend"]) :is(.legend-label, .legend-item, span:not([class*="material-symbols"]):not(.legend-color-box)):not(#pb-heading) { font-size: var(--pb-text-size) !important; }
