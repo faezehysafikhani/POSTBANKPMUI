@@ -1474,7 +1474,7 @@ html[lang="fa"] .action-cell {
     height: 16px;
 }
 .stacked-progress-bar-wrapper .progress-bar-label {
-    font-size: 0.75rem;
+    font-size: 10px;
 }
 
 [data-theme="dark"] .progress-bar-label {

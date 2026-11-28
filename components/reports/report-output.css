@@ -32,7 +32,7 @@
   body.rp-printing>*:not(.rp-print-root){display:none!important}
   body.rp-printing .rp-print-root{display:block!important;width:100%;padding:0 0 26px}
   body.rp-printing .rp-watermark{position:fixed}
-  body.rp-printing .rp-foot{display:block;position:fixed;left:0;right:0;bottom:0;padding:4px 0;border-top:1px solid #d7dbe0;background:#fff;font-size:9px;color:#5b6470;text-align:center}
+  body.rp-printing .rp-foot{display:block;position:fixed;left:0;right:0;bottom:0;padding:4px 0;border-top:1px solid #d7dbe0;background:#fff;font-size:10px;color:#5b6470;text-align:center}
   body.rp-printing .par-card,body.rp-printing .par-kpi,body.rp-printing tr{break-inside:avoid}
   body.rp-printing .rp-body .par-table-wrap{max-height:none!important;overflow:visible!important}
 }

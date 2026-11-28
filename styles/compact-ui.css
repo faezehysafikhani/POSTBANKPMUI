@@ -68,7 +68,7 @@ html .app-container .portfolio-create-button { min-height:64px; padding:11px 14p
 html .app-container .portfolio-create-icon { width:36px; height:36px; border-radius:12px; font-size:21px!important; }
 html .app-container .portfolio-create-copy { gap:2px; }
 html .app-container .portfolio-create-copy strong { font-size:11px; line-height:1.65; }
-html .app-container .portfolio-create-copy>span { font-size:.68rem; line-height:1.5; }
+html .app-container .portfolio-create-copy>span { font-size:10px; line-height:1.5; }
 html .app-container .portfolio-create-plus { font-size:15px!important; }
 
 /* Desktop form navigation fits one row; mobile wraps without page overflow. */

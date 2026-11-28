@@ -332,7 +332,7 @@ html[lang="fa"] .notification-badge {
     height: 14px;
 }
 .tree-node .progress-bar-label {
-    font-size: 0.75rem;
+    font-size: 10px;
     text-shadow: none;
     color: var(--text-color);
 }
