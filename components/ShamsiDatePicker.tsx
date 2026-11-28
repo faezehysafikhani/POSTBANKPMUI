@@ -1,5 +1,5 @@
 import { getRuntimeCalendars } from '../services/backend/runtimeDirectory';
-import React, { useState, useEffect, useRef, useContext, ReactElement } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useContext, ReactElement } from 'react';
 import { LocalizationContext } from '../context';
 import { toJalali, toGregorian, toPersianDigits, getOfficialHolidayReason } from '../utils';
 import { Calendar } from '../types';
@@ -39,6 +39,9 @@ export const ShamsiDatePicker: React.FC<ShamsiDatePickerProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [openUpwards, setOpenUpwards] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  // Drawn in the browser's top layer at fixed coordinates: a dialog's scrolling body (overflow) can neither clip nor hide it.
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
 
   // The calendars the backend holds (to show which days are holidays).
   const calendars: Calendar[] = React.useMemo(() => {
@@ -91,20 +94,38 @@ export const ShamsiDatePicker: React.FC<ShamsiDatePickerProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (isOpen && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const popoverHeight = 330;
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-
-      if (spaceBelow < popoverHeight && spaceAbove > spaceBelow) {
-        setOpenUpwards(true);
-      } else {
-        setOpenUpwards(false);
-      }
+  useLayoutEffect(() => {
+    const popover = popoverRef.current;
+    if (!isOpen || !popover || !containerRef.current) {
+      setPosition(null);
+      return undefined;
     }
-  }, [isOpen]);
+    try { if (!popover.matches(':popover-open')) popover.showPopover(); } catch { /* an old browser: it stays where it is drawn */ }
+    const place = () => {
+      const anchor = containerRef.current?.getBoundingClientRect();
+      if (!anchor) return;
+      const margin = 8;
+      const width = popover.offsetWidth || 295;
+      const height = popover.offsetHeight || 340;
+      const below = window.innerHeight - anchor.bottom - margin;
+      const above = anchor.top - margin;
+      const upwards = below < height && above > below;
+      setOpenUpwards(upwards);
+      setPosition({
+        top: Math.max(margin, Math.min(upwards ? anchor.top - height - 6 : anchor.bottom + 6, window.innerHeight - height - margin)),
+        // The calendar starts at the field's start edge (right in RTL) and stays inside the window.
+        left: Math.max(margin, Math.min(document.dir === 'ltr' ? anchor.left : anchor.right - width, window.innerWidth - width - margin)),
+      });
+    };
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+      try { if (popover.matches(':popover-open')) popover.hidePopover(); } catch { /* already gone */ }
+    };
+  }, [isOpen, viewYear, viewMonth]);
 
   const rawFormatted = parsedSelected
     ? `${parsedSelected.jy}/${String(parsedSelected.jm).padStart(2, '0')}/${String(parsedSelected.jd).padStart(2, '0')}`
@@ -189,7 +210,14 @@ export const ShamsiDatePicker: React.FC<ShamsiDatePickerProps> = ({
 
       isOpen && !disabled && (
         React.createElement("div", {
-          className: `shamsi-datepicker-popover ${openUpwards ? 'open-upwards' : ''}`
+          ref: popoverRef,
+          popover: "manual",
+          className: `shamsi-datepicker-popover ${openUpwards ? 'open-upwards' : ''}`,
+          style: {
+            position: 'fixed', margin: 0, overflow: 'visible',
+            top: position?.top ?? 0, left: position?.left ?? 0, right: 'auto', bottom: 'auto',
+            visibility: position ? 'visible' : 'hidden',
+          }
         },
           // Header with navigation and selectors
           React.createElement("div", { className: "shamsi-datepicker-header" },
