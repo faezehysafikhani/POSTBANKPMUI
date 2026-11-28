@@ -97,10 +97,10 @@ export const ApprovalCommentModal = ({ title, initialComment = '', submittedProg
         style: { width: '70px', padding: '0.3rem', borderRadius: '4px', border: '1px solid #ca8a04', textAlign: 'center', fontWeight: 'bold', fontSize: '0.9rem' }
     }), React.createElement("span", { style: { fontSize: '0.85rem', fontWeight: 700, color: '#713f12' } }, '٪'))), React.createElement("p", { style: { fontSize: '0.78rem', color: '#854d0e', margin: 0, lineHeight: '1.4' } }, language === 'fa'
         ? 'توضیح: پیشرفت اعلامی کاربر رد گردیده، اما درصد پیشرفت تاییدی وارد شده جایگزین پیشرفت فعالیت شده و ملاک تمام محاسبات خواهد بود.'
-        : 'Note: User submission will be marked rejected, but your confirmed progress will replace activity progress for all calculations.')))), React.createElement("div", { className: "modal-footer", style: { display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '1rem' } }, status !== 'Rejected' && React.createElement("button", {
+        : 'Note: User submission will be marked rejected, but your confirmed progress will replace activity progress for all calculations.')))), React.createElement("div", { className: "modal-footer approval-comment-footer", style: { display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' } }, status !== 'Rejected' && React.createElement("button", {
         type: "button",
         onClick: handleApproveClick,
-        className: "approve-btn",
+        className: "approval-comment-approve",
         style: {
             backgroundColor: '#16a34a',
             color: '#ffffff',
@@ -117,7 +117,7 @@ export const ApprovalCommentModal = ({ title, initialComment = '', submittedProg
     }, React.createElement("span", { className: "material-symbols-outlined", style: { fontSize: '1.1rem' } }, "check_circle"), language === 'fa' ? 'تایید' : 'Approve'), status !== 'Approved' && React.createElement("button", {
         type: "button",
         onClick: handleRejectClick,
-        className: "reject-btn",
+        className: "approval-comment-reject",
         style: {
             backgroundColor: '#dc2626',
             color: '#ffffff',

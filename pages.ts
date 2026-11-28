@@ -489,7 +489,7 @@ export const i18nStrings = {
   },
   fa: {
     // General
-    mainTitle: 'سامانه مدیریت پروژه پست بانک ایران',
+    mainTitle: 'سامانه مدیریت پروژه',
     login: 'ورود',
     logout: 'خروج',
     username: 'نام کاربری',

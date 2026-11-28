@@ -698,7 +698,7 @@ const AppContent = () => {
             {currentUser && <SessionWatcher />}
             {null}
             {infoModal && <InfoModal title={infoModal.title} message={infoModal.message} onClose={() => setInfoModal(null)}/>}
-            {approvalCommentModalState && (<ApprovalCommentModal title={t('registerMessage')} initialComment={approvalCommentModalState.initialComment} submittedProgress={progressUpdates.find(u => u.id === approvalCommentModalState.id)?.submittedProgress} allowApprovedProgress={allowApprovedProgress} status={approvalCommentModalState.status} onSave={handleSaveApprovalComment} onClose={() => setApprovalCommentModalState(null)}/>)}
+            {approvalCommentModalState && (<ApprovalCommentModal title={`${language === 'fa' ? 'ثبت نظر و علت' : 'Review & Reason'} (${approvalCommentModalState.status === 'Approved' ? (language === 'fa' ? 'تایید' : 'Approve') : (language === 'fa' ? 'عدم تایید' : 'Reject')}) - ${approvalCommentModalState.type === 'project' ? (language === 'fa' ? 'منشور پروژه' : 'Project charter') : (language === 'fa' ? 'پیشرفت' : 'Progress')}`} initialComment={approvalCommentModalState.initialComment} submittedProgress={progressUpdates.find(u => u.id === approvalCommentModalState.id)?.submittedProgress} allowApprovedProgress={allowApprovedProgress} status={approvalCommentModalState.status} onSave={handleSaveApprovalComment} onClose={() => setApprovalCommentModalState(null)}/>)}
         </div>);
 };
 export const App = () => {

@@ -27,3 +27,41 @@ html body .app-container .app-sidebar .sidebar-nav:not(#_) { gap: 4px !important
 html body .app-container .app-sidebar .sidebar-icon:not(#_):not(#_) { font-size: 17px !important; }
 html body .app-container .app-sidebar .sidebar-logout:not(#_) { margin-top: 4px !important; padding-top: 4px !important; }
 html body .app-container .app-sidebar [class*="badge"]:not(#_) { font-size: 10.5px !important; min-width: 18px; height: 18px; padding: 0 5px; }
+
+/* Approve / reject in a table row (approval centre, register tabs): one size and one shape, only the colour differs -
+   the themes paint .approve-btn as a raised primary tile and .reject-btn as a flat one, which did not match. */
+html body .app-container.app-container.app-container.app-container:not(.login-layout) td :is(.approve-btn,.reject-btn) {
+  display: inline-flex !important; align-items: center; justify-content: center;
+  min-width: 64px; min-height: 30px !important; height: 30px !important;
+  padding: 0 .85rem !important; margin: 0 2px !important;
+  font-size: .8rem !important; font-weight: 600 !important; line-height: 1 !important;
+  border: 1px solid !important; border-radius: 8px !important;
+  box-shadow: none !important; text-shadow: none !important; transform: none !important; filter: none !important;
+}
+html body .app-container.app-container.app-container.app-container:not(.login-layout) td .approve-btn {
+  color: #147254 !important; background: #eaf9f2 !important; border-color: #b9e3cf !important;
+}
+html body .app-container.app-container.app-container.app-container:not(.login-layout) td .reject-btn {
+  color: #b42335 !important; background: #fff0f1 !important; border-color: #f3d1d7 !important;
+}
+html body .app-container.app-container.app-container.app-container:not(.login-layout) td :is(.approve-btn,.reject-btn):hover:not(:disabled) {
+  filter: brightness(.96) !important;
+}
+html[data-theme="dark"] body .app-container.app-container.app-container.app-container:not(.login-layout) td .approve-btn {
+  color: #6ee7b7 !important; background: rgba(16,185,129,.15) !important; border-color: rgba(16,185,129,.4) !important;
+}
+html[data-theme="dark"] body .app-container.app-container.app-container.app-container:not(.login-layout) td .reject-btn {
+  color: #fca5a5 !important; background: rgba(239,68,68,.15) !important; border-color: rgba(239,68,68,.4) !important;
+}
+
+/* The approve / reject dialog: the same footer wherever it is opened (approval centre or a project tab) -
+   confirm first, then cancel, at the start of the row; no theme tile on its buttons. */
+html body .modal-content .modal-footer.approval-comment-footer {
+  display: flex !important; flex-direction: row !important; justify-content: flex-start !important; align-items: center !important; gap: .5rem !important;
+}
+html body .modal-content .approval-comment-footer :is(.approval-comment-approve,.approval-comment-reject,.cancel-btn) {
+  height: 34px !important; min-height: 34px !important; padding: 0 1.1rem !important; border-radius: 6px !important;
+  font-size: .85rem !important; font-weight: 600 !important; box-shadow: none !important; transform: none !important; margin: 0 !important;
+}
+html body .modal-content .approval-comment-footer .approval-comment-approve { background: #16a34a !important; color: #fff !important; border: none !important; }
+html body .modal-content .approval-comment-footer .approval-comment-reject { background: #dc2626 !important; color: #fff !important; border: none !important; }

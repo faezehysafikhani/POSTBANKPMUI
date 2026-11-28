@@ -67,7 +67,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
             <span className="material-symbols-outlined pb-person" aria-hidden="true">person</span>
           </div>
 
-          <h2 className="login-main-title">{isFa ? 'سامانه مدیریت پروژه پست بانک ایران' : 'Post Bank Iran Project Management'}</h2>
+          <h2 className="login-main-title">{isFa ? 'سامانه مدیریت پروژه' : 'Post Bank Iran Project Management'}</h2>
           <p className="login-subtitle">
             {isFa
               ? 'به سامانه پست بانک ایران خوش آمدید'
