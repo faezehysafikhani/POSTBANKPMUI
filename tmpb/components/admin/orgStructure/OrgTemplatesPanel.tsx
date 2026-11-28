@@ -4,7 +4,7 @@ import { AdminCard, IconAction, Notice, PrimaryButton, StatusBadge } from '../Ad
 import { userErrorMessage } from '../../../utils/errorMessages';
 import { toPersianDigits } from '../../../utils/helpers';
 import { appConfirm } from '../../../utils/appDialog';
-import { type StructureTemplate, type TemplateNode, type TemplateNodeType, deleteTemplate, getTemplate, listTemplates } from '../../../services/orgStructureApi';
+import { type StructureTemplate, type TemplateNode, type TemplateNodeType, deleteTemplate, getTemplate, listCompanies, listTemplates } from '../../../services/orgStructureApi';
 import { EmptyRow, LoadingRow, useLoad } from './orgShared';
 import { UI_LEVEL_TITLES } from './nodes/CompanyWizard';
 import { CompanyFormDialog } from './nodes/CompanyFormDialog';
@@ -31,6 +31,10 @@ const TemplateTree: React.FC<{ nodes: TemplateNode[]; types: Map<string, Templat
 /** «قالب‌ها»: the ready structures (built in, and the ones saved from companies) and what each holds. */
 export const OrgTemplatesPanel: React.FC<{ canManageTemplates: boolean; canCreateCompany: boolean }> = ({ canManageTemplates, canCreateCompany }) => {
   const data = useLoad(listTemplates, 'دریافت قالب‌ها ممکن نشد.');
+  // The system holds one company: a company is made from a template only while none exists.
+  const companies = useLoad(listCompanies, 'دریافت شرکت‌ها ممکن نشد.');
+  const companyExists = !companies.data || companies.data.length > 0;
+  const mayCreateCompany = canCreateCompany && !companyExists;
   const [openId, setOpenId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [wizardFor, setWizardFor] = useState<string | null | undefined>(undefined);
@@ -67,7 +71,7 @@ export const OrgTemplatesPanel: React.FC<{ canManageTemplates: boolean; canCreat
             <h3 className="text-base font-extrabold text-slate-900 dark:text-white">قالب‌های ساختار</h3>
             <p className="text-xs text-slate-500 mt-0.5">ساختار آماده برای شرکت تازه. «ذخیره به‌عنوان قالب» را از چارتِ هر شرکت بزنید تا ساختار خودتان هم اینجا بیاید.</p>
           </div>
-          {canCreateCompany && <PrimaryButton onClick={() => setWizardFor(null)}><Plus className="w-4 h-4" /> شرکت جدید</PrimaryButton>}
+          {mayCreateCompany && <PrimaryButton onClick={() => setWizardFor(null)}><Plus className="w-4 h-4" /> شرکت جدید</PrimaryButton>}
         </div>
         {templates.length === 0 ? <EmptyRow>قالبی نیست.</EmptyRow> : (
           <div className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -80,7 +84,7 @@ export const OrgTemplatesPanel: React.FC<{ canManageTemplates: boolean; canCreat
                     <span className="block text-[11px] text-slate-500">{toPersianDigits(t.nodeCount)} واحد · {toPersianDigits(t.nodeTypeCount)} نوع واحد · سطح {UI_LEVEL_TITLES[t.uiLevel] || t.uiLevel}</span>
                   </button>
                   <StatusBadge tone={t.isSystem ? 'slate' : 'green'}>{t.isSystem ? 'آماده' : 'قالب شما'}</StatusBadge>
-                  {canCreateCompany && <IconAction icon={Plus} label={`ساخت شرکت با ${t.name}`} onClick={() => setWizardFor(t.id)} />}
+                  {mayCreateCompany && <IconAction icon={Plus} label={`ساخت شرکت با ${t.name}`} onClick={() => setWizardFor(t.id)} />}
                   {canManageTemplates && !t.isSystem && <IconAction icon={Trash2} tone="rose" label={`حذف ${t.name}`} onClick={() => remove(t)} />}
                 </div>
                 {openId === t.id && (
@@ -100,7 +104,7 @@ export const OrgTemplatesPanel: React.FC<{ canManageTemplates: boolean; canCreat
         <CompanyFormDialog
           templates={templates}
           initialTemplateId={wizardFor}
-          onSaved={() => setMessage({ type: 'success', text: 'شرکت ساخته شد. در «چارت سازمانی» ببینیدش.' })}
+          onSaved={() => { setMessage({ type: 'success', text: 'شرکت ساخته شد. در «چارت سازمانی» ببینیدش.' }); void companies.reload(); }}
           onClose={() => setWizardFor(undefined)}
         />
       )}
