@@ -47,10 +47,17 @@ export const JalaliDatePicker: React.FC<{
   const popup = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0, width: 288 });
 
+  // Inside a modal <dialog> (showModal) the calendar must be drawn inside that dialog: the dialog is in the browser's top
+  // layer, so anything drawn outside it, even with a huge z-index, is behind it and cannot be clicked.
+  const dialog = open ? root.current?.closest('dialog') ?? null : null;
+
   // Render outside the modal's scrolling body. Opening the calendar must not change its
   // scroll height or put the last rows behind the modal footer.
   useLayoutEffect(() => {
     if (!open) return;
+    // In a dialog the calendar is a popover too (top layer, fixed to the window), so the dialog's scrolling and clipping do not touch it.
+    const shown = popup.current;
+    try { if (dialog && shown && !shown.matches(':popover-open')) shown.showPopover(); } catch { /* an old browser: it stays where it is drawn */ }
     const place = () => {
       const anchor = trigger.current?.getBoundingClientRect();
       if (!anchor) return;
@@ -71,8 +78,9 @@ export const JalaliDatePicker: React.FC<{
     return () => {
       window.removeEventListener('resize', place);
       window.removeEventListener('scroll', place, true);
+      try { if (dialog && shown?.matches(':popover-open')) shown.hidePopover(); } catch { /* already gone */ }
     };
-  }, [open, view.jy, view.jm, allowYearSelection]);
+  }, [open, dialog, view.jy, view.jm, allowYearSelection]);
 
   useEffect(() => {
     if (!open) return;
@@ -136,8 +144,8 @@ export const JalaliDatePicker: React.FC<{
       </div>
 
       {open && createPortal(
-        <div ref={popup} role="dialog" dir="rtl" aria-label={ariaLabel}
-          style={{ ...position, position: 'fixed', zIndex: 1000, maxHeight: 'calc(100dvh - 16px)', overflowY: 'auto' }}
+        <div ref={popup} role="dialog" dir="rtl" aria-label={ariaLabel} popover={dialog ? 'manual' : undefined}
+          style={{ ...position, position: 'fixed', margin: 0, top: position.top, left: position.left, right: 'auto', bottom: 'auto', zIndex: 1000, maxHeight: 'calc(100dvh - 16px)', overflowY: 'auto' }}
           className="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl">
           <div className="flex items-center justify-between mb-2">
             <button type="button" onClick={() => shift(-1)} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" aria-label="ماه قبل"><ChevronRight className="w-4 h-4" /></button>
@@ -179,7 +187,7 @@ export const JalaliDatePicker: React.FC<{
             <button type="button" onClick={() => pick(today)} className="text-xs font-bold text-indigo-600 hover:underline cursor-pointer">امروز</button>
             {selected && <button type="button" onClick={() => { onChange(undefined); setOpen(false); }} className="text-xs font-bold text-slate-500 hover:text-rose-600 cursor-pointer">پاک کردن</button>}
           </div>
-        </div>, portalRoot()
+        </div>, dialog ?? portalRoot()
       )}
     </div>
   );
