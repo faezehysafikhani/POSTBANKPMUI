@@ -151,7 +151,7 @@ html[data-pb-theme] .app-container:not(.login-layout) .mg-status-summary strong{
 .mg-toolbar{justify-content:flex-start!important}
 .mg-create-buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mg-create-buttons .save-btn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.mg-create-buttons .mg-caret{font-size:18px!important;margin-inline-start:-2px}
+.mg-create-buttons .mg-caret{font-size:16px!important;margin-inline-start:-2px}
 .mg-create-menu{position:relative}
 .mg-create-popover{position:absolute;top:calc(100% + 8px);inset-inline-start:0;z-index:50;min-width:230px;display:grid;gap:4px;padding:6px;border-radius:16px;background:linear-gradient(150deg,#fffffffa,var(--pb-soft2,#f2faf5));border:1px solid var(--pb-line,#c9e5d4);box-shadow:0 14px 34px var(--pb-shadow,#00632d2e)}
 .mg-create-popover button{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;border-radius:11px;background:transparent;color:var(--pb-text,#1f4a33);font:inherit;text-align:right;cursor:pointer}
@@ -184,7 +184,7 @@ html[data-pb-theme] .app-container:not(.login-layout) .settings-item:hover{trans
 html[data-pb-theme] .app-container:not(.login-layout) .settings-item:active{transform:translateY(0)}
 html[data-pb-theme] .app-container:not(.login-layout) .settings-item>.material-symbols-outlined{display:grid!important;place-items:center;width:64px;height:64px;border-radius:20px;font-size:34px!important;background:var(--pb-active-bg)!important;color:var(--pb-active-text)!important;box-shadow:0 8px 16px var(--pb-shadow),inset 0 1px 2px #ffffff80,inset 0 -3px 5px #0000002e;margin:0!important}
 html[data-pb-theme="black"] .app-container:not(.login-layout) .settings-item>.material-symbols-outlined{box-shadow:0 0 0 2px #fff,0 0 0 4px #d4af37,0 8px 16px #0005,inset 0 1px 2px #ffffff80!important}
-html[data-pb-theme] .app-container:not(.login-layout) .settings-item .settings-text{font-size:1rem;font-weight:700;color:var(--pb-heading)!important;text-align:center}
+html[data-pb-theme] .app-container:not(.login-layout) .settings-item .settings-text{font-size:11px;font-weight:700;color:var(--pb-heading)!important;text-align:center}
 
 /* ---------- header user menu ---------- */
 .pb-user-menu{position:relative}
@@ -208,7 +208,7 @@ html[data-pb-theme] .app-container:not(.login-layout) .sidebar-logout-button .ma
 html[data-pb-theme] .app-container:not(.login-layout) .sidebar-logout-button .sidebar-group-title{color:#c0394f!important}
 html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar .sidebar-logout .sidebar-group-header.sidebar-logout-button:not(.active):not(.active-parent){background:linear-gradient(135deg,#3a1d22,#2a1418)!important;border-color:#7a2c3a!important;color:#ff9aab!important}
 html[data-pb-theme="black"] .app-container:not(.login-layout) .sidebar-logout-button :is(.material-symbols-outlined,.sidebar-group-title){color:#ff9aab!important}
-html .app-container>header .pb-user-button .pb-user-name{color:inherit!important;font-size:.82rem!important;display:block;width:auto;max-width:160px}
+html .app-container>header .pb-user-button .pb-user-name{color:inherit!important;font-size:11px!important;display:block;width:auto;max-width:160px}
 html .app-container>header .pb-user-button .pb-user-avatar{color:var(--pb-active-text,#fff)!important}
 
 /* Purple page: the wave picture keeps only its light and shade and takes the lavender of the page (no pink cast). */
@@ -248,7 +248,7 @@ html[data-pb-theme] .app-container:not(.login-layout)>.app-body>.app-sidebar:not
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-nav{gap:7px!important;padding:2px 4px!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group{margin-bottom:0!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-header{padding:6px 6px 10px!important;margin-bottom:4px}
-html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group-header{min-height:0!important;padding:8px 10px!important;border-radius:999px!important;font-size:.84rem}
+html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar .sidebar-group-header{min-height:0!important;padding:8px 10px!important;border-radius:999px!important;font-size:11px}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header,.sidebar-subitem,.sidebar-nested-subitem):not(.active):not(.active-parent):not(.sidebar-logout-button){background:var(--pb-gel-idle)!important;border:1px solid var(--pb-gel-idle-edge)!important;box-shadow:0 0 0 2px #ffffffb3,0 4px 9px var(--pb-shadow),inset 0 -2px 3px #0000000d!important}
 html[data-pb-theme] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-item.active,.sidebar-nested-subitem.active){background:var(--pb-gel)!important;border:1px solid var(--pb-gel-edge)!important;box-shadow:0 0 0 2px #ffffffd9,0 6px 13px var(--pb-shadow),inset 0 -3px 5px #0000002e!important;text-shadow:0 1px 1px #0000004d}
 html[data-pb-theme="black"] .app-container:not(.login-layout) .app-sidebar :is(.sidebar-group-header.active-parent,.sidebar-subitem.active,.sidebar-nested-item.active,.sidebar-nested-subitem.active){text-shadow:0 1px 0 #fff8;box-shadow:0 0 0 2px #00000066,0 6px 13px #0008,inset 0 -3px 5px #6b4a0a40!important}

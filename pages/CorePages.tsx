@@ -7,6 +7,7 @@ import { toPersianDigits, appLogoUrl, appLogoWatermarkUrl } from '../utils';
 import { FeaturesHandbook } from '../components/FeaturesHandbook';
 import { DynamicWorkflowSettingsEditor } from '../components/DynamicWorkflowSettingsEditor';
 import { LoginPortalClock } from '../components/LoginPortalClock';
+import { wasSignedOutBySession } from '../services/api';
 import { FloatingSpheresCanvas } from '../components/FloatingSpheresCanvas';
 
 
@@ -25,6 +26,12 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
   const [password, setPassword] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  // After the session ended by itself or was closed, the browser must not offer saved credentials;
+  // after the user's own sign-out it may. The password is then a text field drawn as dots
+  // (Chrome offers saved passwords for any type="password").
+  const [noSuggestions] = useState(() => wasSignedOutBySession());
+  const [fieldSuffix] = useState(() => Math.random().toString(36).slice(2, 10));
+  const ignoreManagers = noSuggestions ? { 'data-lpignore': 'true', 'data-1p-ignore': 'true', 'data-bwignore': 'true', 'data-form-type': 'other' } : {};
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFa = language === 'fa';
@@ -69,7 +76,7 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
 
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} autoComplete={noSuggestions ? 'off' : 'on'} className="login-form">
           <div className="login-input-group">
             <label htmlFor="login-username" className="login-label">
               <span className="material-symbols-outlined login-input-icon">person</span>
@@ -83,7 +90,9 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={isFa ? 'نام کاربری خود را وارد کنید...' : 'Enter your username...'}
                 required
-                autoComplete="username"
+                name={noSuggestions ? `li-${fieldSuffix}` : 'username'}
+                autoComplete={noSuggestions ? 'off' : 'username'}
+                {...ignoreManagers}
                 className="login-input"
               />
             </div>
@@ -97,12 +106,15 @@ export const LoginPage = ({ onLogin, error, notice, captcha, onRefreshCaptcha }:
             <div className="login-input-wrapper">
               <input
                 id="login-password"
-                type={showPassword ? "text" : "password"}
+                type={noSuggestions || showPassword ? "text" : "password"}
+                style={noSuggestions && !showPassword ? ({ WebkitTextSecurity: 'disc' } as React.CSSProperties) : undefined}
+                name={noSuggestions ? `ls-${fieldSuffix}` : 'password'}
+                {...ignoreManagers}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={isFa ? 'رمز عبور...' : 'Enter password...'}
                 required
-                autoComplete="current-password"
+                autoComplete={noSuggestions ? 'off' : 'current-password'}
                 className="login-input password-input"
               />
               <button

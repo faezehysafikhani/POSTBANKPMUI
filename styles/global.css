@@ -216,7 +216,7 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  font-size: 15px; /* Slightly smaller base for a cleaner look */
+  font-size: 11px; /* Slightly smaller base for a cleaner look */
 }
 
 html:lang(fa) {
@@ -226,7 +226,7 @@ html:lang(fa) {
 
 input, button, select, textarea {
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 11px;
 }
 
 body {
@@ -427,7 +427,7 @@ html:lang(fa) {
 }
 
 .login-main-title {
-  font-size: 1.55rem;
+  font-size: 1.396rem;
   font-weight: 800;
   margin-bottom: 0.4rem;
   letter-spacing: -0.01em;
@@ -444,7 +444,7 @@ html:lang(fa) {
 }
 
 .login-subtitle {
-  font-size: 0.92rem;
+  font-size: 11px;
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
@@ -504,7 +504,7 @@ html[lang="en"] .login-form {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.88rem;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -536,7 +536,7 @@ html[lang="en"] .login-form {
 .login-input {
   width: 100%;
   border-radius: 12px !important;
-  font-size: 0.95rem;
+  font-size: 11px;
   padding: 0.85rem 1rem !important;
   transition: all 0.2s ease;
   backdrop-filter: blur(8px);
@@ -623,7 +623,7 @@ html[lang="en"] .password-toggle-btn {
   color: #b91c1c;
   padding: 0.65rem 0.95rem;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 11px;
   font-weight: 600;
   text-align: right;
 }
@@ -648,7 +648,7 @@ html[lang="en"] .login-error-banner {
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
   padding: 0.85rem 1.5rem;
-  font-size: 1rem;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -680,7 +680,7 @@ html[lang="en"] .login-error-banner {
   gap: 6px;
   padding: 0.5rem 1.1rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -803,7 +803,7 @@ header {
 .header-content h1 {
   grid-column: 2 / 3;
   text-align: center;
-  font-size: 1.6rem;
+  font-size: 1.446rem;
   color: var(--light-text-color);
   font-weight: 600;
   white-space: nowrap;
@@ -815,7 +815,7 @@ header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 0.95rem;
+  font-size: 11px;
 }
 
 .user-info span {
@@ -863,7 +863,7 @@ footer {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   color: var(--inactive-color);
-  font-size: 0.9rem;
+  font-size: 11px;
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.03);
   margin-top: 2rem;
@@ -900,7 +900,7 @@ footer {
 }
 
 .form-section h3, .list-section h3, h4 {
-  font-size: 1.25rem;
+  font-size: 1.096rem;
   margin-bottom: 1.25rem;
   color: var(--primary-color);
   border-bottom: 1px solid var(--border-color);
@@ -917,7 +917,7 @@ padding-bottom: 0.5rem;
 .form-group label {
   font-weight: 500;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 11px;
   color: var(--label-color);
 }
 input[type="text"], input[type="password"], input[type="file"], input[type="number"], input[type="date"], select, textarea {
@@ -928,7 +928,7 @@ input[type="text"], input[type="password"], input[type="file"], input[type="numb
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  font-size: 0.95rem;
+  font-size: 11px;
   transition: all 0.2s ease;
   color: var(--text-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -1045,7 +1045,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 0.65rem 1.35rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 11px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -1079,7 +1079,7 @@ button:active:not(:disabled) {
 
 .add-user-btn {
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  font-size: 11px;
 }
 
 button:disabled {
@@ -1207,7 +1207,7 @@ th {
   padding: 0.8rem 1rem;
   background-color: var(--subtle-bg-color);
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 11px;
   letter-spacing: 0.5px;
   border-bottom: 2px solid var(--border-color);
   white-space: nowrap;
@@ -1259,7 +1259,7 @@ html[lang="fa"] .action-cell {
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.4);
   border-radius: 10px;
-  font-size: 0.92rem;
+  font-size: 11px;
   font-weight: 600;
   color: var(--label-color);
   transition: all 0.2s ease;
@@ -1372,7 +1372,7 @@ html[lang="fa"] .action-cell {
 }
 
 .modal-header h3 {
-  font-size: 1.45rem;
+  font-size: 1.296rem;
   font-weight: 700;
   color: var(--primary-color);
 }
@@ -1490,7 +1490,7 @@ html[lang="fa"] .action-cell {
     padding: 3rem;
     text-align: center;
     color: var(--inactive-color);
-    font-size: 1.1rem;
+    font-size: 11px;
     margin-top: 2rem;
 }
 
@@ -1609,7 +1609,7 @@ input[type="radio"]:focus-visible {
 }
 
 .charter-summary-table .summary-item strong {
-    font-size: 0.9rem;
+    font-size: 11px;
     color: var(--inactive-color);
     font-weight: 500;
     margin-bottom: 0.25rem;
@@ -1617,7 +1617,7 @@ input[type="radio"]:focus-visible {
 
 .charter-summary-table .summary-item span,
 .charter-summary-table .summary-item p {
-    font-size: 1.05rem;
+    font-size: 11px;
     font-weight: 600;
     color: var(--text-color);
     line-height: 1.4;
@@ -1631,7 +1631,7 @@ html[lang="fa"] .summary-item-status {
     align-items: flex-end;
 }
 .summary-item .dashboard-status-badge {
-    font-size: 0.75rem;
+    font-size: 11px;
     padding: 0.2rem 0.5rem;
     width: fit-content;
 }

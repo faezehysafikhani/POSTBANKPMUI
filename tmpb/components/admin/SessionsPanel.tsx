@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { portalRoot } from '../../utils/portalRoot';
 import { Loader2, LogOut, MonitorSmartphone, Save, ShieldAlert, X } from 'lucide-react';
 import {
+  NexusApiError,
   SESSION_END_MESSAGES,
   SessionInfo,
   SessionList,
@@ -37,6 +38,7 @@ const END_LABELS: Record<string, string> = {
   'session.account_disabled': 'غیرفعال‌شدن حساب',
   'session.reuse_detected': 'استفاده‌ی مجدد از توکن (احتمال سرقت)',
   'session.concurrent_limit': 'بسته‌شده برای ورود جدید',
+  'session.replaced_by_relogin': 'ورود دوباره از همین دستگاه',
 };
 const endLabel = (session: SessionInfo) => {
   const base = (session.endReason && (END_LABELS[session.endReason] || SESSION_END_MESSAGES[session.endReason])) || 'پایان یافته';
@@ -220,8 +222,8 @@ const MySessionsCard: React.FC = () => {
           )}
           <SessionRows list={list} canClose busyId={busyId} onClose={close} />
           <div className="flex flex-wrap gap-2">
-            <SecondaryButton onClick={closeOthers} disabled={list.active.length < 2}><X className="w-4 h-4" /> خروج از بقیه‌ی دستگاه‌ها</SecondaryButton>
-            <SecondaryButton onClick={closeAll}><LogOut className="w-4 h-4" /> خروج از همه‌ی دستگاه‌ها</SecondaryButton>
+            <SecondaryButton type="button" onClick={closeOthers} disabled={list.active.length < 2}><X className="w-4 h-4" /> خروج از بقیه‌ی دستگاه‌ها</SecondaryButton>
+            <SecondaryButton type="button" onClick={closeAll}><LogOut className="w-4 h-4" /> خروج از همه‌ی دستگاه‌ها</SecondaryButton>
           </div>
 
           <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
@@ -233,7 +235,7 @@ const MySessionsCard: React.FC = () => {
               </select>
             </Field>
             <Toggle checked={sms} onChange={setSms} label="پیامک برای هر ورود جدید" description="با هر ورود به حساب شما، پیامکی (بدون نشانی IP) ارسال می‌شود." />
-            <PrimaryButton onClick={savePreferences} disabled={saving}>
+            <PrimaryButton type="button" onClick={savePreferences} disabled={saving}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} ذخیره
             </PrimaryButton>
           </div>
@@ -246,16 +248,17 @@ const MySessionsCard: React.FC = () => {
 const policyInputClass =
   'w-[120px] text-center font-bold text-[13px] py-1.5 rounded-[10px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400';
 
-const PolicyNumberField: React.FC<{ label: string; range: string; unit?: string; value: number; min: number; max: number; onChange: (value: number) => void }> = ({ label, range, unit, value, min, max, onChange }) => (
+const PolicyNumberField: React.FC<{ label: string; range: string; unit?: string; value: number; min: number; max: number; onChange: (value: number) => void; error?: string | null }> = ({ label, range, unit, value, min, max, onChange, error }) => (
   <label className="block">
     <span className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
       {label}
       <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 dark:text-indigo-300 dark:bg-indigo-950/50 rounded-full px-2">{range}</span>
     </span>
     <span className="relative inline-block">
-      <input type="number" min={min} max={max} value={value} onChange={(event) => onChange(Number(event.target.value))} className={`${policyInputClass} ${unit ? 'pl-[46px]' : ''}`} />
+      <input type="number" min={min} max={max} value={value} onChange={(event) => onChange(Number(event.target.value))} aria-invalid={!!error} className={`${policyInputClass} ${unit ? 'pl-[46px]' : ''} ${error ? '!border-rose-500 !ring-rose-500/40' : ''}`} />
       {unit && <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 pointer-events-none">{unit}</span>}
     </span>
+    {error && <span className="block text-[11px] text-rose-600 dark:text-rose-400 mt-1">{error}</span>}
   </label>
 );
 
@@ -264,21 +267,53 @@ const PolicyCard: React.FC<{ canUpdate: boolean }> = ({ canUpdate }) => {
   const [policy, setPolicy] = useState<SessionPolicySettings | null>(null);
   const [message, setMessage] = useState<Message>(null);
   const [saving, setSaving] = useState(false);
+  const [serverErrors, setServerErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     getSessionPolicy().then(setPolicy).catch((err) => setMessage({ type: 'error', text: userErrorMessage(err, 'دریافت تنظیمات نشست ممکن نشد.') }));
   }, []);
 
   if (!policy) return message ? <Notice type="error">{message.text}</Notice> : null;
-  const set = (patch: Partial<SessionPolicySettings>) => setPolicy({ ...policy, ...patch });
+  const set = (patch: Partial<SessionPolicySettings>) => {
+    setPolicy({ ...policy, ...patch });
+    setServerErrors({});
+  };
   const { range } = policy;
 
+  const fieldError = (key: keyof SessionPolicySettings): string | null => {
+    const value = policy[key];
+    if (typeof value !== 'number') return null;
+    const k = String(key).toLowerCase();
+    const [min, max] = k.includes('idle')
+      ? [range.minIdleMinutes, range.maxIdleMinutes]
+      : k.includes('absolute')
+        ? [range.minAbsoluteHours, range.maxAbsoluteHours]
+        : k.includes('concurrent')
+          ? [range.minConcurrent, range.maxConcurrent]
+          : [null, null];
+    const fromServer = serverErrors[String(key).toLowerCase()];
+    if (fromServer) return fromServer;
+    if (min === null || max === null) return null;
+    if (!Number.isInteger(value) || value < min || value > max) return `مقدار باید عدد صحیح بین ${toPersianDigits(min)} تا ${toPersianDigits(max)} باشد.`;
+    return null;
+  };
+  const validatedKeys = (Object.keys(policy) as (keyof SessionPolicySettings)[]).filter((key) => fieldError(key));
+
   const save = async () => {
+    if (validatedKeys.length > 0) {
+      setMessage({ type: 'error', text: 'برخی مقادیر خارج از بازه‌ی مجاز است. خطای زیر هر فیلد را ببینید.' });
+      return;
+    }
     setSaving(true);
     try {
       setPolicy(await updateSessionPolicy(policy));
+      setServerErrors({});
       setMessage({ type: 'success', text: 'تنظیمات ذخیره شد. برای نشست‌های جدید اعمال می‌شود؛ برای اعمال فوری از «خاتمه‌ی همه‌ی نشست‌ها» استفاده کنید.' });
     } catch (err) {
+      const fields = err instanceof NexusApiError ? err.fieldErrors : undefined;
+      if (fields) {
+        setServerErrors(Object.fromEntries(Object.entries(fields).map(([name, list]) => [name.toLowerCase(), list[0]])));
+      }
       setMessage({ type: 'error', text: userErrorMessage(err, 'ذخیره ممکن نشد.') });
     } finally {
       setSaving(false);
@@ -292,10 +327,10 @@ const PolicyCard: React.FC<{ canUpdate: boolean }> = ({ canUpdate }) => {
         {title}
       </h4>
       <div className="flex flex-wrap gap-x-8 gap-y-3">
-        <PolicyNumberField label="بی‌فعالیتی" unit="دقیقه" range={`${toPersianDigits(range.minIdleMinutes)} تا ${toPersianDigits(range.maxIdleMinutes)}`} value={policy[idle] as number} min={range.minIdleMinutes} max={range.maxIdleMinutes} onChange={(value) => set({ [idle]: value } as Partial<SessionPolicySettings>)} />
-        <PolicyNumberField label="حداکثر مدت ورود" unit="ساعت" range={`${toPersianDigits(range.minAbsoluteHours)} تا ${toPersianDigits(range.maxAbsoluteHours)}`} value={policy[absolute] as number} min={range.minAbsoluteHours} max={range.maxAbsoluteHours} onChange={(value) => set({ [absolute]: value } as Partial<SessionPolicySettings>)} />
+        <PolicyNumberField label="بی‌فعالیتی" unit="دقیقه" range={`${toPersianDigits(range.minIdleMinutes)} تا ${toPersianDigits(range.maxIdleMinutes)}`} value={policy[idle] as number} min={range.minIdleMinutes} max={range.maxIdleMinutes} onChange={(value) => set({ [idle]: value } as Partial<SessionPolicySettings>)} error={fieldError(idle)} />
+        <PolicyNumberField label="حداکثر مدت ورود" unit="ساعت" range={`${toPersianDigits(range.minAbsoluteHours)} تا ${toPersianDigits(range.maxAbsoluteHours)}`} value={policy[absolute] as number} min={range.minAbsoluteHours} max={range.maxAbsoluteHours} onChange={(value) => set({ [absolute]: value } as Partial<SessionPolicySettings>)} error={fieldError(absolute)} />
         {concurrent && (
-          <PolicyNumberField label="سقف نشست هم‌زمان" range={`${toPersianDigits(range.minConcurrent)} تا ${toPersianDigits(range.maxConcurrent)}`} value={policy[concurrent] as number} min={range.minConcurrent} max={range.maxConcurrent} onChange={(value) => set({ [concurrent]: value } as Partial<SessionPolicySettings>)} />
+          <PolicyNumberField label="سقف نشست هم‌زمان" range={`${toPersianDigits(range.minConcurrent)} تا ${toPersianDigits(range.maxConcurrent)}`} value={policy[concurrent] as number} min={range.minConcurrent} max={range.maxConcurrent} onChange={(value) => set({ [concurrent]: value } as Partial<SessionPolicySettings>)} error={fieldError(concurrent)} />
         )}
       </div>
     </div>
@@ -321,7 +356,7 @@ const PolicyCard: React.FC<{ canUpdate: boolean }> = ({ canUpdate }) => {
         />
       </Field>
       {canUpdate && (
-        <PrimaryButton onClick={save} disabled={saving}>
+        <PrimaryButton type="button" onClick={save} disabled={saving || validatedKeys.length > 0}>
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} ذخیره‌ی سیاست
         </PrimaryButton>
       )}
@@ -330,21 +365,95 @@ const PolicyCard: React.FC<{ canUpdate: boolean }> = ({ canUpdate }) => {
 };
 
 /** The emergency button: ends every session of the organization except the caller's own. */
+const EMERGENCY_CONFIRM_PHRASE = 'خاتمه همه نشست ها';
+const EMERGENCY_MIN_REASON = 10;
+const MASK_CHAR = '•';
+
+// Password managers (Chrome, LastPass, 1Password, Bitwarden) must not offer anything here.
+const NO_AUTOFILL = {
+  autoComplete: 'off',
+  autoCorrect: 'off',
+  autoCapitalize: 'off',
+  spellCheck: false,
+  'data-lpignore': 'true',
+  'data-1p-ignore': 'true',
+  'data-bwignore': 'true',
+  'data-form-type': 'other',
+} as const;
+
+/** Browsers that hide a text field's characters themselves (Chrome, Safari, Edge, new Firefox). */
+const SUPPORTS_TEXT_SECURITY = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('-webkit-text-security', 'disc');
+
+const blockPaste = (event: React.ClipboardEvent | React.DragEvent) => event.preventDefault();
+
+/**
+ * A secret typed into a plain text field (type="password" is what makes Chrome offer saved
+ * passwords). It is shown as dots by -webkit-text-security; where that is not supported the
+ * field shows only dots and the real value is kept in state.
+ */
+const SecretInput: React.FC<{ id: string; value: string; onChange: (value: string) => void; className: string }> = ({ id, value, onChange, className }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const shown = event.target.value;
+    if (SUPPORTS_TEXT_SECURITY) {
+      onChange(shown);
+      return;
+    }
+    // Masked mode: the new characters are the ones that are not dots, just before the caret.
+    const inserted = Array.from(shown).filter((ch) => ch !== MASK_CHAR).join('');
+    const caret = event.target.selectionStart ?? shown.length;
+    const start = Math.max(0, caret - inserted.length);
+    const removed = value.length - (shown.length - inserted.length);
+    onChange(value.slice(0, start) + inserted + value.slice(start + Math.max(0, removed)));
+  };
+  return (
+    <input
+      type="text"
+      id={id}
+      name={id}
+      {...NO_AUTOFILL}
+      value={SUPPORTS_TEXT_SECURITY ? value : MASK_CHAR.repeat(value.length)}
+      onChange={handleChange}
+      onPaste={blockPaste}
+      onDrop={blockPaste}
+      className={className}
+      style={{ WebkitTextSecurity: 'disc' } as React.CSSProperties}
+      dir="ltr"
+    />
+  );
+};
+
 const EmergencyCard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [reason, setReason] = useState('');
+  const [confirmText, setConfirmText] = useState('');
+  // New random names each time the form opens, so nothing can be matched to a saved entry.
+  const [suffix, setSuffix] = useState(() => Math.random().toString(36).slice(2, 10));
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<Message>(null);
+  const ids = { reason: `er-${suffix}-a`, confirm: `er-${suffix}-b`, secret: `er-${suffix}-c` };
+
+  const reset = () => {
+    setPassword('');
+    setReason('');
+    setConfirmText('');
+  };
+  const openForm = () => { reset(); setSuffix(Math.random().toString(36).slice(2, 10)); setMessage(null); setOpen(true); };
+  const cancel = () => { reset(); setOpen(false); };
+
+  const reasonOk = reason.trim().length >= EMERGENCY_MIN_REASON;
+  const confirmOk = confirmText.trim() === EMERGENCY_CONFIRM_PHRASE;
 
   const run = async () => {
+    if (!reasonOk || !confirmOk || !password) return;
     setBusy(true);
+    const secret = password;
+    const why = reason.trim();
+    reset();
     try {
-      const count = await revokeAllOrganizationSessions(password, reason.trim());
+      const count = await revokeAllOrganizationSessions(secret, why);
       setMessage({ type: 'success', text: `${toPersianDigits(count)} نشست بسته شد.` });
       setOpen(false);
-      setPassword('');
-      setReason('');
     } catch (err) {
       setMessage({ type: 'error', text: userErrorMessage(err, 'انجام نشد.') });
     } finally {
@@ -363,16 +472,23 @@ const EmergencyCard: React.FC = () => {
       </div>
       {message && <Notice type={message.type} onClose={() => setMessage(null)}>{message.text}</Notice>}
       {!open ? (
-        <SecondaryButton onClick={() => setOpen(true)} className="text-rose-600">خاتمه‌ی نشست‌ها…</SecondaryButton>
+        <SecondaryButton type="button" onClick={openForm} className="text-rose-600">خاتمه‌ی نشست‌ها…</SecondaryButton>
       ) : (
         <div className="space-y-3">
-          <Field label="دلیل" required><input value={reason} onChange={(event) => setReason(event.target.value)} maxLength={300} className={inputClass} /></Field>
-          <Field label="رمز عبور شما" required><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" className={inputClass} dir="ltr" /></Field>
+          <Field label="دلیل" required hint={`حداقل ${toPersianDigits(EMERGENCY_MIN_REASON)} نویسه.`}>
+            <input type="text" id={ids.reason} name={ids.reason} {...NO_AUTOFILL} value={reason} onChange={(event) => setReason(event.target.value)} maxLength={300} className={inputClass} />
+          </Field>
+          <Field label={`برای تأیید عبارت «${EMERGENCY_CONFIRM_PHRASE}» را تایپ کنید`} required>
+            <input type="text" id={ids.confirm} name={ids.confirm} {...NO_AUTOFILL} value={confirmText} onChange={(event) => setConfirmText(event.target.value)} onPaste={blockPaste} onDrop={blockPaste} className={inputClass} />
+          </Field>
+          <Field label="تأیید هویت (رمز ورود فعلی)" required>
+            <SecretInput id={ids.secret} value={password} onChange={setPassword} className={inputClass} />
+          </Field>
           <div className="flex gap-2">
-            <PrimaryButton onClick={run} disabled={busy || reason.trim().length < 3 || !password} className="!bg-rose-700 hover:!bg-rose-800">
+            <PrimaryButton type="button" onClick={() => void run()} disabled={busy || !reasonOk || !confirmOk || !password} className="!bg-rose-700 hover:!bg-rose-800">
               {busy && <Loader2 className="w-4 h-4 animate-spin" />} تأیید و خاتمه
             </PrimaryButton>
-            <SecondaryButton onClick={() => setOpen(false)}>انصراف</SecondaryButton>
+            <SecondaryButton type="button" onClick={cancel}>انصراف</SecondaryButton>
           </div>
         </div>
       )}
@@ -436,7 +552,7 @@ export const UserSessionsDialog: React.FC<{ userId: string; userName: string; ca
         {!list ? <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-slate-400" /></div> : (
           <>
             <SessionRows list={list} canClose={canClose} busyId={busyId} onClose={closeOne} />
-            {canClose && list.active.length > 0 && <SecondaryButton onClick={closeAll} className="text-rose-600">بستن همه‌ی نشست‌های این کاربر</SecondaryButton>}
+            {canClose && list.active.length > 0 && <SecondaryButton type="button" onClick={closeAll} className="text-rose-600">بستن همه‌ی نشست‌های این کاربر</SecondaryButton>}
           </>
         )}
       </div>

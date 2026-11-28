@@ -172,6 +172,7 @@ export const SESSION_END_MESSAGES: Record<string, string> = {
   'session.account_disabled': 'حساب کاربری شما غیرفعال شده است.',
   'session.reuse_detected': 'به‌دلایل امنیتی نشست شما بسته شد. لطفاً دوباره وارد شوید و در صورت لزوم رمز عبور را تغییر دهید.',
   'session.missing': 'نشست شما معتبر نیست. لطفاً دوباره وارد شوید.',
+  'session.replaced_by_relogin': 'از همین دستگاه دوباره وارد شدید و این نشست جایگزین شد.',
   'session.logged_out': '',
 };
 
@@ -376,10 +377,50 @@ export function sessionEndReasonOf(event: Event): string | null {
   return ((event as CustomEvent).detail?.reason as string | undefined) ?? null;
 }
 
+const FORCED_SIGNOUT_KEY = 'nexus-forced-signout';
+
+/**
+ * Whether the last sign-out was not the user's own choice (idle, absolute, revoked, administrator...).
+ * Then the sign-in form must not offer saved usernames or passwords; after a normal sign-out it may.
+ */
+export function wasSignedOutBySession(): boolean {
+  try {
+    return !!localStorage.getItem(FORCED_SIGNOUT_KEY);
+  } catch {
+    return false;
+  }
+}
+
+export function clearForcedSignOut(): void {
+  try {
+    localStorage.removeItem(FORCED_SIGNOUT_KEY);
+  } catch {
+    // Storage blocked: nothing to clear.
+  }
+}
+
 function endSession(reason?: string | null): void {
+  if (reason && reason !== 'session.logged_out') {
+    try {
+      localStorage.setItem(FORCED_SIGNOUT_KEY, reason);
+    } catch {
+      // Storage blocked: the form falls back to allowing suggestions.
+    }
+  }
+  const refreshToken = tokens?.refreshToken;
   tokens = null;
   writeSession(null);
   clearPrivateData();
+  // Before the sign-in screen: tell the server, so the refresh token is revoked and the cookie of
+  // this browser is cleared. Otherwise the next sign-in from here would find it still set.
+  // Not when it was replaced by a new sign-in here: the cookie is then the new session's.
+  if (reason !== 'session.replaced_by_relogin') request<void>('POST', '/api/identity/auth/logout', {
+    body: refreshToken ? { refreshToken } : undefined,
+    auth: false,
+    retryOnUnauthorized: false,
+    cookieSession: true,
+    keepalive: true,
+  }).catch(() => undefined);
   try {
     window.dispatchEvent(new CustomEvent(SESSION_ENDED_EVENT, { detail: { reason: reason ?? null } }));
   } catch {
@@ -400,6 +441,7 @@ function writeSession(session: StoredSession | null): void {
   try {
     if (session) {
       localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      clearForcedSignOut();
     } else {
       localStorage.removeItem(SESSION_KEY);
     }
@@ -510,6 +552,8 @@ async function refreshSession(): Promise<boolean> {
  * show hints of the previous backend ("collection tasks not found"), which would be wrong here.
  */
 export class NexusApiError extends Error {
+  /** Field-by-field validation errors of a 400 (ProblemDetails `errors`), keyed by field name. */
+  fieldErrors?: Record<string, string[]>;
   constructor(message: string, public readonly httpStatus: number, public readonly code?: string) {
     super(message);
     this.name = 'NexusApiError';
@@ -562,7 +606,9 @@ function toApiError(status: number, body: any, unauthorizedMessage?: string): Ne
   if (status === 401 && unauthorizedMessage) {
     return new NexusApiError(unauthorizedMessage, status, code);
   }
-  return new NexusApiError(persianApiMessage(status, code, detail), status, code);
+  const error = new NexusApiError(persianApiMessage(status, code, detail), status, code);
+  if (body && typeof body.errors === 'object' && body.errors) error.fieldErrors = body.errors;
+  return error;
 }
 
 /** The same client for API modules kept in their own file (e.g. orgStructureApi.ts). */
@@ -581,7 +627,10 @@ async function request<T>(method: string, path: string, options: RequestOptions 
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
     // Only a request that follows a real interaction (click, key, scroll, touch, mouse move) tells
     // the server the user is there. Polling and background calls never do.
+    // Everything else says so explicitly: the server then only checks the session and does not
+    // move LastActivity/IdleExpires (polling of unread counts, notifications, sessions/current...).
     if (takeActivityFlag()) headers['X-Nexus-Activity'] = '1';
+    else headers['X-Background-Request'] = '1';
     // «Work as this post»: the server then counts only that post's permissions (never more than the person has).
     const activePosts = activePostsHeader();
     if (activePosts) headers['X-Active-Posts'] = activePosts;
