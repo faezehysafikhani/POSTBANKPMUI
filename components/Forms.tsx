@@ -11,7 +11,9 @@ interface OwningUnitTreeNode {
     name: string;
     parentId: string | null;
 }
-export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = false, id = "owningUnit", placeholder = "انتخاب واحد سازمانی...", onlyUnitIds }: {
+export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = false, id = "owningUnit", placeholder = "انتخاب واحد سازمانی...", onlyUnitIds, unitsLoading = false }: {
+    /** While true, the list shows a loading line instead of every unit. */
+    unitsLoading?: boolean;
     /** When given (non-empty), only these units are offered, as a flat list (e.g. where the project owner holds a post). */
     onlyUnitIds?: string[] | null;
     value: string;
@@ -167,7 +169,7 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
             overflowY: 'auto',
             padding: '0.4rem'
         }
-    }, onlyNodes ? onlyNodes.map(node => {
+    }, unitsLoading ? (React.createElement("div", { style: { padding: '0.75rem', textAlign: 'center', fontSize: '0.82rem', color: isDark ? '#94b8a3' : '#648b74' } }, "در حال خواندن واحدهای مالک...")) : onlyNodes ? onlyNodes.map(node => {
         const path = pathOf(node);
         return React.createElement("div", {
             key: node.id,
@@ -197,7 +199,7 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
     // project already has stays. The server checks it again.
     const [initialManager] = useState(() => projectData.projectManagerId);
     const projectManagers = useAssignableUsers(users, currentUser?.id, initialManager);
-    const ownerUnitIds = useOwnerUnitIds(projectData.ownerId || currentUser?.id, currentUser?.id);
+    const { ids: ownerUnitIds, loading: ownerUnitsLoading } = useOwnerUnitIds(projectData.ownerId || currentUser?.id, currentUser?.id);
     // The owner holds posts in only one unit: it is the owning unit unless one was already chosen.
     const { unitNodes: allUnitNodes } = useDirectory();
     useEffect(() => {
@@ -260,6 +262,7 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
         onChange: (val: string) => !isReadOnly && setProjectData({ ...projectData, owningUnit: val }),
         owningUnits: owningUnits,
         onlyUnitIds: ownerUnitIds,
+        unitsLoading: ownerUnitsLoading,
         disabled: isReadOnly,
         placeholder: t('selectAUnit')
     })), projectData.type === 'agile' && React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "sprintCount" }, t('sprintCount') + '*'), React.createElement("input", { type: "number", id: "sprintCount", name: "sprintCount", value: projectData.sprintCount || 1, onChange: handleChange, required: true, min: "1", disabled: isReadOnly })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "cost" }, t('cost')), React.createElement("input", { type: "text", id: "cost", name: "cost", value: formattedCost || '', onChange: handleChange, placeholder: "1,000,000", inputMode: "numeric", disabled: isReadOnly })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "goal" }, t('projectGoal') + '*'), React.createElement("textarea", { id: "goal", name: "goal", value: projectData.goal || '', onChange: handleChange, disabled: isReadOnly, placeholder: language === 'fa' ? 'اهداف عملیاتی و نتیجه مورد انتظار پروژه را وارد کنید (باید متناسب با عنوان پروژه باشد)...' : 'Enter project goals aligned with project title...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "requirements" }, t('projectRequirements') + '*'), React.createElement("textarea", { id: "requirements", name: "requirements", value: projectData.requirements || '', onChange: handleChange, disabled: isReadOnly, placeholder: language === 'fa' ? 'الزامات کلیدی، فنی و اجرایی پروژه را وارد کنید (باید متناسب با عنوان پروژه باشد)...' : 'Enter key project requirements aligned with project title...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "constraintsAndAssumptions" }, language === 'fa' ? 'محدودیت‌ها و مفروضات*' : 'Constraints & Assumptions*'), React.createElement("textarea", { id: "constraintsAndAssumptions", name: "constraintsAndAssumptions", value: projectData.constraintsAndAssumptions || '', onChange: handleChange, required: true, disabled: isReadOnly, placeholder: language === 'fa' ? 'محدودیت‌های بودجه‌ای، زمانی، منابع انسانی یا مفروضات کلیدی پروژه را وارد کنید (الزامی)...' : 'Enter project constraints and key assumptions (required)...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "description" }, t('description')), React.createElement("textarea", { id: "description", name: "description", value: projectData.description || '', onChange: handleChange, disabled: isReadOnly }))));

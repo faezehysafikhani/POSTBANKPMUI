@@ -13,17 +13,22 @@ const unitsOf = (assignment: UserAssignment | null | undefined): string[] => {
 /**
  * The units a project's owner may own it from: where they hold a post in the organization chart. Null while unknown, or
  * when the chart cannot tell (the owner has no place, or their place may not be read): then every unit stays on offer.
+ * `loading` is true until the answer is in, so a screen does not show every unit for a moment first.
  */
-export function useOwnerUnitIds(ownerId?: string | number | null, meId?: string | number | null): string[] | null {
+export function useOwnerUnitIds(ownerId?: string | number | null, meId?: string | number | null): { ids: string[] | null; loading: boolean } {
   const [ids, setIds] = useState<string[] | null>(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     let alive = true;
     setIds(null);
-    if (ownerId === undefined || ownerId === null || ownerId === '') return;
+    if (ownerId === undefined || ownerId === null || ownerId === '') { setLoading(false); return; }
+    setLoading(true);
     const own = String(ownerId) === String(meId ?? '');
     const read = own ? getMyPlacement().then(p => p?.assignment ?? null) : getAssignment(String(ownerId));
-    read.then(a => { if (alive) { const units = unitsOf(a); setIds(units.length ? units : null); } }).catch(() => undefined);
+    read.then(a => { if (alive) { const units = unitsOf(a); setIds(units.length ? units : null); } })
+      .catch(() => undefined)
+      .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [ownerId, meId]);
-  return ids;
+  return { ids, loading };
 }
