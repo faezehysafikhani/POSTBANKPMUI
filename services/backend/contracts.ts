@@ -123,7 +123,7 @@ export interface InvoiceBody {
 const base = '/api/project-management/contracts';
 
 export const contractsApi = {
-  forProjects: (projectIds: string[]) => api.post<BackendContractDetail[]>(`${base}/for-projects`, { projectIds }),
+  forProjects: (projectIds: string[]) => api.read<BackendContractDetail[]>(`${base}/for-projects`, { projectIds }),
   summary: (projectId: string) => api.get<BackendProjectContractsSummary>(`${base}/summary?projectId=${encodeURIComponent(projectId)}`),
   create: (tenantId: string, projectId: string, body: ContractBody) => api.post<BackendContract>(`${base}/`, { tenantId, projectId, ...body }),
   update: (id: string, body: ContractBody) => api.put<BackendContract>(`${base}/${id}`, body),

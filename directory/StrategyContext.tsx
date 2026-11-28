@@ -89,15 +89,24 @@ export const StrategyProvider = ({ children }: { children: React.ReactNode }) =>
     setLoading(false);
   }, [session, loadStrategies, loadScores, loadKnowledge]);
 
+  // The strategy tree and the knowledge library depend on the sign-in only: they are read once per sign-in.
   React.useEffect(() => {
     if (!session) {
       setStrategies([]);
-      setScores([]);
       setKnowledge([]);
-    } else {
-      void reload();
+      return;
     }
-  }, [session, reload]);
+    let current = true;
+    setLoading(true);
+    void Promise.all([loadStrategies(), loadKnowledge()]).finally(() => { if (current) setLoading(false); });
+    return () => { current = false; };
+  }, [session, loadStrategies, loadKnowledge]);
+
+  // The alignment scores follow the projects (a project added or deleted changes the ids asked for), nothing else does.
+  React.useEffect(() => {
+    if (!session) setScores([]);
+    else void loadScores();
+  }, [session, loadScores]);
 
   const alignments = React.useMemo<ProjectStrategyAlignment[]>(
     () => scores.flatMap(s => s.levels

@@ -4,27 +4,36 @@ import { AdminUser, listUsersPage } from '../../../services/nexusApi';
 import { inputClass, useDebounced } from '../AdminUi';
 import { userErrorMessage } from '../../../utils/errorMessages';
 
-/** Loads data once (and again on reload()); errors become a Persian message. */
-export function useLoad<T>(load: () => Promise<T>, fallbackError: string) {
+/**
+ * Loads data when the component appears and whenever one of `deps` changes (and again on reload()); errors become a
+ * Persian message. Only the newest request may put its answer on the screen: a slower, older one is dropped, so a
+ * quick change of `deps` can never show the previous answer. A change of `deps` is the load's own trigger - callers must
+ * not also call reload() for it (that would ask twice, and in StrictMode would ask twice at start-up).
+ */
+export function useLoad<T>(load: () => Promise<T>, fallbackError: string, deps: readonly unknown[] = []) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const loadRef = useRef(load);
   loadRef.current = load;
+  const latest = useRef(0);
 
   const reload = useCallback(async () => {
+    const mine = ++latest.current;
     setLoading(true);
     setError(null);
     try {
-      setData(await loadRef.current());
+      const result = await loadRef.current();
+      if (mine === latest.current) setData(result);
     } catch (err) {
-      setError(userErrorMessage(err, fallbackError));
+      if (mine === latest.current) setError(userErrorMessage(err, fallbackError));
     } finally {
-      setLoading(false);
+      if (mine === latest.current) setLoading(false);
     }
   }, [fallbackError]);
 
-  useEffect(() => { reload(); }, [reload]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { reload(); return () => { latest.current++; }; }, [reload, ...deps]);
   return { data, loading, error, reload, setData };
 }
 

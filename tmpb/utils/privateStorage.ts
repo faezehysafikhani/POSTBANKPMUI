@@ -1,4 +1,5 @@
 import { clearLookups } from './lookupCache';
+import { resetSharedReads } from './sharedRead';
 
 /**
  * Keys of everything this app keeps in the browser about a person: chat history, notes, task
@@ -18,6 +19,7 @@ const PRIVATE_KEY_PREFIXES = [
 
 export function clearPrivateData(): void {
   clearLookups();
+  resetSharedReads();
   try {
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const name = localStorage.key(i);

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { api } from '../services/api';
+import { api, tokenStore } from '../services/api';
+import { PLACEMENT_TTL_MS, placementKey, sharedRead } from '../tmpb/utils/sharedRead';
 import type { MyPlacement } from '../tmpb/services/orgStructureApi';
-import { selectActivePost, setActivePostUser, setHeldPosts, useActivePost } from '../tmpb/utils/activePost';
+import { selectActivePost, setActivePostUser, setHeldPosts, useActivePost, activePostsHeader } from '../tmpb/utils/activePost';
 
 /**
  * «کار با پست»: someone who holds several posts works as one of them (or one unit's posts) or all of them, as in TM.
@@ -14,9 +15,14 @@ export const PostSwitcher = ({ userId }: { userId: string }) => {
   useEffect(() => { setActivePostUser(userId); }, [userId]);
   useEffect(() => {
     let alive = true;
-    const load = () => void api.get<MyPlacement>('/api/org-structure/me').then(r => {
-      if (alive && r.ok) setHeldPosts(r.value?.assignment?.positions ?? []);
-    });
+    // The same answer the «جایگاه من» panel uses (one request, kept for a minute): coming back to the window within it asks nothing.
+    const load = () => void sharedRead(placementKey(tokenStore.access, activePostsHeader()), async () => {
+      const r = await api.get<MyPlacement>('/api/org-structure/me');
+      if (!r.ok) throw new Error(r.error?.code ?? 'placement');
+      return r.value ?? null;
+    }, PLACEMENT_TTL_MS).then(placement => {
+      if (alive) setHeldPosts(placement?.assignment?.positions ?? []);
+    }).catch(() => { /* no module, offline or refused: the posts stay as they were */ });
     load();
     window.addEventListener('focus', load);
     return () => { alive = false; window.removeEventListener('focus', load); };

@@ -137,7 +137,7 @@ export interface StakeholderBody {
 }
 
 const base = '/api/project-management';
-const forProjects = <T>(path: string, projectIds: string[]) => api.post<T[]>(`${base}/${path}/for-projects`, { projectIds });
+const forProjects = <T>(path: string, projectIds: string[]) => api.read<T[]>(`${base}/${path}/for-projects`, { projectIds });
 
 export interface BackendRiskResponseReport {
   id: string;
@@ -152,7 +152,7 @@ export interface BackendRiskResponseReport {
 }
 
 export const riskResponses = {
-  forProjects: (projectIds: string[]) => api.post<BackendRiskResponseReport[]>(`${base}/risks/response-submissions/for-projects`, { projectIds }),
+  forProjects: (projectIds: string[]) => api.read<BackendRiskResponseReport[]>(`${base}/risks/response-submissions/for-projects`, { projectIds }),
   submit: (tenantId: string, riskId: string, status: number, comment: string | null) =>
     api.post<BackendRiskResponseReport>(`${base}/risks/response-submissions`, { tenantId, riskId, status, comment })
 };
@@ -167,7 +167,7 @@ export const risks = {
   remove: (id: string) => api.delete<void>(`${base}/risks/${id}`),
   submit: (id: string) => api.post<BackendRisk>(`${base}/risks/${id}/submit-for-approval`),
   setResponseStatus: (id: string, status: number) => api.put<BackendRisk>(`${base}/risks/${id}/response-status`, { status }),
-  settings: (projectIds: string[]) => api.post<BackendRiskSettings[]>(`${base}/risks/settings/for-projects`, { projectIds }),
+  settings: (projectIds: string[]) => api.read<BackendRiskSettings[]>(`${base}/risks/settings/for-projects`, { projectIds }),
   saveSettings: (tenantId: string, projectId: string, definitions: BackendRiskSettings['definitions'] | null, matrixColors: BackendRiskSettings['matrixColors'] | null) =>
     api.put<BackendRiskSettings>(`${base}/risks/settings`, { tenantId, projectId, definitions, matrixColors })
 };
@@ -180,7 +180,7 @@ export const stakeholders = {
     api.put<BackendStakeholder>(`${base}/stakeholders/${id}`, { isInternal: true, expectations: null, notes: null, ...body }),
   remove: (id: string) => api.delete<void>(`${base}/stakeholders/${id}`),
   submit: (id: string) => api.post<BackendStakeholder>(`${base}/stakeholders/${id}/submit-for-approval`),
-  settings: (projectIds: string[]) => api.post<BackendStakeholderSettings[]>(`${base}/stakeholders/settings/for-projects`, { projectIds }),
+  settings: (projectIds: string[]) => api.read<BackendStakeholderSettings[]>(`${base}/stakeholders/settings/for-projects`, { projectIds }),
   saveSettings: (tenantId: string, projectId: string, texts: Pick<BackendStakeholderSettings, 'manageClosely' | 'keepSatisfied' | 'keepInformed' | 'monitor'>) =>
     api.put<BackendStakeholderSettings>(`${base}/stakeholders/settings`, { tenantId, projectId, ...texts })
 };
@@ -224,7 +224,7 @@ export const documents = {
 
 export const approvals = {
   forSubjects: (subjectType: string, subjectIds: string[]) =>
-    api.post<BackendInstance[]>('/api/workflow/approval-center/for-subjects', { subjectType, subjectIds }),
+    api.read<BackendInstance[]>('/api/workflow/approval-center/for-subjects', { subjectType, subjectIds }),
   approve: (instanceId: string, comment: string | null) => api.post<BackendInstance>(`/api/workflow/approval-center/${instanceId}/approve`, { comment }),
   reject: (instanceId: string, comment: string | null) => api.post<BackendInstance>(`/api/workflow/approval-center/${instanceId}/reject`, { comment })
 };

@@ -221,7 +221,7 @@ export interface AgileTaskBody {
 }
 
 export const waterfall = {
-  plans: (projectIds: string[]) => api.post<BackendPlan[]>(`${wf}/schedule/plans`, { projectIds }),
+  plans: (projectIds: string[]) => api.read<BackendPlan[]>(`${wf}/schedule/plans`, { projectIds }),
   plan: (projectId: string) => api.get<BackendPlan>(`${wf}/schedule/plan${query({ projectId })}`),
   createActivity: (tenantId: string, projectId: string, body: ActivityBody) =>
     api.post<BackendActivity>(`${wf}/activities/`, { tenantId, projectId, ...body }),
@@ -249,7 +249,7 @@ export const waterfall = {
       `${wf}/msproject/import${query({ projectId, replaceExisting })}`, form);
   },
 
-  reports: (projectIds: string[]) => api.post<BackendProgressReport[]>(`${wf}/progress-submissions/for-projects`, { projectIds }),
+  reports: (projectIds: string[]) => api.read<BackendProgressReport[]>(`${wf}/progress-submissions/for-projects`, { projectIds }),
   submitReport: (tenantId: string, projectId: string, activityId: string, progress: number, comment: string | null, documentName: string | null) =>
     api.post<BackendProgressReport>(`${wf}/progress-submissions/`, { tenantId, projectId, activityId, progress, comment, documentName }),
   confirmProgress: (reportId: string, progress: number) =>
@@ -257,9 +257,9 @@ export const waterfall = {
 };
 
 export const agile = {
-  tasks: (projectIds: string[]) => api.post<BackendAgileTask[]>(`${ag}/tasks/for-projects`, { projectIds }),
-  sprints: (projectIds: string[]) => api.post<BackendSprint[]>(`${ag}/sprints/for-projects`, { projectIds }),
-  statusRequests: (projectIds: string[]) => api.post<BackendStatusRequest[]>(`${ag}/status-submissions/for-projects`, { projectIds }),
+  tasks: (projectIds: string[]) => api.read<BackendAgileTask[]>(`${ag}/tasks/for-projects`, { projectIds }),
+  sprints: (projectIds: string[]) => api.read<BackendSprint[]>(`${ag}/sprints/for-projects`, { projectIds }),
+  statusRequests: (projectIds: string[]) => api.read<BackendStatusRequest[]>(`${ag}/status-submissions/for-projects`, { projectIds }),
   createTask: (tenantId: string, projectId: string, body: AgileTaskBody) => api.post<BackendAgileTask>(`${ag}/tasks/`, { tenantId, projectId, ...body }),
   updateTask: (id: string, body: AgileTaskBody) => api.put<BackendAgileTask>(`${ag}/tasks/${id}`, body),
   setTaskStatus: (id: string, status: number) => api.put<BackendAgileTask>(`${ag}/tasks/${id}/status`, { status }),
@@ -271,5 +271,5 @@ export const agile = {
 };
 
 export const progressOverview = {
-  forProjects: (projectIds: string[]) => api.post<BackendProjectProgress[]>('/api/project-management/projects/progress', { projectIds })
+  forProjects: (projectIds: string[]) => api.read<BackendProjectProgress[]>('/api/project-management/projects/progress', { projectIds })
 };

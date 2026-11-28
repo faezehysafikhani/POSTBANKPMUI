@@ -41,6 +41,8 @@ export interface ProjectWorkflowView {
 
 interface GovernanceState {
   loading: boolean;
+  /** True once the switches (who sees what) of this sign-in have been read: what depends on them waits for it. */
+  ready: boolean;
   /** Approvals waiting for the signed-in user - their own and those of the people they stand in for - as the backend lists them. */
   inbox: BackendInstance[];
   /** True when the approval of this subject (the id of the risk, report, contract ...) is waiting for the signed-in user to decide. */
@@ -158,9 +160,10 @@ const toUiDelegation = (d: BackendItemDelegation): Delegation => ({
 /** Approval chains, who sees what, hand-overs of work and per-project switches - all as the backend holds them. */
 export const GovernanceProvider = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuth();
-  const projects = useProjects().projects;
+  const { projects, ready: projectsReady } = useProjects();
 
   const [loading, setLoading] = React.useState(false);
+  const [loadedFor, setLoadedFor] = React.useState<unknown>(null);
   const [inbox, setInbox] = React.useState<BackendInstance[]>([]);
   const [groups, setGroups] = React.useState<BackendWorkflowGroup[]>([]);
   const [visibility, setVisibility] = React.useState<VisibilitySettings>(ALL_ON);
@@ -207,11 +210,12 @@ export const GovernanceProvider = ({ children }: { children: React.ReactNode }) 
       return;
     }
     setLoading(true);
-    void Promise.all([loadGroups(), loadSwitches(), loadProjectSettings(), loadDelegations()]).then(() => setLoading(false));
+    void Promise.all([loadGroups(), loadSwitches(), loadProjectSettings(), loadDelegations()]).then(() => { setLoading(false); setLoadedFor(session); });
   }, [session, loadGroups, loadSwitches, loadProjectSettings, loadDelegations]);
 
   // What is waiting for the user changes whenever a register, report or contract does (a decision, a new submission).
-  React.useEffect(() => { void refreshInbox(); }, [projects, refreshInbox]);
+  // The first read waits for the projects (it would otherwise run once before them and once after).
+  React.useEffect(() => { if (projectsReady) void refreshInbox(); }, [projects, projectsReady, refreshInbox]);
 
   const inboxIds = React.useMemo(() => new Set(inbox.map(i => i.subjectId)), [inbox]);
 
@@ -224,6 +228,7 @@ export const GovernanceProvider = ({ children }: { children: React.ReactNode }) 
 
   const value = React.useMemo<GovernanceState>(() => ({
     loading,
+    ready: !!session && loadedFor === session,
     inbox,
     waitingForMe: subjectId => !!subjectId && inboxIds.has(subjectId),
     refreshInbox,
@@ -326,7 +331,7 @@ export const GovernanceProvider = ({ children }: { children: React.ReactNode }) 
       await loadDelegations();
       return { ok: true, restoreToUserId: ended.value?.restoreToUserId };
     }
-  }), [loading, inbox, inboxIds, refreshInbox, workflow, configured, visibility, allowApprovedProgress, projectSettings, delegations, loadProjectSettings, loadDelegations]);
+  }), [loading, session, loadedFor, inbox, inboxIds, refreshInbox, workflow, configured, visibility, allowApprovedProgress, projectSettings, delegations, loadProjectSettings, loadDelegations]);
 
   return React.createElement(GovernanceContext.Provider, { value }, children);
 };

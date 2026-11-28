@@ -2,7 +2,9 @@
 // user's company / unit / position / manager. Backed by NexusCore's optional Nexus.OrgStructure
 // module and Nexus.Organization's units. A backend without the module answers 404, and the
 // whole section stays hidden (see isOrgStructureAvailable).
-import { apiRequest, getSessionTenantId, NexusApiError } from './nexusApi';
+import { apiRequest, currentAccessToken, getSessionTenantId, NexusApiError } from './nexusApi';
+import { PLACEMENT_TTL_MS, placementKey, sharedRead } from '../utils/sharedRead';
+import { activePostsHeader } from '../utils/activePost';
 
 export interface PersonRef { userId: string; displayName: string; isActive: boolean; avatarUrl?: string | null }
 
@@ -316,10 +318,18 @@ export const ORG_UNIT_PERMISSIONS = {
   delete: 'organization_units.delete',
 } as const;
 
+/**
+ * The lists the chart and the placement form both draw on are asked by whichever of them opens next, one right after the
+ * other. For this short while the second one reuses the answer; any write (here or in the product's client) drops it.
+ */
+const STRUCTURE_READ_TTL_MS = 10_000;
+
 /** The signed-in user's place; also tells whether the backend has the module (null = it does not). */
 export async function getMyPlacement(): Promise<MyPlacement | null> {
   try {
-    return await apiRequest<MyPlacement>('GET', `${BASE}/me`);
+    // Shared with the header's post switcher (it asks through the product's client): one request, kept for a minute.
+    const token = currentAccessToken();
+    return await sharedRead(placementKey(token, activePostsHeader()), () => apiRequest<MyPlacement>('GET', `${BASE}/me`), token ? PLACEMENT_TTL_MS : 0);
   } catch (err) {
     if (err instanceof NexusApiError && err.httpStatus === 404) return null;
     throw err;
@@ -337,9 +347,9 @@ export const orgStructureLookupKey = (userId: string) => `${userId}:org-structur
 export const getMySubordinates = (all: boolean) => apiRequest<Subordinate[]>('GET', `${BASE}/me/subordinates`, { query: { all } });
 
 /** asOf (a date): only the nodes that exist on that day (a node's dates say when it exists; not where it sat then). */
-export const getChart = (companyId?: string, asOf?: string) => apiRequest<ChartCompany[]>('GET', `${BASE}/chart`, { query: { companyId, asOf } });
+export const getChart = (companyId?: string, asOf?: string) => apiRequest<ChartCompany[]>('GET', `${BASE}/chart`, { query: { companyId, asOf }, ttlMs: STRUCTURE_READ_TTL_MS });
 
-export const listCompanies = () => apiRequest<Company[]>('GET', `${BASE}/companies`);
+export const listCompanies = () => apiRequest<Company[]>('GET', `${BASE}/companies`, { ttlMs: STRUCTURE_READ_TTL_MS });
 export const createCompany = (input: CompanyCreateInput) => apiRequest<Company>('POST', `${BASE}/companies`, { body: input });
 export const updateCompany = (id: string, input: CompanyInput & { isActive: boolean }) =>
   apiRequest<Company>('PUT', `${BASE}/companies/${id}`, { body: input });
@@ -376,7 +386,7 @@ export const linkUnitToCompany = (unitId: string, companyId: string) =>
   apiRequest<CompanyUnitLink>('PUT', `${BASE}/company-units/${unitId}`, { body: { companyId } });
 export const unlinkUnit = (unitId: string) => apiRequest<void>('DELETE', `${BASE}/company-units/${unitId}`);
 
-export const listPositions = () => apiRequest<Position[]>('GET', `${BASE}/positions`);
+export const listPositions = () => apiRequest<Position[]>('GET', `${BASE}/positions`, { ttlMs: STRUCTURE_READ_TTL_MS });
 export const createPosition = (title: string, parentPositionId: string | null, companyIds: string[]) =>
   apiRequest<Position>('POST', `${BASE}/positions`, { body: { title, parentPositionId, companyIds } });
 export const updatePosition = (id: string, title: string, parentPositionId: string | null, isActive: boolean, companyIds: string[]) =>
@@ -486,7 +496,7 @@ export function sortOrgUnits(units: OrgUnit[]): OrgUnit[] {
 export interface UnplacedUser { userId: string; displayName: string; avatarUrl: string | null }
 
 /** People with no place in the structure yet. */
-export const listUnplacedUsers = () => apiRequest<UnplacedUser[]>('GET', `${BASE}/unplaced-users`);
+export const listUnplacedUsers = () => apiRequest<UnplacedUser[]>('GET', `${BASE}/unplaced-users`, { ttlMs: STRUCTURE_READ_TTL_MS });
 /** Work teams whose builder is in no deputy (the chart shows the others under their deputy). */
 export const listTeamsOutsideUnits = () => apiRequest<ChartTeam[]>('GET', `${BASE}/teams-outside-units`);
 
@@ -568,7 +578,7 @@ export interface NodeTypeRules { rules: NodeTypeRule[]; conflicts: RuleConflict[
 
 export interface CreateNodeInput { name: string; parentNodeId?: string | null; companyId?: string | null; nodeTypeId?: string | null; code?: string | null }
 
-export const listNodes = (companyId?: string) => apiRequest<OrgNode[]>('GET', `${BASE}/nodes`, { query: { companyId } });
+export const listNodes = (companyId?: string) => apiRequest<OrgNode[]>('GET', `${BASE}/nodes`, { query: { companyId }, ttlMs: STRUCTURE_READ_TTL_MS });
 export const searchNodes = (q: string, companyId?: string) => apiRequest<NodeSearchResult[]>('GET', `${BASE}/nodes/search`, { query: { q, companyId } });
 export const getNodeAncestors = (id: string) => apiRequest<NodePathItem[]>('GET', `${BASE}/nodes/${id}/ancestors`);
 export const createNode = (input: CreateNodeInput) => apiRequest<OrgNode>('POST', `${BASE}/nodes`, { body: input });
@@ -585,11 +595,11 @@ export const reorderNode = (id: string, position: number, rowVersion?: string | 
 export const deactivateNode = (id: string, rowVersion?: string | null) => apiRequest<OrgNode>('POST', `${BASE}/nodes/${id}/deactivate`, { body: { rowVersion } });
 export const activateNode = (id: string, rowVersion?: string | null) => apiRequest<OrgNode>('POST', `${BASE}/nodes/${id}/activate`, { body: { rowVersion } });
 
-export const listNodeTypes = () => apiRequest<NodeType[]>('GET', `${BASE}/node-types`);
+export const listNodeTypes = () => apiRequest<NodeType[]>('GET', `${BASE}/node-types`, { ttlMs: STRUCTURE_READ_TTL_MS });
 export const createNodeType = (input: NodeTypeInput) => apiRequest<NodeType>('POST', `${BASE}/node-types`, { body: input });
 export const updateNodeType = (id: string, input: NodeTypeUpdate) => apiRequest<NodeType>('PUT', `${BASE}/node-types/${id}`, { body: input });
 export const deleteNodeType = (id: string) => apiRequest<void>('DELETE', `${BASE}/node-types/${id}`);
-export const getNodeTypeRules = () => apiRequest<NodeTypeRules>('GET', `${BASE}/node-type-rules`);
+export const getNodeTypeRules = () => apiRequest<NodeTypeRules>('GET', `${BASE}/node-type-rules`, { ttlMs: STRUCTURE_READ_TTL_MS });
 /** Replaces all the rules; answers with the new rules and the nodes that no longer match them. */
 export const setNodeTypeRules = (rules: NodeTypeRule[]) => apiRequest<NodeTypeRules>('PUT', `${BASE}/node-type-rules`, { body: { rules } });
 
@@ -674,7 +684,7 @@ export interface ProposedLink { fromNodeId: string; fromName: string; toNodeId: 
 /** What the automatic rules would add to the existing nodes: links (one target each) and ambiguous ones (several targets: not added). */
 export interface AutoLinkPlan { links: ProposedLink[]; ambiguous: AutoLinkChoice[] }
 
-export const listLinkTypes = () => apiRequest<LinkType[]>('GET', `${BASE}/link-types`);
+export const listLinkTypes = () => apiRequest<LinkType[]>('GET', `${BASE}/link-types`, { ttlMs: STRUCTURE_READ_TTL_MS });
 export const createLinkType = (input: LinkTypeInput) => apiRequest<LinkType>('POST', `${BASE}/link-types`, { body: input });
 export const updateLinkType = (id: string, input: { name: string; lineStyle: OrgLineStyle; countsAsManager: boolean; isActive: boolean }) =>
   apiRequest<LinkType>('PUT', `${BASE}/link-types/${id}`, { body: input });

@@ -34,11 +34,8 @@ export const OrgTemplatesPanel: React.FC<{ canManageTemplates: boolean; canCreat
   const [openId, setOpenId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [wizardFor, setWizardFor] = useState<string | null | undefined>(undefined);
-  const detail = useLoad(async () => (openId ? getTemplate(openId) : null), 'دریافت محتوای قالب ممکن نشد.');
-  const lastOpen = React.useRef<string | null>(null);
-  React.useEffect(() => {
-    if (lastOpen.current !== openId) { lastOpen.current = openId; void detail.reload(); }
-  }, [openId]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Opening another template is the load's own dependency (no request at all while none is open).
+  const detail = useLoad(async () => (openId ? getTemplate(openId) : null), 'دریافت محتوای قالب ممکن نشد.', [openId]);
 
   const remove = async (template: StructureTemplate) => {
     if (!(await appConfirm(`قالب «${template.name}» حذف شود؟ شرکت‌هایی که از آن ساخته شده‌اند تغییری نمی‌کنند.`, { danger: true, confirmLabel: 'حذف' }))) return;

@@ -9,6 +9,7 @@
 import { takeActivityFlag } from '../tmpb/utils/sessionActivity';
 import { activePostsHeader } from '../tmpb/utils/activePost';
 import { apiBaseUrl } from '../tmpb/runtimeConfig';
+import { resetSharedReads, runWrite, sharedRead } from '../tmpb/utils/sharedRead';
 
 export interface ApiError {
   status: number;
@@ -67,6 +68,7 @@ export const tokenStore = {
   },
   clear() {
     accessToken = null;
+    resetSharedReads(); // nothing read for the person who is gone may be shown to the next one
     dropLegacyTokens();
     try { localStorage.removeItem(REFRESH_KEY); } catch { /* ignore */ }
   }
@@ -88,9 +90,14 @@ export const SESSION_REASON_HEADER = 'X-Nexus-Session-Reason';
 
 let refreshing: Promise<boolean> | null = null;
 
-/** One refresh at a time, however many requests found the token expired together. */
-export async function refreshSession(): Promise<boolean> {
-  refreshing ??= (async () => {
+/**
+ * One refresh at a time, however many requests found the token expired together: they all wait for the same promise.
+ * It is forgotten the moment it settles (nothing is delayed to keep it alive): a request that was refused with the old
+ * token after the refresh finished is told by `renewedSince` that a new token exists and just retries with it.
+ */
+export function refreshSession(): Promise<boolean> {
+  if (refreshing) return refreshing;
+  const running: Promise<boolean> = (async () => {
     try {
       const stored = tokenStore.refresh;
       const response = await fetch(apiUrl('/api/identity/auth/refresh'), {
@@ -108,12 +115,14 @@ export async function refreshSession(): Promise<boolean> {
       return true;
     } catch {
       return false;
-    } finally {
-      setTimeout(() => { refreshing = null; }, 0);
     }
-  })();
-  return refreshing;
+  })().finally(() => { if (refreshing === running) refreshing = null; });
+  refreshing = running;
+  return running;
 }
+
+/** True when the access token in use is no longer the one a refused request carried: someone already renewed it. */
+const renewedSince = (usedToken: string | null): boolean => !!tokenStore.access && tokenStore.access !== usedToken;
 
 /** The reason the last refused refresh / request gave for the session being over (null when it gave none). */
 let lastEndReason: string | null = null;
@@ -148,7 +157,7 @@ async function toError(response: Response): Promise<ApiError> {
 /** Raised for 401 so the app can send the user back to the sign-in page. */
 export const sessionEvents = new EventTarget();
 
-async function send<T>(method: string, url: string, body?: unknown, retry = true): Promise<ApiResult<T>> {
+async function exchange<T>(method: string, url: string, body?: unknown, retry = true): Promise<ApiResult<T>> {
   const headers: Record<string, string> = {};
   // A FormData body (a file upload) sets its own multipart content type, with the boundary.
   const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
@@ -171,7 +180,7 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
 
   if (response.status === 401 && retry && token && !isSessionOpeningUrl(url)) {
     lastEndReason = await endReasonOf(response);
-    if (await refreshSession()) return send<T>(method, url, body, false);
+    if (renewedSince(token) || await refreshSession()) return exchange<T>(method, url, body, false);
     tokenStore.clear();
     sessionEvents.dispatchEvent(new Event('expired'));
   }
@@ -186,6 +195,21 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   }
 }
 
+/** What makes two reads the same read: method, full address (with its query), body, who asks (token) and the posts worked as. */
+const readKey = (method: string, url: string, body?: unknown): string =>
+  `api|${method}|${apiUrl(url)}|${body === undefined ? '' : JSON.stringify(body)}|${tokenStore.access ?? ''}|${activePostsHeader() ?? ''}`;
+
+/**
+ * Reads (GET, and the POSTs that only ask a question, see `read`) asked while the same one is running share it; with
+ * `ttlMs` the answer is also reused for that long. Writes are never shared and drop everything kept (see sharedRead).
+ */
+function send<T>(method: string, url: string, body?: unknown, options: { ttlMs?: number; isRead?: boolean } = {}): Promise<ApiResult<T>> {
+  if (method === 'GET' || options.isRead) {
+    return sharedRead(readKey(method, url, body), () => exchange<T>(method, url, body), options.ttlMs ?? 0);
+  }
+  return runWrite(() => exchange<T>(method, url, body));
+}
+
 /** Fetches a file with the session's token and hands it to the browser to save (the backend names it in Content-Disposition). */
 async function download(url: string, fallbackName: string, retry = true): Promise<ApiResult<void>> {
   const token = tokenStore.access;
@@ -197,7 +221,7 @@ async function download(url: string, fallbackName: string, retry = true): Promis
   }
   if (response.status === 401 && retry && token) {
     lastEndReason = await endReasonOf(response);
-    if (await refreshSession()) return download(url, fallbackName, false);
+    if (renewedSince(token) || await refreshSession()) return download(url, fallbackName, false);
     tokenStore.clear();
     sessionEvents.dispatchEvent(new Event('expired'));
   }
@@ -222,7 +246,10 @@ async function download(url: string, fallbackName: string, retry = true): Promis
 
 export const api = {
   download,
-  get: <T>(url: string) => send<T>('GET', url),
+  /** `ttlMs`: for data that rarely changes, the answer is also reused for that long (never across a write or a sign-out). */
+  get: <T>(url: string, options?: { ttlMs?: number }) => send<T>('GET', url, undefined, options),
+  /** A POST that only asks a question (the list endpoints that take project ids in a body): shared like a GET, and not a write. */
+  read: <T>(url: string, body?: unknown) => send<T>('POST', url, body ?? {}, { isRead: true }),
   post: <T>(url: string, body?: unknown) => send<T>('POST', url, body ?? {}),
   put: <T>(url: string, body?: unknown) => send<T>('PUT', url, body ?? {}),
   patch: <T>(url: string, body?: unknown) => send<T>('PATCH', url, body ?? {}),

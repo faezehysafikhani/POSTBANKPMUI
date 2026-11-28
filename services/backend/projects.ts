@@ -72,7 +72,7 @@ export const projects = {
 
 export const projectTeam = {
   forProjects: (projectIds: string[]) =>
-    api.post<BackendProjectMember[]>('/api/project-management/team/members/for-projects', { projectIds }),
+    api.read<BackendProjectMember[]>('/api/project-management/team/members/for-projects', { projectIds }),
   set: (tenantId: string, projectId: string, userIds: string[]) =>
     api.put<BackendProjectMember[]>('/api/project-management/team/members/set', { tenantId, projectId, userIds })
 };

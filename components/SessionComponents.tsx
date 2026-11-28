@@ -93,8 +93,11 @@ export const SessionWatcher = (): ReactElement | null => {
   useEffect(() => {
     if (!signedIn) { setRemaining(null); return; }
     void poll();
-    const timer = setInterval(() => void poll(), 15000);
-    return () => clearInterval(timer);
+    // A tab nobody is looking at has no warning to show: it asks nothing, and asks at once when it is looked at again.
+    const pollIfVisible = () => { if (!document.hidden) void poll(); };
+    const timer = setInterval(pollIfVisible, 15000);
+    document.addEventListener('visibilitychange', pollIfVisible);
+    return () => { clearInterval(timer); document.removeEventListener('visibilitychange', pollIfVisible); };
   }, [signedIn, poll]);
 
   // Between polls the visible count goes down by itself; the next poll corrects it from the backend.

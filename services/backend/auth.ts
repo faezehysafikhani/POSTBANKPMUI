@@ -1,4 +1,6 @@
 import { api, refreshSession, takeSessionEndReason, tokenStore } from '../api';
+import { ME_TTL_MS, meKey, sharedRead } from '../../tmpb/utils/sharedRead';
+import { activePostsHeader } from '../../tmpb/utils/activePost';
 
 export interface BackendUser {
   id: string;
@@ -104,8 +106,17 @@ export async function completeLogin(ticket: string, choice: { closeSessionIds?: 
  */
 export async function loadSession(): Promise<Session | null> {
   if (!tokenStore.access && !(await refreshSession())) return null;
-  const result = await api.get<{ user: BackendUser; permissions: string[] }>('/api/identity/auth/me');
-  return result.ok && result.value ? { user: result.value.user, permissions: result.value.permissions } : null;
+  try {
+    // Read through the key the settings screens' client uses too, so opening them right after sign-in does not ask again.
+    const me = await sharedRead(meKey(tokenStore.access, activePostsHeader()), async () => {
+      const result = await api.get<{ user: BackendUser; permissions: string[] }>('/api/identity/auth/me');
+      if (!result.ok || !result.value) throw new Error(result.error?.code ?? 'me');
+      return result.value;
+    }, ME_TTL_MS);
+    return { user: me.user, permissions: me.permissions };
+  } catch {
+    return null;
+  }
 }
 
 export async function logout(): Promise<void> {

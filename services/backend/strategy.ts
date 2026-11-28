@@ -48,7 +48,7 @@ export const strategyApi = {
 const al = '/api/integrations/project-strategy-alignment';
 
 export const alignmentApi = {
-  scores: (projectIds: string[]) => api.post<BackendAlignmentScore[]>(`${al}/scores`, { projectIds }),
+  scores: (projectIds: string[]) => api.read<BackendAlignmentScore[]>(`${al}/scores`, { projectIds }),
   setLevels: (tenantId: string, projectId: string, levels: { strategyId: string; level: number }[]) =>
     api.put<BackendAlignmentScore>(`${al}/levels`, { tenantId, projectId, levels })
 };

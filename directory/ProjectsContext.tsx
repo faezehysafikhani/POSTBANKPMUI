@@ -35,6 +35,8 @@ export interface ProjectOutcome extends Outcome {
 }
 
 interface ProjectsState extends PlanningOps, ContractOps {
+  /** True once the first read for this sign-in has finished (whether it worked or not): what depends on the projects waits for it. */
+  ready: boolean;
   /** The progress reports and status requests the backend holds (every visible project), newest first; each has its approval state and history. */
   progressUpdates: ProgressUpdate[];
   loading: boolean;
@@ -163,6 +165,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
   const tenantId = session?.user.tenantId;
 
   const [loading, setLoading] = React.useState(false);
+  const [loadedFor, setLoadedFor] = React.useState<unknown>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [projects, setProjects] = React.useState<Project[]>([]);
   const loaded = React.useRef(false);
@@ -182,6 +185,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
     if (!visible.ok) {
       setError(visible.error?.message ?? 'Loading failed.');
       setLoading(false);
+      setLoadedFor(session);
       return null;
     }
 
@@ -234,6 +238,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
     setProjects(mapped);
     loaded.current = true;
     setLoading(false);
+    setLoadedFor(session);
     return mapped;
   }, [session, directory.unitPathById, people]);
 
@@ -246,10 +251,11 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
     if (!session) {
       loaded.current = false;
       setProjects([]);
-    } else if (!directory.loading) {
+    } else if (directory.ready && !directory.loading) {
+      // The people and units are known (the first read of this sign-in has finished): the projects are read once, with them.
       void reload();
     }
-  }, [session, reload, directory.loading]);
+  }, [session, reload, directory.loading, directory.ready]);
 
   // The AI notes on documents are the only thing still kept in this browser (see rememberLocalOnly).
   React.useEffect(() => {
@@ -475,6 +481,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
 
   const value = React.useMemo<ProjectsState>(() => ({
     loading,
+    ready: !!session && loadedFor === session,
     error,
     projects,
     setProjects,
@@ -550,7 +557,7 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
     ...planningOps,
     ...contractOps,
     progressUpdates
-  }), [loading, error, projects, reload, load, tenantId, bodyOf, finish, registerOps, planningOps, contractOps, progressUpdates]);
+  }), [loading, session, loadedFor, error, projects, reload, load, tenantId, bodyOf, finish, registerOps, planningOps, contractOps, progressUpdates]);
 
   return React.createElement(ProjectsContext.Provider, { value }, children);
 };

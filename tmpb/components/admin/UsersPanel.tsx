@@ -9,7 +9,7 @@ import { getAssignment, setAssignment, removeAssignment, Honorific, listTitles, 
 import { toPersianDigits, formatToJalali } from '../../utils/helpers';
 import {
   AdminCard, SearchBox, StatusBadge, IconAction, Pagination, Field, inputClass, Notice,
-  AdminDialog, PrimaryButton, SecondaryButton, toLatinDigits, useDebounced, PillTabs, SelectAllCheckbox, selectAllState } from './AdminUi';
+  AdminDialog, PrimaryButton, SecondaryButton, toLatinDigits, useDebounced, usePageFor, PillTabs, SelectAllCheckbox, selectAllState } from './AdminUi';
 import { moduleTitle, toggleUserAccess, clearPrerequisiteDenials, clearPrerequisiteDenialsForPermissions, preservePrerequisitesWhenDisabling, preservePermissionPrerequisites, enabledDependentForPrerequisite, hasKnownPermissionDependents, rolePermissionNames, isListedPermission } from '../../utils/permissions';
 import { userErrorMessage } from '../../utils/errorMessages';
 import { LoadingRow } from './orgStructure/orgShared';
@@ -59,7 +59,7 @@ export const UsersPanel: React.FC<{
 }> = ({ currentUserId, rights, orgStructureAvailable, canManageOrgAssignments, canSeeOrgUnits }) => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounced(search);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = usePageFor(debouncedSearch);
   const [rows, setRows] = useState<AdminUser[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -68,20 +68,23 @@ export const UsersPanel: React.FC<{
   const [accessOf, setAccessOf] = useState<AdminUser | null>(null);
   const [sessionsOf, setSessionsOf] = useState<AdminUser | null>(null);
 
+  // Only the newest request may fill the table: a slower, older one (typing, paging) is dropped.
+  const latest = useRef(0);
   const load = useCallback(async () => {
+    const mine = ++latest.current;
     setLoading(true);
     try {
       const result = await listUsersPage({ page, pageSize: PAGE_SIZE, search: debouncedSearch });
+      if (mine !== latest.current) return;
       setRows(result.items);
       setTotal(result.totalCount);
     } catch (err) {
-      setMessage({ type: 'error', text: errorText(err, 'دریافت فهرست کاربران ممکن نشد.') });
+      if (mine === latest.current) setMessage({ type: 'error', text: errorText(err, 'دریافت فهرست کاربران ممکن نشد.') });
     } finally {
-      setLoading(false);
+      if (mine === latest.current) setLoading(false);
     }
   }, [page, debouncedSearch]);
 
-  useEffect(() => { setPage(1); }, [debouncedSearch]);
   useEffect(() => { load(); }, [load]);
 
   const toggleStatus = async (user: AdminUser) => {

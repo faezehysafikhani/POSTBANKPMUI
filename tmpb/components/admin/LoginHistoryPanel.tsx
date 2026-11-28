@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowDownUp, Loader2 } from 'lucide-react';
 import { LoginHistoryEntry, listLoginHistory } from '../../services/nexusApi';
 import { parseISOToJalali } from '../../utils/jalali';
 import { toPersianDigits } from '../../utils/helpers';
-import { AdminCard, SearchBox, StatusBadge, Pagination, Notice, BadgeTone, useDebounced } from './AdminUi';
+import { AdminCard, SearchBox, StatusBadge, Pagination, Notice, BadgeTone, useDebounced, usePageFor } from './AdminUi';
 import { userErrorMessage } from '../../utils/errorMessages';
 
 const PAGE_SIZE = 15;
@@ -38,28 +38,31 @@ function dateAndTime(iso: string): { date: string; time: string } {
 export const LoginHistoryPanel: React.FC = () => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounced(search);
-  const [page, setPage] = useState(1);
   const [newestFirst, setNewestFirst] = useState(true);
+  const [page, setPage] = usePageFor(`${debouncedSearch}|${newestFirst}`);
   const [rows, setRows] = useState<LoginHistoryEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Only the newest request may fill the table: a slower, older one (typing, paging) is dropped.
+  const latest = useRef(0);
   const load = useCallback(async () => {
+    const mine = ++latest.current;
     setLoading(true);
     setError(null);
     try {
       const result = await listLoginHistory({ page, pageSize: PAGE_SIZE, search: debouncedSearch, newestFirst });
+      if (mine !== latest.current) return;
       setRows(result.items);
       setTotal(result.totalCount);
     } catch (err) {
-      setError(userErrorMessage(err, 'دریافت تاریخچه ورود ممکن نشد.'));
+      if (mine === latest.current) setError(userErrorMessage(err, 'دریافت تاریخچه ورود ممکن نشد.'));
     } finally {
-      setLoading(false);
+      if (mine === latest.current) setLoading(false);
     }
   }, [page, debouncedSearch, newestFirst]);
 
-  useEffect(() => { setPage(1); }, [debouncedSearch, newestFirst]);
   useEffect(() => { load(); }, [load]);
 
   return (

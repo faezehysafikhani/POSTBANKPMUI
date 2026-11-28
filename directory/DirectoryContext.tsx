@@ -34,6 +34,8 @@ export interface EditUserForm {
 
 interface DirectoryState {
   loading: boolean;
+  /** True once the first read for this sign-in has finished (whether it worked or not): what depends on the directory waits for it, so it starts once with the real data instead of once empty and once full. */
+  ready: boolean;
   /** The last load failure, if any. */
   error: string | null;
   users: User[];
@@ -65,6 +67,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
   const tenantId = session?.user.tenantId;
 
   const [loading, setLoading] = React.useState(false);
+  const [loadedFor, setLoadedFor] = React.useState<unknown>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [users, setUsers] = React.useState<User[]>([]);
   const [calendars, setCalendars] = React.useState<Calendar[]>([]);
@@ -86,6 +89,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
     if (un.ok) setUnits(un.value ?? []);
     if (c.ok) setCalendars((c.value ?? []).map(toUiCalendar));
     setLoading(false);
+    setLoadedFor(session);
   }, [session]);
 
   React.useEffect(() => {
@@ -124,6 +128,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
 
   const value = React.useMemo<DirectoryState>(() => ({
     loading,
+    ready: !!session && loadedFor === session,
     error,
     users,
     calendars,
@@ -174,7 +179,7 @@ export const DirectoryProvider = ({ children }: { children: React.ReactNode }) =
       });
     },
     deleteCalendar: id => run(() => calendarsApi.remove(id))
-  }), [loading, error, users, calendars, units, unitIdByPath, unitPathById, tenantId, reload, run, applyRole]);
+  }), [loading, session, loadedFor, error, users, calendars, units, unitIdByPath, unitPathById, tenantId, reload, run, applyRole]);
 
   return <DirectoryContext.Provider value={value}>{children}</DirectoryContext.Provider>;
 };

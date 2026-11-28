@@ -41,6 +41,7 @@ import { normalizeAvatar } from '../utils/avatars';
 import { apiBaseUrl, requestTimeoutMs, tenantSlug } from '../runtimeConfig';
 import { activePostsHeader } from '../utils/activePost';
 import { clearPrivateData } from '../utils/privateStorage';
+import { ME_TTL_MS, meKey, runWrite, sharedRead } from '../utils/sharedRead';
 import type { ServerNotificationDto } from '../utils/serverNotifications';
 
 // ---------------------------------------------------------------------------
@@ -483,6 +484,7 @@ async function refreshSession(): Promise<boolean> {
         auth: false,
         retryOnUnauthorized: false,
         cookieSession: true,
+        keepReads: true,
       });
       saveAuthResponse(auth);
       return true;
@@ -536,6 +538,10 @@ interface RequestOptions {
   cookieSession?: boolean;
   /** Lets the request finish after the page is closed (sign-out on closing a tab). */
   keepalive?: boolean;
+  /** Reads only: keep the answer this many milliseconds for the next caller (data that rarely changes). */
+  ttlMs?: number;
+  /** A call that is not a read but changes no data (the token refresh): it does not drop what reads kept. */
+  keepReads?: boolean;
 }
 
 function buildUrl(path: string, query?: RequestOptions['query']): string {
@@ -570,7 +576,34 @@ export function apiRequest<T>(method: string, path: string, options: RequestOpti
   return request<T>(method, path, options);
 }
 
-async function request<T>(method: string, path: string, options: RequestOptions = {}): Promise<T> {
+/** The access token this client sends right now (the product's own one when bound to its session); null when none. */
+export function currentAccessToken(): string | null {
+  return externalAccess ? externalAccess() : tokens?.accessToken ?? null;
+}
+
+/** True when the token in use is no longer the one a refused request carried: someone already renewed it. */
+function renewedSince(usedToken: string | null): boolean {
+  const now = currentAccessToken();
+  return !!usedToken && !!now && now !== usedToken;
+}
+
+/**
+ * Every call to the backend. Reads (GET) asked while the same one is running share it; a write is never shared and
+ * drops what reads kept (see utils/sharedRead.ts). `ttlMs` (reads only) also reuses the answer for that long.
+ */
+function request<T>(method: string, path: string, options: RequestOptions = {}): Promise<T> {
+  if (method === 'GET') {
+    const token = options.auth === false ? null : currentAccessToken();
+    const key = `nx|GET|${buildUrl(path, options.query)}|${options.cache ?? ''}|${options.responseType ?? 'json'}|${options.auth === false ? 'anon' : token ?? ''}|${activePostsHeader() ?? ''}`;
+    // Without a known token the answer would belong to whoever the cookie turns out to be: never kept.
+    return sharedRead(key, () => exchange<T>(method, path, options), token || options.auth === false ? options.ttlMs ?? 0 : 0);
+  }
+  // Renewing the token changes no data: it must not drop what reads are running or kept.
+  if (options.keepReads) return exchange<T>(method, path, options);
+  return runWrite(() => exchange<T>(method, path, options));
+}
+
+async function exchange<T>(method: string, path: string, options: RequestOptions = {}): Promise<T> {
   const { body, form, query, auth = true, retryOnUnauthorized = true, responseType = 'json' } = options;
 
   const headers: Record<string, string> = { Accept: responseType === 'json' ? 'application/json' : '*/*' };
@@ -620,11 +653,11 @@ async function request<T>(method: string, path: string, options: RequestOptions 
   // The longest the sign-in may last has come: the user types the password again in place and the
   // page (and anything half-filled in it) stays where it is. Any other reason ends the session.
   if (endedReason === 'session.absolute_expired' && absoluteReauth && retryOnUnauthorized) {
-    if (await absoluteReauth()) return request<T>(method, path, { ...options, retryOnUnauthorized: false });
+    if (await absoluteReauth()) return exchange<T>(method, path, { ...options, retryOnUnauthorized: false });
   }
   // PM product: the product signed in again while this request was on its way with the previous session's token.
   if (endedReason && externalAccess && retryOnUnauthorized && externalAccess() && externalAccess() !== accessToken) {
-    return request<T>(method, path, { ...options, retryOnUnauthorized: false });
+    return exchange<T>(method, path, { ...options, retryOnUnauthorized: false });
   }
   if (endedReason) {
     endSession(endedReason);
@@ -632,8 +665,9 @@ async function request<T>(method: string, path: string, options: RequestOptions 
   }
 
   if (response.status === 401 && auth && retryOnUnauthorized) {
-    if (await refreshSession()) {
-      return request<T>(method, path, { ...options, retryOnUnauthorized: false });
+    // Another request already renewed the token this one was refused with: retry with the new one, no second refresh.
+    if (renewedSince(accessToken) || await refreshSession()) {
+      return exchange<T>(method, path, { ...options, retryOnUnauthorized: false });
     }
   }
 
@@ -1172,6 +1206,15 @@ export function getSessionTenantId(): string | null {
 }
 
 /**
+ * GET /api/identity/auth/me, the one way this client reads it: callers asking at the same time (and, for a short while,
+ * the next screen) share one request - also with the product's own session restore, which asks through the same key.
+ */
+function fetchMe(): Promise<CurrentUserResponse> {
+  const token = currentAccessToken();
+  return sharedRead(meKey(token, activePostsHeader()), () => request<CurrentUserResponse>('GET', '/api/identity/auth/me'), token ? ME_TTL_MS : 0);
+}
+
+/**
  * GET /api/identity/auth/me. Returns null when the session is gone (refresh failed); keeps
  * the stored user when the server is merely unreachable.
  */
@@ -1179,7 +1222,7 @@ export async function refreshCurrentUser(): Promise<User | null> {
   const session = readSession();
   if (!session) return null;
   try {
-    const me = await request<CurrentUserResponse>('GET', '/api/identity/auth/me');
+    const me = await fetchMe();
     const latest = readSession();
     const permissions = me.permissions || [];
     if (latest) writeSession({ ...latest, user: me.user, permissions });
@@ -1219,9 +1262,12 @@ export async function adoptExternalSession(currentAccess: () => string | null, r
   const accessToken = currentAccess();
   if (!accessToken) return null;
   try {
-    const response = await fetch(buildUrl('/api/identity/auth/me'), { headers: { Authorization: `Bearer ${accessToken}` } });
-    if (!response.ok) return null;
-    const me = (await response.json()) as CurrentUserResponse;
+    // The product restored its session with this very request a moment ago: it is shared, not asked again.
+    const me = await sharedRead(meKey(accessToken, activePostsHeader()), async () => {
+      const response = await fetch(buildUrl('/api/identity/auth/me'), { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!response.ok) throw new NexusApiError('me', response.status);
+      return (await response.json()) as CurrentUserResponse;
+    }, ME_TTL_MS);
     externalAccess = currentAccess;
     externalRefresh = refresh ?? null;
     tokens = null;
@@ -1999,24 +2045,14 @@ export function getKnownPermissions(userId: string): string[] | null {
   return session?.user?.id === userId && session.permissions ? session.permissions : null;
 }
 
-let permissionsInFlight: { key: string; promise: Promise<string[]> } | null = null;
-
-/** GET /me's permissions (callers asking at the same time share one request), saved with the session. */
+/** GET /me's permissions (callers asking at the same time share one request, see fetchMe), saved with the session. */
 export async function getMyPermissions(): Promise<string[]> {
   if (!readSession()) return [];
-  // One request per chosen post: a switch must not get the answer asked for the previous post.
-  const key = activePostsHeader() ?? '';
-  if (permissionsInFlight?.key === key) return permissionsInFlight.promise;
-  const promise = request<CurrentUserResponse>('GET', '/api/identity/auth/me')
-    .then((me) => {
-      const permissions = me.permissions || [];
-      const latest = readSession();
-      if (latest && latest.user?.id === me.user.id) writeSession({ ...latest, permissions });
-      return permissions;
-    })
-    .finally(() => { if (permissionsInFlight?.promise === promise) permissionsInFlight = null; });
-  permissionsInFlight = { key, promise };
-  return promise;
+  const me = await fetchMe();
+  const permissions = me.permissions || [];
+  const latest = readSession();
+  if (latest && latest.user?.id === me.user.id) writeSession({ ...latest, permissions });
+  return permissions;
 }
 
 /** Server-side search (every searchable column) and paging of the caller's tenant users. */

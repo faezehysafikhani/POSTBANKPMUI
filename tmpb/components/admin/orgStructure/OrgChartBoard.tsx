@@ -396,7 +396,7 @@ export const OrgChartBoard: React.FC<{
       listLinkTypes().catch(() => [] as LinkType[]),
     ]);
     return { chart, positions, unplaced, nodes, nodeTypes, nodeRules, linkTypes };
-  }, 'دریافت چارت سازمانی ممکن نشد.');
+  }, 'دریافت چارت سازمانی ممکن نشد.', [asOf]); // «نمایش به تاریخ» is the load's own dependency: no second request from an effect of ours
 
   const [companyId, setCompanyIdState] = useState<string | null>(() => initialCompanyId ?? readSavedCompany());
   const setCompanyId = (id: string) => { setCompanyIdState(id); saveCompany(id); };
@@ -531,14 +531,13 @@ export const OrgChartBoard: React.FC<{
 
 
 
-  const firstAsOf = useRef(true);
+  // Opened from the group chart on another company. The first load is useLoad's own; only a later change of the company reloads.
+  const loadedForCompany = useRef(initialCompanyId);
   useEffect(() => {
-    if (firstAsOf.current) { firstAsOf.current = false; return; }
-    void data.reload();
-  }, [asOf]); // eslint-disable-line react-hooks/exhaustive-deps
-  // Opened from the group chart on another company.
-  useEffect(() => {
-    if (initialCompanyId) { setCompanyId(initialCompanyId); setSelection({ kind: 'company', companyId: initialCompanyId }); void data.reload(); }
+    if (!initialCompanyId) return;
+    setCompanyId(initialCompanyId);
+    setSelection({ kind: 'company', companyId: initialCompanyId });
+    if (loadedForCompany.current !== initialCompanyId) { loadedForCompany.current = initialCompanyId; void data.reload(); }
   }, [initialCompanyId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const units = company?.units || [];

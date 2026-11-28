@@ -39,7 +39,7 @@ export const ActionsProvider = ({ children }: { children: React.ReactNode }) => 
   const { session } = useAuth();
   const directory = useDirectory();
   const projects = useProjects().projects;
-  const visibility = useGovernance().visibility;
+  const { visibility, ready: governanceReady } = useGovernance();
   const tenantId = session?.user.tenantId;
   const people = React.useMemo(() => buildPeople(directory.users), [directory.users]);
 
@@ -87,11 +87,13 @@ export const ActionsProvider = ({ children }: { children: React.ReactNode }) => 
     if (!session) {
       setRaw([]);
       setRequests([]);
-    } else if (!directory.loading) {
+    } else if (directory.ready && !directory.loading && governanceReady) {
+      // Which actions are visible depends on the people / units and on the visibility switches: both are known now, so
+      // the actions are read once with them (not once with the defaults and again when the real switches arrive).
       void load();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, load, directory.loading, JSON.stringify(visibility)]);
+  }, [session, load, directory.loading, directory.ready, governanceReady, JSON.stringify(visibility)]);
 
   const actions = React.useMemo(
     () => raw.map(a => toUiAction(a, instances.get(a.id), people, { unitPathById: directory.unitPathById, projects })),

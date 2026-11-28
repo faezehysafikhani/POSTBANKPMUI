@@ -19,13 +19,8 @@ const InfoTile: React.FC<{ icon: React.ComponentType<{ className?: string }>; la
 export const MyPlacementPanel: React.FC = () => {
   const [allLevels, setAllLevels] = useState(false);
   const placement = useLoad(getMyPlacement, 'دریافت جایگاه سازمانی ممکن نشد.');
-  const subordinates = useLoad(() => getMySubordinates(allLevels), 'دریافت زیرمجموعه ممکن نشد.');
-  const firstRender = React.useRef(true);
-  React.useEffect(() => {
-    // The first load is useLoad's own; only a change of the toggle loads again.
-    if (firstRender.current) { firstRender.current = false; return; }
-    subordinates.reload();
-  }, [allLevels]); // eslint-disable-line react-hooks/exhaustive-deps
+  // The toggle is the load's own dependency: one request at start-up, one per change (never a second one from an effect of ours).
+  const subordinates = useLoad(() => getMySubordinates(allLevels), 'دریافت زیرمجموعه ممکن نشد.', [allLevels]);
 
   if (placement.loading) return <AdminCard><LoadingRow /></AdminCard>;
   if (placement.error) return <Notice type="error">{placement.error}</Notice>;

@@ -320,6 +320,17 @@ export function toLatinDigits(value: string): string {
 }
 
 /** Debounces a value (e.g. a search box) so the server is asked once the user pauses. */
+/**
+ * The page number of a list, back on page 1 whenever `resetKey` (the search text, the sort ...) changes - in the same
+ * render as that change. Resetting it from an effect instead would load the new search once on the old page and then
+ * again on page 1, and the slower of the two could overwrite the other.
+ */
+export function usePageFor(resetKey: string): [number, (page: number) => void] {
+  const [state, setState] = React.useState({ key: resetKey, page: 1 });
+  const page = state.key === resetKey ? state.page : 1;
+  return [page, (next: number) => setState({ key: resetKey, page: next })];
+}
+
 export function useDebounced<T>(value: T, delayMs = 350): T {
   const [debounced, setDebounced] = React.useState(value);
   React.useEffect(() => {

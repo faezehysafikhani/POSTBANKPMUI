@@ -52,7 +52,8 @@ function cachedBranding(): Branding {
   try {
     const raw = localStorage.getItem(CACHE_KEY_FULL);
     if (raw) {
-      const saved = JSON.parse(raw) as { name?: string | null; logo?: string | null; favicon?: string | null };
+      const saved = JSON.parse(raw) as { name?: string | null; logo?: string | null; favicon?: string | null; version?: string | null };
+      knownVersion = saved.version ?? null;
       return make(saved.name || null, saved.logo || null, saved.favicon || null, true);
     }
   } catch {
@@ -62,10 +63,13 @@ function cachedBranding(): Branding {
   return make(cachedName(), null, null, false);
 }
 
+/** The server's `version` of the branding whose images `current` holds: unchanged means the images need not be fetched again. */
+let knownVersion: string | null = null;
 let current: Branding = cachedBranding();
 const listeners = new Set<() => void>();
 
-function setCurrent(next: Branding) {
+function setCurrent(next: Branding, version: string | null = knownVersion) {
+  knownVersion = version;
   current = next;
   try {
     if (next.customName) localStorage.setItem(CACHE_KEY, next.customName);
@@ -74,6 +78,7 @@ function setCurrent(next: Branding) {
       name: next.customName,
       logo: next.hasCustomLogo ? next.logo : null,
       favicon: next.hasCustomFavicon ? next.favicon : null,
+      version,
     }));
   } catch {
     // Storage unavailable: the name simply shows a moment later next time.
@@ -118,20 +123,39 @@ async function asDataUrl(path: string | null): Promise<string | null> {
 }
 
 let loading: Promise<void> | null = null;
+let loadedAt = 0;
+/** The branding changes when an administrator saves it (then it is read again at once): for the rest it is kept this long. */
+const FRESH_MS = 5 * 60_000;
 
-/** Reads the branding again (at start-up, and after the administrator changed it). */
-export function refreshBranding(): Promise<void> {
-  loading = (async () => {
+/**
+ * Reads the branding (at start-up, and after the administrator changed it). Callers asking while a read is running
+ * share it, a read within the last few minutes is not repeated, and the logo / tab icon are downloaded again only when
+ * the server's `version` of the branding changed. `force`: always ask (after the administrator's own change).
+ */
+export function refreshBranding(force = false): Promise<void> {
+  // A read that began before the administrator's save may carry the old look: wait for it, then read again.
+  if (loading) return force ? loading.then(() => refreshBranding(true)) : loading;
+  if (!force && current.ready && Date.now() - loadedAt < FRESH_MS) return Promise.resolve();
+  const running: Promise<void> = (async () => {
     try {
       const branding = await apiRequest<BrandingResponse>('GET', '/api/platform/branding', { auth: false, retryOnUnauthorized: false, cache: 'no-store' });
+      const version = branding.version ?? null;
+      loadedAt = Date.now();
+      if (current.ready && version !== null && version === knownVersion) {
+        // Same version: the name is the only thing that could differ without it (it is part of the version, but costs nothing to keep right).
+        const name = branding.systemName?.trim() || null;
+        if (name !== current.customName) setCurrent(make(name, current.hasCustomLogo ? current.logo : null, current.hasCustomFavicon ? current.favicon : null), version);
+        return;
+      }
       const [logo, favicon] = await Promise.all([asDataUrl(branding.logoUrl), asDataUrl(branding.faviconUrl)]);
-      setCurrent(make(branding.systemName?.trim() || null, logo, favicon));
+      setCurrent(make(branding.systemName?.trim() || null, logo, favicon), version);
     } catch {
       // An older server without branding, or offline: the product's own stays (shown once we know nothing else is coming).
       if (!current.ready) setCurrent(make(current.customName, null, null, true));
     }
-  })();
-  return loading;
+  })().finally(() => { if (loading === running) loading = null; });
+  loading = running;
+  return running;
 }
 
 export function getBranding(): Branding {
@@ -162,5 +186,5 @@ export async function saveBranding(input: {
   if (input.removeLogo) form.append('removeLogo', 'true');
   if (input.removeFavicon) form.append('removeFavicon', 'true');
   await apiRequest<unknown>('PUT', '/api/platform/branding', { form });
-  await refreshBranding();
+  await refreshBranding(true);
 }
