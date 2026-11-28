@@ -5,12 +5,15 @@ import { ShamsiDatePicker } from './ShamsiDatePicker';
 import { getCalendarDisplayName, toPersianDigits, getRecurrenceSummary, PERSIAN_WEEKDAY_NAMES, PERSIAN_MONTH_NAMES } from '../utils';
 import { useDirectory } from '../directory/DirectoryContext';
 import { useAssignableUsers } from '../directory/assignmentLimit';
+import { useOwnerUnitIds } from '../directory/ownerUnits';
 interface OwningUnitTreeNode {
     id: string;
     name: string;
     parentId: string | null;
 }
-export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = false, id = "owningUnit", placeholder = "انتخاب واحد سازمانی..." }: {
+export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = false, id = "owningUnit", placeholder = "انتخاب واحد سازمانی...", onlyUnitIds }: {
+    /** When given (non-empty), only these units are offered, as a flat list (e.g. where the project owner holds a post). */
+    onlyUnitIds?: string[] | null;
     value: string;
     onChange: (val: string) => void;
     owningUnits: string[];
@@ -47,6 +50,11 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
         return names.join(' > ');
     }, [treeNodes]);
     const rootNodes = useMemo(() => treeNodes.filter(n => !n.parentId), [treeNodes]);
+    const onlyNodes = useMemo(() => {
+        if (!onlyUnitIds || onlyUnitIds.length === 0) return null;
+        const list = treeNodes.filter(n => onlyUnitIds.includes(n.id));
+        return list.length ? list : null;
+    }, [treeNodes, onlyUnitIds]);
     const getChildren = useCallback((parentId: string) => {
         return treeNodes.filter(n => n.parentId === parentId);
     }, [treeNodes]);
@@ -159,7 +167,18 @@ export const OwningUnitTreeSelect = ({ value, onChange, owningUnits, disabled = 
             overflowY: 'auto',
             padding: '0.4rem'
         }
-    }, rootNodes.length === 0 ? (React.createElement("div", { style: { padding: '0.75rem', textAlign: 'center', fontSize: '0.82rem', color: isDark ? '#94b8a3' : '#648b74' } }, "هیچ واحد مالکی ثبت نشده است")) : (rootNodes.map(node => renderNode(node, 0)))));
+    }, onlyNodes ? onlyNodes.map(node => {
+        const path = pathOf(node);
+        return React.createElement("div", {
+            key: node.id,
+            onClick: () => !disabled && handleSelectNode(node),
+            style: {
+                padding: '0.45rem 0.65rem', cursor: disabled ? 'not-allowed' : 'pointer', borderRadius: '6px', fontSize: '0.85rem',
+                fontWeight: value === path ? 600 : 400,
+                backgroundColor: value === path ? (isDark ? 'rgba(70,229,136,0.15)' : '#e8f7ee') : 'transparent'
+            }
+        }, path);
+    }) : rootNodes.length === 0 ? (React.createElement("div", { style: { padding: '0.75rem', textAlign: 'center', fontSize: '0.82rem', color: isDark ? '#94b8a3' : '#648b74' } }, "هیچ واحد مالکی ثبت نشده است")) : (rootNodes.map(node => renderNode(node, 0)))));
 };
 export const ProjectCharterForm = ({ projectData, setProjectData, users, calendars, owningUnits, projectStatuses, currentUser, isReadOnly = false, isProjectWorkflowEnabled, isEditing = false }: {
     projectData: Partial<Project>;
@@ -178,6 +197,22 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
     // project already has stays. The server checks it again.
     const [initialManager] = useState(() => projectData.projectManagerId);
     const projectManagers = useAssignableUsers(users, currentUser?.id, initialManager);
+    const ownerUnitIds = useOwnerUnitIds(projectData.ownerId || currentUser?.id, currentUser?.id);
+    // The owner holds posts in only one unit: it is the owning unit unless one was already chosen.
+    const { unitNodes: allUnitNodes } = useDirectory();
+    useEffect(() => {
+        if (isReadOnly || projectData.owningUnit || !ownerUnitIds || ownerUnitIds.length !== 1) return;
+        const only = allUnitNodes.find(n => n.id === ownerUnitIds[0]);
+        if (!only) return;
+        const names = [only.name];
+        const seen = new Set([only.id]);
+        for (let parent = allUnitNodes.find(n => n.id === only.parentId); parent && !seen.has(parent.id); parent = allUnitNodes.find(n => n.id === parent!.parentId)) {
+            names.unshift(parent.name);
+            seen.add(parent.id);
+        }
+        setProjectData({ ...projectData, owningUnit: names.join(' > ') });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ownerUnitIds, allUnitNodes, isReadOnly]);
     const adminUsers = useMemo(() => users.filter(u => u.role === 'Admin'), [users]);
     const projectOwnerName = useMemo(() => {
         const ownerId = projectData.ownerId || (projectData.id ? 1 : currentUser?.id);
@@ -224,6 +259,7 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
         value: projectData.owningUnit || '',
         onChange: (val: string) => !isReadOnly && setProjectData({ ...projectData, owningUnit: val }),
         owningUnits: owningUnits,
+        onlyUnitIds: ownerUnitIds,
         disabled: isReadOnly,
         placeholder: t('selectAUnit')
     })), projectData.type === 'agile' && React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "sprintCount" }, t('sprintCount') + '*'), React.createElement("input", { type: "number", id: "sprintCount", name: "sprintCount", value: projectData.sprintCount || 1, onChange: handleChange, required: true, min: "1", disabled: isReadOnly })), React.createElement("div", { className: "form-group" }, React.createElement("label", { htmlFor: "cost" }, t('cost')), React.createElement("input", { type: "text", id: "cost", name: "cost", value: formattedCost || '', onChange: handleChange, placeholder: "1,000,000", inputMode: "numeric", disabled: isReadOnly })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "goal" }, t('projectGoal') + '*'), React.createElement("textarea", { id: "goal", name: "goal", value: projectData.goal || '', onChange: handleChange, disabled: isReadOnly, placeholder: language === 'fa' ? 'اهداف عملیاتی و نتیجه مورد انتظار پروژه را وارد کنید (باید متناسب با عنوان پروژه باشد)...' : 'Enter project goals aligned with project title...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "requirements" }, t('projectRequirements') + '*'), React.createElement("textarea", { id: "requirements", name: "requirements", value: projectData.requirements || '', onChange: handleChange, disabled: isReadOnly, placeholder: language === 'fa' ? 'الزامات کلیدی، فنی و اجرایی پروژه را وارد کنید (باید متناسب با عنوان پروژه باشد)...' : 'Enter key project requirements aligned with project title...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "constraintsAndAssumptions" }, language === 'fa' ? 'محدودیت‌ها و مفروضات*' : 'Constraints & Assumptions*'), React.createElement("textarea", { id: "constraintsAndAssumptions", name: "constraintsAndAssumptions", value: projectData.constraintsAndAssumptions || '', onChange: handleChange, required: true, disabled: isReadOnly, placeholder: language === 'fa' ? 'محدودیت‌های بودجه‌ای، زمانی، منابع انسانی یا مفروضات کلیدی پروژه را وارد کنید (الزامی)...' : 'Enter project constraints and key assumptions (required)...' })), React.createElement("div", { className: "form-group full-width" }, React.createElement("label", { htmlFor: "description" }, t('description')), React.createElement("textarea", { id: "description", name: "description", value: projectData.description || '', onChange: handleChange, disabled: isReadOnly }))));
