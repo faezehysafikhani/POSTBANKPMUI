@@ -75,7 +75,9 @@ export async function login(identifier: string, password: string, captcha?: { id
     identifier,
     password,
     captchaId: captcha?.id,
-    captchaAnswer: captcha?.answer
+    captchaAnswer: captcha?.answer,
+    // The session this browser still holds (body mode): replaced, never counted against the limit.
+    refreshToken: tokenStore.refresh ?? undefined
   });
 
   if (!result.ok || !result.value) {
