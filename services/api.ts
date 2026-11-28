@@ -86,6 +86,36 @@ const isSessionOpeningUrl = (url: string) =>
 /** Why a session ended, as the backend names it (session.idle_expired, session.revoked, ...). */
 export const SESSION_REASON_HEADER = 'X-Nexus-Session-Reason';
 
+const FORCED_SIGNOUT_KEY = 'nexus-forced-signout';
+
+/** Whether the last sign-out was not the user's own (idle, absolute, revoked...): the sign-in form then offers no saved credentials. */
+export function wasSignedOutBySession(): boolean {
+  try { return !!localStorage.getItem(FORCED_SIGNOUT_KEY); } catch { return false; }
+}
+
+export function clearForcedSignOut(): void {
+  try { localStorage.removeItem(FORCED_SIGNOUT_KEY); } catch { /* storage blocked */ }
+}
+
+/**
+ * The server ended the session: before the sign-in page, revoke the refresh token and clear this
+ * browser's cookie, so the next sign-in here does not find the old session. Not after
+ * replaced_by_relogin: the cookie then belongs to the new session.
+ */
+function endSessionOnServer(reason: string | null): void {
+  if (reason && reason !== 'session.logged_out') {
+    try { localStorage.setItem(FORCED_SIGNOUT_KEY, reason); } catch { /* storage blocked */ }
+  }
+  if (reason === 'session.replaced_by_relogin') return;
+  const stored = tokenStore.refresh;
+  void fetch(apiUrl('/api/identity/auth/logout'), {
+    method: 'POST',
+    keepalive: true,
+    headers: { 'Content-Type': 'application/json', ...sessionHeaders() },
+    body: JSON.stringify(stored ? { refreshToken: stored } : {})
+  }).catch(() => undefined);
+}
+
 let refreshing: Promise<boolean> | null = null;
 
 /** One refresh at a time, however many requests found the token expired together. */
@@ -158,6 +188,8 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   if (isAuthUrl(url)) Object.assign(headers, sessionHeaders());
   // The server's idle clock moves only for requests the user caused (a click, a key, a scroll), never for polling.
   if (takeActivityFlag()) headers['X-Nexus-Activity'] = '1';
+  // Everything else is polling or background: the server only checks the session and never extends it.
+  else headers['X-Background-Request'] = '1';
   // Working as one post (or one unit's posts): the server then counts only what those posts give, besides roles.
   const activePosts = activePostsHeader();
   if (activePosts) headers['X-Active-Posts'] = activePosts;
@@ -172,6 +204,7 @@ async function send<T>(method: string, url: string, body?: unknown, retry = true
   if (response.status === 401 && retry && token && !isSessionOpeningUrl(url)) {
     lastEndReason = await endReasonOf(response);
     if (await refreshSession()) return send<T>(method, url, body, false);
+    endSessionOnServer(lastEndReason);
     tokenStore.clear();
     sessionEvents.dispatchEvent(new Event('expired'));
   }

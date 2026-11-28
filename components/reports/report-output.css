@@ -4,12 +4,12 @@
 .rp-head{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:0 0 12px;border-bottom:3px solid #0a8a46}
 .rp-logo{width:70px;height:70px;object-fit:contain}
 .rp-title{display:grid;gap:1px}
-.rp-title strong{font-size:16px;color:#0a6b38}
+.rp-title strong{font-size:14px;color:#0a6b38}
 .rp-title span{font-size:11px;color:#5b6470}
-.rp-title h1{margin:4px 0 0;font-size:20px;color:#1f2a24;border:0;padding:0}
+.rp-title h1{margin:4px 0 0;font-size:18px;color:#1f2a24;border:0;padding:0}
 .rp-title small{font-size:11px;color:#5b6470}
 .rp-meta{display:grid;gap:4px;margin:0;padding:8px 14px;border:1px solid #d7dbe0;border-radius:10px;background:#f7f9f8;min-width:240px}
-.rp-meta div{display:flex;justify-content:space-between;gap:14px;font-size:12px}
+.rp-meta div{display:flex;justify-content:space-between;gap:14px;font-size:11px}
 .rp-meta dt{color:#5b6470;font-weight:600}
 .rp-meta dd{margin:0;font-weight:700;color:#1f2a24}
 .rp-filters{position:relative;z-index:1;margin:8px 0 10px;padding:6px 10px;border-radius:8px;background:#f3f6f4;font-size:11px;color:#3b4550;line-height:1.8}
@@ -32,7 +32,7 @@
   body.rp-printing>*:not(.rp-print-root){display:none!important}
   body.rp-printing .rp-print-root{display:block!important;width:100%;padding:0 0 26px}
   body.rp-printing .rp-watermark{position:fixed}
-  body.rp-printing .rp-foot{display:block;position:fixed;left:0;right:0;bottom:0;padding:4px 0;border-top:1px solid #d7dbe0;background:#fff;font-size:9px;color:#5b6470;text-align:center}
+  body.rp-printing .rp-foot{display:block;position:fixed;left:0;right:0;bottom:0;padding:4px 0;border-top:1px solid #d7dbe0;background:#fff;font-size:10px;color:#5b6470;text-align:center}
   body.rp-printing .par-card,body.rp-printing .par-kpi,body.rp-printing tr{break-inside:avoid}
   body.rp-printing .rp-body .par-table-wrap{max-height:none!important;overflow:visible!important}
 }
@@ -40,9 +40,9 @@
 .rp-for-pdf .par-row.delayed{background:#fdecef!important}
 .rp-for-pdf .par-row.dueSoon{background:#fff5e6!important}
 /* Form fields frozen to their values (print / PDF of a form). */
-.rp-field{min-height:30px;padding:6px 10px;border:1px solid #d7dbe0;border-radius:8px;background:#fafbfb;font-size:12px;color:#1f2a24;line-height:1.7;white-space:pre-wrap}
+.rp-field{min-height:30px;padding:6px 10px;border:1px solid #d7dbe0;border-radius:8px;background:#fafbfb;font-size:11px;color:#1f2a24;line-height:1.7;white-space:pre-wrap}
 .rp-field-long{min-height:54px}
-.rp-check{font-size:15px;margin-inline-end:4px}
+.rp-check{font-size:11px;margin-inline-end:4px}
 .rp-body .tabs-nav,.rp-body .creation-dialog-facts{display:none!important}
 .rp-body :is(.form-section,.content-container){box-shadow:none!important;background:#fff!important;border:1px solid #e1e5e8!important}
 

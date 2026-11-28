@@ -1,6 +1,9 @@
 @font-face {
   font-family: 'Vazirmatn';
-  src: url('/fonts/Vazirmatn-VariableFont_wght.ttf') format('truetype');
+  /* Vazirmatn v33.003 (variable, SIL OFL: /fonts/Vazirmatn-OFL.txt); the old TTF stays as a fallback. */
+  src: url('/fonts/Vazirmatn-v33.003-wght.woff2') format('woff2-variations'),
+       url('/fonts/Vazirmatn-v33.003-wght.woff2') format('woff2'),
+       url('/fonts/Vazirmatn-VariableFont_wght.ttf') format('truetype');
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -8,14 +11,18 @@
 
 :root {
   --pb-font: 'Vazirmatn', Tahoma, sans-serif;
-  --pb-text: 13px;
-  --pb-h1: 24px;
-  --pb-h2: 20px;
-  --pb-h3: 17px;
-  --pb-h4: 15px;
+  /* The root size keeps rem-based spacing as it was; only the text gets smaller. */
+  --pb-root: 13px;
+  /* Data and body text: 11px (10-11 range; 11 stays readable in Vazirmatn). */
+  --pb-text-size: 11px;
+  /* Headings: two steps (2px) below the previous 24/20/17/15. */
+  --pb-h1: 22px;
+  --pb-h2: 18px;
+  --pb-h3: 15px;
+  --pb-h4: 13px;
 }
 
-html { font-size: var(--pb-text) !important; font-family: var(--pb-font) !important; }
+html { font-size: var(--pb-root) !important; font-family: var(--pb-font) !important; }
 
 /* Preserve glyph icons while applying the same typeface to forms and charts. */
 html body,
@@ -25,10 +32,10 @@ html body *:not(.material-symbols-outlined):not(.material-icons):not([class*="ma
 html .tw-scope, html .tw-scope * { --font-sans: var(--pb-font); }
 html body input, html body select, html body textarea, html body button, html body option { font-family: var(--pb-font) !important; }
 
-/* body text: 15px (headings, icon glyphs and big numbers/titles are not touched) */
+/* body text: var(--pb-text-size) (headings, icon glyphs and big numbers/titles are not touched) */
 html body :is(p, li, td, th, label, dt, dd, legend, caption, figcaption, summary, small, input, select, textarea, button, option, a):not([class*="material-symbols"]):not([class*="title"]):not([class*="value"]):not([class*="number"]):not([class*="count"]):not([class*="kpi"]):not([class*="stat"]),
-html body :is(span, strong, em, b, i, div):not(:has(*)):not([class*="material-symbols"]):not([class*="title"]):not([class*="value"]):not([class*="number"]):not([class*="count"]):not([class*="kpi"]):not([class*="stat"]):not([class*="heading"]):not([class*="header"]):not([class*="logo"]) {
-  font-size: var(--pb-text) !important;
+html body :is(span, strong, em, b, i, div):not(:has(*)):not([class*="material-symbols"]):not([class*="title"]):not([class*="value"]):not([class*="number"]):not([class*="count"]):not([class*="kpi"]):not([class*="stat"]):not([class*="heading"]):not([class*="header"]):not([class*="logo"]):not(:is(h1, h2, h3, h4, h5, h6, [role="heading"], .modal-title, .dialog-title, .group-header, .subgroup-header) *) {
+  font-size: var(--pb-text-size) !important;
   line-height: 1.6;
 }
 
@@ -49,3 +56,10 @@ html body { font-feature-settings: "pnum" 1; font-variant-numeric: tabular-nums;
   body :is(h1, h2, h3, h4, h5, h6, [role="heading"], .modal-title, .dialog-title, .group-header, .group-sub-header, .subgroup-header, .login-main-title, th):not(:where(.material-symbols-outlined, .material-icons, [class*="material-symbols"])),
   body :is(h1, h2, h3, h4, h5, h6, [role="heading"], .modal-title, .dialog-title, .group-header, .group-sub-header, .subgroup-header, .login-main-title, th) *:not(:where(.material-symbols-outlined, .material-icons, [class*="material-symbols"])) { font-weight: 700 !important; }
 }
+
+/* The top bar title: a heading, but sized for the bar. */
+html .app-container > header .header-title-group h1 { font-size: var(--pb-h3) !important; }
+/* Sign-in: the form title (h2) stays below the brand name (h1). */
+html #login-container-root .login-main-title { font-size: var(--pb-h2) !important; }
+/* Settings screens (Tailwind, rem on a 13px root): text-xs would be 9.75px; keep it at the data size. */
+html body .tw-scope .text-xs { font-size: var(--pb-text-size) !important; }

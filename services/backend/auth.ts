@@ -1,4 +1,4 @@
-import { api, refreshSession, takeSessionEndReason, tokenStore } from '../api';
+import { api, clearForcedSignOut, refreshSession, takeSessionEndReason, tokenStore } from '../api';
 
 export interface BackendUser {
   id: string;
@@ -65,6 +65,7 @@ export async function requestCaptcha(): Promise<Captcha | null> {
 async function openSession(body: AuthBody): Promise<LoginOutcome> {
   if (body.sessionLimit) return { kind: 'limit', limit: body.sessionLimit };
   tokenStore.set(body.accessToken, body.refreshToken);
+  clearForcedSignOut();
   const session = await loadSession();
   return session ? { kind: 'ok', session } : { kind: 'failed', message: 'اطلاعات کاربر دریافت نشد.' };
 }
@@ -74,13 +75,17 @@ export async function login(identifier: string, password: string, captcha?: { id
     identifier,
     password,
     captchaId: captcha?.id,
-    captchaAnswer: captcha?.answer
+    captchaAnswer: captcha?.answer,
+    // The session this browser still holds (body mode): replaced, never counted against the limit.
+    refreshToken: tokenStore.refresh ?? undefined
   });
 
   if (!result.ok || !result.value) {
     const error = result.error;
     return {
-      kind: error?.code === 'unauthorized.captcha_required' ? 'captcha' : 'failed',
+      // A failed attempt (unauthorized.captcha_required), or a CAPTCHA that is due but missing or wrong
+      // (captcha.required / captcha.invalid, e.g. after a reload): either way a new image must be shown.
+      kind: error?.code === 'unauthorized.captcha_required' || error?.code?.startsWith('captcha.') ? 'captcha' : 'failed',
       message: error?.message || 'ورود انجام نشد.'
     };
   }
