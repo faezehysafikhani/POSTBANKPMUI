@@ -21,12 +21,13 @@ export function useOwnerUnitIds(ownerId?: string | number | null, meId?: string 
   useEffect(() => {
     let alive = true;
     setIds(null);
-    if (ownerId === undefined || ownerId === null || ownerId === '') { setLoading(false); return; }
+    // Nobody signed in yet (the user is still being read): keep waiting rather than offer every unit.
+    if (ownerId === undefined || ownerId === null || ownerId === '') return;
     setLoading(true);
     const own = String(ownerId) === String(meId ?? '');
     const read = own ? getMyPlacement().then(p => p?.assignment ?? null) : getAssignment(String(ownerId));
     read.then(a => { if (alive) { const units = unitsOf(a); setIds(units.length ? units : null); } })
-      .catch(() => undefined)
+      .catch(err => console.warn('Could not read the project owner\'s units; every unit is offered.', err))
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
   }, [ownerId, meId]);

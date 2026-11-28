@@ -199,7 +199,9 @@ export const ProjectCharterForm = ({ projectData, setProjectData, users, calenda
     // project already has stays. The server checks it again.
     const [initialManager] = useState(() => projectData.projectManagerId);
     const projectManagers = useAssignableUsers(users, currentUser?.id, initialManager);
-    const { ids: ownerUnitIds, loading: ownerUnitsLoading } = useOwnerUnitIds(projectData.ownerId || currentUser?.id, currentUser?.id);
+    const { ids: ownerUnitIds, loading: ownerUnitsLoading } = useOwnerUnitIds(
+        // A new project's owner is whoever creates it: their own place is read (no permission needed for that).
+        projectData.id ? (projectData.ownerId || currentUser?.id) : currentUser?.id, currentUser?.id);
     // The owner holds posts in only one unit: it is the owning unit unless one was already chosen.
     const { unitNodes: allUnitNodes } = useDirectory();
     useEffect(() => {
