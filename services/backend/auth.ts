@@ -83,7 +83,9 @@ export async function login(identifier: string, password: string, captcha?: { id
   if (!result.ok || !result.value) {
     const error = result.error;
     return {
-      kind: error?.code === 'unauthorized.captcha_required' ? 'captcha' : 'failed',
+      // A failed attempt (unauthorized.captcha_required), or a CAPTCHA that is due but missing or wrong
+      // (captcha.required / captcha.invalid, e.g. after a reload): either way a new image must be shown.
+      kind: error?.code === 'unauthorized.captcha_required' || error?.code?.startsWith('captcha.') ? 'captcha' : 'failed',
       message: error?.message || 'ورود انجام نشد.'
     };
   }
