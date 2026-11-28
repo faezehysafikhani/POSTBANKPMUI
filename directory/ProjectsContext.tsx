@@ -243,7 +243,9 @@ export const ProjectsProvider = ({ children }: { children: React.ReactNode }) =>
         approvalHistory: approval.approvalHistory,
         currentApprovalStageIndex: approval.currentStageIndex,
         currentApproverId: approval.currentApproverId,
-        approvalComment: lastDecision?.comment ?? undefined
+        approvalComment: lastDecision?.comment ?? undefined,
+        // The submission date shown in the approval history: when this approval started.
+        submissionDate: project.submissionDate || flow.createdAtUtc || undefined
       };
     });
     setProjects(mapped);

@@ -118,6 +118,9 @@ export interface BackendInstance {
   delegatedFromUserId: string | null;
   /** The steps this approval runs: their titles and the people they resolved to when it started. */
   steps?: { order: number; name: string; approverUserId: string | null }[] | null;
+  /** When the approval started (the submission), and who sent it. */
+  createdAtUtc?: string | null;
+  submittedByUserId?: string | null;
 }
 
 export interface RiskBody {
