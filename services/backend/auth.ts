@@ -1,4 +1,4 @@
-import { api, refreshSession, takeSessionEndReason, tokenStore } from '../api';
+import { api, clearForcedSignOut, refreshSession, takeSessionEndReason, tokenStore } from '../api';
 
 export interface BackendUser {
   id: string;
@@ -65,6 +65,7 @@ export async function requestCaptcha(): Promise<Captcha | null> {
 async function openSession(body: AuthBody): Promise<LoginOutcome> {
   if (body.sessionLimit) return { kind: 'limit', limit: body.sessionLimit };
   tokenStore.set(body.accessToken, body.refreshToken);
+  clearForcedSignOut();
   const session = await loadSession();
   return session ? { kind: 'ok', session } : { kind: 'failed', message: 'اطلاعات کاربر دریافت نشد.' };
 }

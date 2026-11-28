@@ -13,12 +13,12 @@
 .par-views select{min-width:190px}
 .par-name-view{display:inline-flex;gap:6px;align-items:center}
 .par-name-view input{width:170px}
-.par-count-line{margin:0 auto 0 0;font-size:.8rem;color:var(--par-muted);font-weight:600}
+.par-count-line{margin:0 auto 0 0;font-size:11px;color:var(--par-muted);font-weight:600}
 
 /* filter bar */
 .par-filters{display:grid;gap:12px;padding:12px 14px;border-radius:20px;background:var(--pb-card-bg,#fff);border:1px solid var(--pb-card-border,#fff);box-shadow:0 8px 20px var(--par-shadow),inset 1px 1px 3px #fff}
 .par-filter-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.par-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pb-active-bg,#0f9d55);color:var(--pb-active-text,#fff);font-size:.7rem}
+.par-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pb-active-bg,#0f9d55);color:var(--pb-active-text,#fff);font-size:11px}
 .par-search{position:relative;flex:0 1 260px}
 .par-search .material-symbols-outlined{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--par-muted);pointer-events:none}
 .par-search input{width:100%;padding-right:34px!important;height:38px}
@@ -88,7 +88,7 @@
 .par-progress{display:inline-flex;align-items:center;gap:6px;direction:rtl}
 .par-track{display:block;width:54px;height:6px;border-radius:9px;background:var(--par-soft);overflow:hidden}.par-track i{display:block;height:100%;border-radius:9px;background:var(--pb-chart-main,#35bb6d)}
 .par-progress b{font-weight:700;font-size:.74rem}
-.par-nothing{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 16px;border-radius:18px;border:1.5px dashed var(--par-line);color:var(--par-muted);font-size:.86rem}
+.par-nothing{display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 16px;border-radius:18px;border:1.5px dashed var(--par-line);color:var(--par-muted);font-size:11px}
 .par-nothing .material-symbols-outlined{font-size:40px;opacity:.6}
 
 /* dashboard */
@@ -99,15 +99,15 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 .par-kpi-icon{display:grid!important;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--pb-active-bg,#0f9d55);color:var(--pb-active-text,#fff);font-size:22px!important;box-shadow:0 5px 10px var(--par-shadow),inset 0 1px 2px #ffffff80}
 .par-kpi.bad .par-kpi-icon{background:linear-gradient(160deg,#f07b8e,#c0394f)}
 .par-kpi-text{display:grid;gap:1px;min-width:0}
-.par-kpi-text small{font-size:.72rem;color:var(--par-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.par-kpi-text strong{font-size:1.3rem;line-height:1.3;color:var(--par-head)}
+.par-kpi-text small{font-size:11px;color:var(--par-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.par-kpi-text strong{font-size:1.146rem;line-height:1.3;color:var(--par-head)}
 .par-delta{display:inline-flex;align-items:center;gap:2px;font-size:.64rem!important;font-weight:700}
 .par-delta .material-symbols-outlined{font-size:14px}
 .par-delta.up{color:#2e9b5f}.par-delta.down{color:#c0394f}.par-delta.same{color:var(--par-muted)}
 .par-hint{display:flex;align-items:center;gap:6px;margin:-4px 0 0;font-size:.74rem;color:var(--par-muted)}
 .par-grid{display:grid;gap:14px}.par-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .par-card{padding:14px 16px;border-radius:20px;border:1px solid var(--pb-card-border,#fff);background:var(--pb-card-bg,#fff);box-shadow:0 8px 20px var(--par-shadow),inset 1px 1px 3px #fff;min-width:0}
-.par-card h4{margin:0 0 10px;font-size:.92rem;color:var(--par-head)}
+.par-card h4{margin:0 0 10px;font-size:11px;color:var(--par-head)}
 .par-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .par-card-head h4{margin:0}
 .par-key{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:.7rem;color:var(--par-muted)}
@@ -168,9 +168,9 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 @media(max-width:700px){.par-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.par-donut{grid-template-columns:1fr;justify-items:center}.par-gantt{--label-w:110px}.par-count-line{margin:0}}
 @media print{.par-table-wrap{max-height:none;overflow:visible;box-shadow:none}.par-card,.par-kpi,.par-filters{box-shadow:none!important;break-inside:avoid}.par-row.delayed,.par-row.dueSoon{box-shadow:none}}
 
-.par-first-run{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 16px;border-radius:18px;border:1.5px dashed var(--par-line);color:var(--par-muted);font-size:.86rem;text-align:center}
+.par-first-run{display:flex;flex-direction:column;align-items:center;gap:6px;padding:36px 16px;border-radius:18px;border:1.5px dashed var(--par-line);color:var(--par-muted);font-size:11px;text-align:center}
 .par-first-run .material-symbols-outlined{font-size:44px;color:var(--par-accent);opacity:.7}
-.par-first-run strong{color:var(--par-head);font-size:.95rem}
+.par-first-run strong{color:var(--par-head);font-size:11px}
 
 /* ---------- compact filter panel: four even columns, one-line fields, 34px controls ---------- */
 .par-filters{gap:10px;padding:10px 12px}
@@ -203,7 +203,7 @@ button.par-kpi{cursor:pointer}button.par-kpi:hover{transform:translateY(-2px);bo
 .par .par-views :is(.cancel-btn,.save-btn){height:34px!important;min-height:0!important;padding:0 14px!important;font-size:.76rem!important;white-space:nowrap;flex-shrink:0}
 .par .par-views .action-icon{width:34px!important;height:34px!important;min-width:34px;padding:0!important}
 .par-name-view input{height:34px!important;width:160px;border-radius:999px!important}
-.par-count-line{flex-shrink:0;padding:4px 12px;border-radius:999px;background:var(--par-soft);color:var(--par-head);font-size:.74rem}
+.par-count-line{flex-shrink:0;padding:4px 12px;border-radius:999px;background:var(--par-soft);color:var(--par-head);font-size:11px}
 @media(max-width:900px){.par-head{flex-wrap:wrap;border-radius:18px}.par .par-views select{width:170px}}
 .par-output{display:flex;gap:6px;flex-shrink:0}
 .par .par-output :is(.cancel-btn,.save-btn){display:inline-flex;align-items:center;gap:5px;height:34px!important;min-height:0!important;padding:0 14px!important;font-size:.76rem!important;white-space:nowrap}

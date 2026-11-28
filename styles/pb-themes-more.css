@@ -128,8 +128,8 @@ html .app-container>header .header-logo{height:52px!important;width:52px!importa
   76%,100%{transform:none;filter:drop-shadow(0 1px 1px #00431f33)}
 }
 html .app-container>header .header-logo:hover{animation-play-state:paused}
-@media(max-width:1250px){html .app-container>header .pb-wave-title{font-size:1.15rem!important}}
-@media(max-width:700px){html .app-container>header .pb-wave-title{font-size:.85rem!important}html .app-container>header .header-logo{height:30px!important;width:30px!important}}
+@media(max-width:1250px){html .app-container>header .pb-wave-title{font-size:0.996rem!important}}
+@media(max-width:700px){html .app-container>header .pb-wave-title{font-size:11px!important}html .app-container>header .header-logo{height:30px!important;width:30px!important}}
 @media(prefers-reduced-motion:reduce){html .app-container>header :is(.pb-wave-word,.header-logo){animation:none!important}}
 @media print{html .app-container>header .pb-wave-word{color:#1f2a24!important;-webkit-text-fill-color:#1f2a24;background:none;filter:none}}
 

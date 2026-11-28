@@ -3,15 +3,15 @@ html .app-container { --control-radius:12px; --control-height:32px; }
 html .app-container>.app-body { min-height:calc(100vh - 112px); }
 html .app-container .header-content { height:64px; }
 html .app-container .header-logo { height:36px; }
-html .app-container>header h1 { font-size:1.35rem; }
+html .app-container>header h1 { font-size:1.196rem; }
 html .app-container .app-sidebar { top:64px; height:calc(100vh - 64px); }
 html .app-container .main-content { padding:18px 22px; }
 html .app-container .content-container { padding:20px; border-radius:18px; }
 html .app-container .page-header { margin-bottom:14px; gap:10px; }
-html .app-container .page-header h2 { font-size:1.2rem; line-height:1.7; }
+html .app-container .page-header h2 { font-size:1.046rem; line-height:1.7; }
 html .app-container .page-header-actions { gap:7px!important; flex-wrap:wrap; }
 html .app-container :is(.form-section,.list-section) { margin-top:16px; }
-html .app-container :is(.form-section h3,.list-section h3) { font-size:1rem; margin-bottom:12px; padding-bottom:7px; }
+html .app-container :is(.form-section h3,.list-section h3) { font-size:11px; margin-bottom:12px; padding-bottom:7px; }
 
 html .app-container button { font-family:inherit; }
 html .app-container :is(.action-button,.save-btn,.back-button,.cancel-btn,.submit-progress-btn,.add-user-btn,.approve-btn,.reject-btn,.delete-btn,.quick-action-btn,.filter-toggle-btn,.grouping-toggle-btn,.add-team-member-btn,.remove-team-member-btn,.export-btn,.print-btn,.sp-tab,.sp-secondary .sp-tab) {
@@ -49,10 +49,10 @@ html .app-container :is(.charter-form,.action-form,.user-form,.kanban-task-form,
 html .app-container .form-group { margin-bottom:4px!important; gap:0; }
 html .app-container .form-group label { margin-bottom:5px!important; font-size:.83rem; line-height:1.6; }
 html .app-container :is(input[type="text"],input[type="number"],input[type="password"],input[type="email"],input[type="tel"],input[type="date"],select) {
-  min-height:34px; height:34px; padding:6px 10px!important; font-size:.85rem; line-height:1.5; border-radius:10px;
+  min-height:34px; height:34px; padding:6px 10px!important; font-size:11px; line-height:1.5; border-radius:10px;
   border-color:var(--pbc-ccf3dc,#ccf3dc); background:linear-gradient(180deg,#ffffff,var(--pbc-fbfffd,#fbfffd)); box-shadow:inset 0 1px 3px var(--pbc-1d874908,#1d874908);
 }
-html .app-container textarea { padding:8px 10px; font-size:.85rem; border-radius:10px; line-height:1.8; }
+html .app-container textarea { padding:8px 10px; font-size:11px; border-radius:10px; line-height:1.8; }
 html .app-container input.shamsi-datepicker-input { padding-right:36px!important; padding-left:10px!important; }
 html .app-container .charter-form textarea { height:84px; min-height:72px; }
 html .app-container :is(.tab-content,.project-details-footer) { margin-top:12px!important; }
@@ -67,9 +67,9 @@ html .app-container .portfolio-create-actions { gap:12px; margin-bottom:16px; }
 html .app-container .portfolio-create-button { min-height:64px; padding:11px 14px; border-radius:18px; gap:10px; box-shadow:4px 5px 12px var(--pbc-94e4b526,#94e4b526),inset 1px 1px 3px #fff; }
 html .app-container .portfolio-create-icon { width:36px; height:36px; border-radius:12px; font-size:21px!important; }
 html .app-container .portfolio-create-copy { gap:2px; }
-html .app-container .portfolio-create-copy strong { font-size:.88rem; line-height:1.65; }
+html .app-container .portfolio-create-copy strong { font-size:11px; line-height:1.65; }
 html .app-container .portfolio-create-copy>span { font-size:.68rem; line-height:1.5; }
-html .app-container .portfolio-create-plus { font-size:17px!important; }
+html .app-container .portfolio-create-plus { font-size:15px!important; }
 
 /* Desktop form navigation fits one row; mobile wraps without page overflow. */
 html .app-container .creation-form .tabs-nav { gap:5px; padding:7px!important; margin:10px 0 14px!important; border-radius:18px!important; }
