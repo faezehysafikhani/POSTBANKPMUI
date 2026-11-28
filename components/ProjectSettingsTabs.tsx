@@ -4,6 +4,7 @@ import { PillTabs, type TabItem } from '../tmpb/components/admin/AdminUi';
 import { SettingsPage as ProjectSettingsPage } from '../pages/CorePages';
 import { CalendarManagementPage, ReferenceTablesPage } from '../pages/AdvancedPages';
 import type { Calendar } from '../types';
+import { useDirectory } from '../directory/DirectoryContext';
 
 export type ProjectSettingsTab = 'workflow' | 'visibility' | 'calendar' | 'tables';
 
@@ -36,6 +37,9 @@ export function ProjectSettingsTabs({ workflow, calendars, onDeleteCalendar, pro
     return requested ?? 'workflow';
   });
   useEffect(() => { pendingTab = null; }, []);
+  // People are read once at sign-in; accounts created since (in the administration screens) must be pickable as approvers.
+  const { reload: reloadDirectory } = useDirectory();
+  useEffect(() => { void reloadDirectory(); }, [reloadDirectory]);
 
   return (
     <div className="space-y-4" dir="rtl">
