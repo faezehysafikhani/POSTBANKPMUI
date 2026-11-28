@@ -324,7 +324,26 @@ export const ProjectHistoryModal = ({ project, onClose }: {
 }): ReactElement => {
     const { t, language } = useContext(LocalizationContext);
     const isFa = language === 'fa';
-    const history = useMemo(() => (project.approvalHistory || []).slice().sort((a, b) => (toSafeDate(b.date)?.getTime() || 0) - (toSafeDate(a.date)?.getTime() || 0)), [project.approvalHistory]);
+    const history = useMemo(() => {
+        if (project.approvalHistory && project.approvalHistory.length > 0) {
+            return project.approvalHistory.slice().sort((a, b) => (toSafeDate(b.date)?.getTime() || 0) - (toSafeDate(a.date)?.getTime() || 0));
+        }
+        // A project approved at once (no approval chain configured) has no recorded decisions, but it was still submitted and decided:
+        // show that instead of an empty list.
+        if (project.approvalStatus !== 'Approved' && project.approvalStatus !== 'Rejected' && project.approvalStatus !== 'Pending Approval') {
+            return [];
+        }
+        const date = project.submissionDate || '-';
+        const records: ProjectApprovalRecord[] = [{ action: 'Submitted', date, actor: '-', stageTitle: isFa ? 'ارسال اولیه' : 'Initial Submission', comment: isFa ? 'ارسال برای تایید' : 'Submitted for approval' }];
+        if (project.approvalStatus !== 'Pending Approval') {
+            records.push({
+                action: project.approvalStatus, date, actor: '-',
+                stageTitle: isFa ? 'تایید نهایی' : 'Final Approval',
+                comment: isFa ? 'بدون مرحله تایید تعریف‌شده، به‌صورت مستقیم ثبت شد' : 'Decided directly: no approval chain is configured for it'
+            });
+        }
+        return records.sort((a, b) => (toSafeDate(b.date)?.getTime() || 0) - (toSafeDate(a.date)?.getTime() || 0));
+    }, [project.approvalHistory, project.approvalStatus, project.submissionDate, isFa]);
     const getActionBadge = (action: string) => {
         if (action === 'Approved') {
             return React.createElement("span", { className: "badge badge-green", style: { backgroundColor: '#dcfce7', color: '#15803d', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.78rem', fontWeight: 600 } }, isFa ? 'تایید شده' : 'Approved');
@@ -1298,7 +1317,7 @@ export const TabItemHistoryModal = ({ itemTitle, itemTypeLabel, approvalHistory,
             list.push({
                 action: 'Approved',
                 date: '-',
-                actor: isFa ? 'مدیر / تاییدکننده' : 'Approver',
+                actor: isFa ? 'تایید مستقیم (بدون مرحله تایید ثبت‌شده)' : 'Direct decision (no approval step recorded)',
                 stageTitle: isFa ? 'تایید نهایی' : 'Final Approval',
                 comment: isFa ? 'تایید شده' : 'Approved'
             });
@@ -1307,7 +1326,7 @@ export const TabItemHistoryModal = ({ itemTitle, itemTypeLabel, approvalHistory,
             list.push({
                 action: 'Rejected',
                 date: '-',
-                actor: isFa ? 'مدیر / تاییدکننده' : 'Approver',
+                actor: isFa ? 'تایید مستقیم (بدون مرحله تایید ثبت‌شده)' : 'Direct decision (no approval step recorded)',
                 stageTitle: isFa ? 'بررسی رد' : 'Review',
                 comment: isFa ? 'رد شده' : 'Rejected'
             });

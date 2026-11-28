@@ -965,11 +965,18 @@ export const ProjectPortfolioPage = ({ projects, actions, users, currentUser, on
     const totalCount = filteredProjects.length + filteredActions.length;
     const fmtNum = (num: number) => language === 'fa' ? toPersianDigits(num) : String(num);
     const renderApprovalBadge = (approvalStatus?: string) => {
-        let label = language === 'fa' ? 'منتظر تایید' : 'Pending Approval';
-        let bg = 'var(--status-planning-bg, #fff3cd)';
-        let color = 'var(--status-planning-text, #664d03)';
-        let border = 'rgba(255,193,7,0.4)';
-        if (approvalStatus === 'Approved') {
+        // A draft has not been sent to anyone: it is not "waiting for approval" (the inbox rightly has nothing for it).
+        let label = language === 'fa' ? 'پیش‌نویس' : 'Draft';
+        let bg = 'var(--border-color, #e9ecef)';
+        let color = 'var(--text-color, #495057)';
+        let border = 'rgba(108,117,125,0.4)';
+        if (approvalStatus === 'Pending Approval') {
+            label = language === 'fa' ? 'منتظر تایید' : 'Pending Approval';
+            bg = 'var(--status-planning-bg, #fff3cd)';
+            color = 'var(--status-planning-text, #664d03)';
+            border = 'rgba(255,193,7,0.4)';
+        }
+        else if (approvalStatus === 'Approved') {
             label = language === 'fa' ? 'تایید' : 'Approved';
             bg = 'var(--status-in-progress-bg, #d1e7dd)';
             color = 'var(--status-in-progress-text, #0f5132)';

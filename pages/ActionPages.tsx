@@ -61,7 +61,7 @@ export const ActionDefinitionPage = ({ formActions, onNavigate, onSaveAction, us
     const handleSave = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!actionData.title || !actionData.responsibleUserId || !actionData.startDate || !actionData.endDate || !actionData.owningUnit) {
-            setInfoModal({ title: t('error'), message: t('fillRequiredFields') });
+            setInfoModal({ title: t('error'), message: t('fillActionRequiredFields') });
             return;
         }
 
