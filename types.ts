@@ -371,6 +371,7 @@ export interface ProjectApprovalRecord {
   date: string;
   comment?: string;
   actor: string; // username
+  actorId?: string; // who decided (backend user id), when known
   stageTitle?: string;
 }
 

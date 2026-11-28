@@ -480,7 +480,8 @@ export const ProjectRisksTab = ({ risks, users = [], onEdit, onDelete, isReadOnl
         ? filteredRisks.map((risk, index) => {
             const isPending = risk.isApproved === false && !(risk as any).isRejected;
             const isRejected = risk.isApproved === false && !!(risk as any).isRejected;
-            const effectiveApproverId = risk.currentApproverId ?? project?.projectManagerId;
+            // While pending: whoever the step waits for. Once decided: who decided it (accepted without a chain: nobody).
+            const effectiveApproverId = isPending ? (risk.currentApproverId ?? project?.projectManagerId) : risk.approvalHistory?.slice().reverse().find(h => h.action !== 'Submitted')?.actorId;
             const approverUser = users?.find(u => String(u.id) === String(effectiveApproverId));
             const approverDisplay = approverUser
                 ? (approverUser.name ? `${approverUser.name} (${approverUser.username})` : approverUser.username)
@@ -853,7 +854,8 @@ export const ProjectStakeholdersTab = ({ stakeholders = [], users = [], onEdit, 
         ? filteredStakeholders.map((sh, index) => {
             const isPending = sh.isApproved === false && !(sh as any).isRejected;
             const isRejected = sh.isApproved === false && !!(sh as any).isRejected;
-            const effectiveApproverId = sh.currentApproverId ?? project?.projectManagerId;
+            // While pending: whoever the step waits for. Once decided: who decided it (accepted without a chain: nobody).
+            const effectiveApproverId = isPending ? (sh.currentApproverId ?? project?.projectManagerId) : sh.approvalHistory?.slice().reverse().find(h => h.action !== 'Submitted')?.actorId;
             const approverUser = users?.find(u => String(u.id) === String(effectiveApproverId));
             const approverDisplay = approverUser ? (approverUser.name ? `${approverUser.name} (${approverUser.username})` : approverUser.username) : '-';
             const canApproveThisItem = currentUserId && (String(effectiveApproverId) === String(currentUserId) || isPMOrAdmin);
@@ -992,7 +994,8 @@ export const ProjectStatusTab = ({ statusUpdates, users, onEdit, onDelete, isRea
         ? statusUpdates.map((update, index) => {
             const isPending = update.isApproved === false && !(update as any).isRejected;
             const isRejected = update.isApproved === false && !!(update as any).isRejected;
-            const effectiveApproverId = update.currentApproverId ?? project?.projectManagerId;
+            // While pending: whoever the step waits for. Once decided: who decided it (accepted without a chain: nobody).
+            const effectiveApproverId = isPending ? (update.currentApproverId ?? project?.projectManagerId) : update.approvalHistory?.slice().reverse().find(h => h.action !== 'Submitted')?.actorId;
             const approverUser = users?.find(u => String(u.id) === String(effectiveApproverId));
             const approverDisplay = approverUser ? (approverUser.name ? `${approverUser.name} (${approverUser.username})` : approverUser.username) : '-';
             const canApproveThisItem = currentUserId && (String(effectiveApproverId) === String(currentUserId) || isPMOrAdmin);
@@ -1067,7 +1070,8 @@ export const ProjectDelayReasonsTab = ({ delayReasons, users, onEdit, onDelete, 
         ? delayReasons.map((reason, index) => {
             const isPending = reason.isApproved === false && !(reason as any).isRejected;
             const isRejected = reason.isApproved === false && !!(reason as any).isRejected;
-            const effectiveApproverId = reason.currentApproverId ?? project?.projectManagerId;
+            // While pending: whoever the step waits for. Once decided: who decided it (accepted without a chain: nobody).
+            const effectiveApproverId = isPending ? (reason.currentApproverId ?? project?.projectManagerId) : reason.approvalHistory?.slice().reverse().find(h => h.action !== 'Submitted')?.actorId;
             const approverUser = users?.find(u => String(u.id) === String(effectiveApproverId));
             const approverDisplay = approverUser ? (approverUser.name ? `${approverUser.name} (${approverUser.username})` : approverUser.username) : '-';
             const canApproveThisItem = currentUserId && (String(effectiveApproverId) === String(currentUserId) || isPMOrAdmin);
@@ -1152,7 +1156,8 @@ export const ProjectDocumentsTab = ({ documents, users, onEdit, onDelete, isRead
         ? documents.map((doc, index) => {
             const isPending = doc.isApproved === false && !(doc as any).isRejected;
             const isRejected = doc.isApproved === false && !!(doc as any).isRejected;
-            const effectiveApproverId = doc.currentApproverId ?? project?.projectManagerId;
+            // While pending: whoever the step waits for. Once decided: who decided it (accepted without a chain: nobody).
+            const effectiveApproverId = isPending ? (doc.currentApproverId ?? project?.projectManagerId) : doc.approvalHistory?.slice().reverse().find(h => h.action !== 'Submitted')?.actorId;
             const approverUser = users?.find(u => String(u.id) === String(effectiveApproverId));
             const approverDisplay = approverUser ? (approverUser.name ? `${approverUser.name} (${approverUser.username})` : approverUser.username) : '-';
             const canApproveThisItem = currentUserId && (String(effectiveApproverId) === String(currentUserId) || isPMOrAdmin);
