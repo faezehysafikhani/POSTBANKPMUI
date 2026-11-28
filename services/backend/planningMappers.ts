@@ -102,6 +102,7 @@ export function toUiPlan(plan: BackendPlan): PlanView {
       projectFinish: plan.schedule.projectFinish,
       projectDurationDays: plan.schedule.projectDurationDays,
       warnings: plan.schedule.warnings,
+      weightsTotalNot100: plan.schedule.weightsTotalNot100 ?? null,
       criticalPath: plan.schedule.criticalPath
     },
     planned: plan.schedule.plannedProgress,

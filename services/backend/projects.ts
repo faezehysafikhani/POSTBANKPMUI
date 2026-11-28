@@ -67,6 +67,9 @@ export const projects = {
   setStatus: (id: string, status: number) => api.put<BackendProject>(`/api/project-management/projects/${id}/status`, { status }),
   submit: (id: string) => api.post<BackendProject>(`/api/project-management/projects/${id}/submit-for-approval`),
   /** Puts a project's approval state right from its approval (one left "pending" after its approval was decided or withdrawn). */
+  /** «تصمیم ۴»: how many projects use a work calendar, and how many of them are approved. */
+  calendarUsage: (calendarId: string) =>
+    api.get<{ calendarId: string; projects: number; approvedProjects: number }>(`/api/project-management/projects/calendar-usage?calendarId=${encodeURIComponent(calendarId)}`),
   syncApproval: (id: string) => api.post<BackendProject>(`/api/project-management/projects/${id}/approval/sync`),
   archive: (id: string) => api.post<void>(`/api/project-management/projects/${id}/archive`),
   remove: (id: string) => api.delete<void>(`/api/project-management/projects/${id}`)

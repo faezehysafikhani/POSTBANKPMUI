@@ -559,13 +559,21 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
                         });
                     }
                     else if (projectData.type === 'waterfall') {
-                        return React.createElement(ProjectScheduleTab, {
+                        // M9: weights that no longer add up to 100 after the project was sent: the backend accepts the edit and says so.
+                        const weightsOff = projectData.scheduleInfo?.weightsTotalNot100;
+                        const weightsNotice = weightsOff != null
+                            ? React.createElement("div", { className: "info-banner", role: "alert", style: { margin: '0 0 1rem', padding: '0.75rem 1rem', borderRadius: '10px', background: '#fffbeb', border: '1px solid #fde68a', color: '#92400e' } },
+                                language === 'fa'
+                                    ? `مجموع وزن فعالیت‌ها ${toPersianDigits(weightsOff)} است، نه ۱۰۰. وزن‌ها را اصلاح کنید تا پیشرفت پروژه درست محاسبه شود.`
+                                    : `The activity weights add up to ${weightsOff}, not 100. Fix them so the project's progress is calculated correctly.`)
+                            : null;
+                        return React.createElement(Fragment, null, weightsNotice, React.createElement(ProjectScheduleTab, {
                             project: projectData as Project,
                             users: users,
                             calendars: calendars,
                             isReadOnly: !isPMOrOwnerOrAdmin,
                             currentUser: currentUser
-                        });
+                        }));
                     }
                 }
                 break; // Fall through for placeholder

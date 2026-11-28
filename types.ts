@@ -427,7 +427,7 @@ export interface Project {
   /** How far the project has got, as the backend works it out (planned from the schedule or the dates, actual from the activities / tasks). */
   progressFigures?: ProjectProgressFigures;
   /** What the backend calculated about the whole schedule (warnings, critical path, overall dates). */
-  scheduleInfo?: { projectStart: string; projectFinish: string; projectDurationDays?: number; warnings: string[]; criticalPath: string[] };
+  scheduleInfo?: { projectStart: string; projectFinish: string; projectDurationDays?: number; warnings: string[]; criticalPath: string[]; weightsTotalNot100?: number | null };
   timeWeightFactor?: number;
   costWeightFactor?: number;
   complexityWeightFactor?: number;

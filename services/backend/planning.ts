@@ -75,6 +75,8 @@ export interface BackendSchedule {
   criticalPath: string[];
   activities: BackendScheduledActivity[];
   warnings: string[];
+  /** M9: in a project already sent or approved, what the manual weights add up to when it is not 100. */
+  weightsTotalNot100?: number | null;
 }
 
 export interface BackendWaterfallSettings {

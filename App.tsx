@@ -14,6 +14,7 @@ import type { ProjectOutcome } from './directory/ProjectsContext';
 import { toUiUser, uiRoleOfSession } from './services/backend/mappers';
 import { User, Project, ProjectType, ProjectRisk, ProjectStatusUpdate, ProjectDocument, ProjectActivity, KanbanTask, Calendar, ProjectApprovalStatus, ProjectApprovalRecord, EnrichedProject, ProgressUpdateStatus, ProgressUpdate, EnrichedTask, Strategy, AlignmentLevel, ProjectStrategyAlignment, KnowledgeDocumentType, SpecificHoliday, TaskPriority, KanbanStatus, UserRole, ActionItem, WorkStatus, PROJECT_WORK_STATUSES, KnowledgeDocument, Delegation } from './types';
 import { enrichProjectWithProgress, pickCalendar, getISODateString, getISODateTimeString, calculateScheduleTreeAndProgress, toPersianDigits } from './utils';
+import { projects as projectsApi } from './services/backend/projects';
 import { LocalizationProvider, LocalizationContext, ThemeProvider } from './context';
 import { LoginPage, MainMenu } from './pages/CorePages';
 import { ProjectSettingsTabs, requestProjectSettingsTab } from './components/ProjectSettingsTabs';
@@ -476,7 +477,19 @@ const AppContent = () => {
     };
     ;
     // --- CALENDAR & ADVANCED HANDLERS ---
-    const handleSaveCalendar = (calendar: Calendar) => directory.saveCalendar(calendar);
+    const handleSaveCalendar = async (calendar: Calendar) => {
+        // «تصمیم ۴»: changing a calendar moves the computed plan of every project on it; their saved baselines stay as they are.
+        if (calendar.id) {
+            const usage = await projectsApi.calendarUsage(String(calendar.id));
+            const approved = usage.ok ? usage.value?.approvedProjects ?? 0 : 0;
+            if (approved > 0 && !window.confirm(language === 'fa'
+                ? `این تقویم در ${toPersianDigits(approved)} پروژه‌ی تأییدشده استفاده می‌شود. با ذخیره‌ی تغییرات، برنامه‌ی زمان‌بندی محاسبه‌شده‌ی این پروژه‌ها تغییر می‌کند (خط‌های مبنای ذخیره‌شده تغییر نمی‌کنند). ادامه می‌دهید؟`
+                : `${approved} approved project(s) use this calendar. Saving changes their computed schedules (saved baselines do not change). Continue?`)) {
+                return { ok: false, message: language === 'fa' ? 'ذخیره انجام نشد.' : 'Not saved.' };
+            }
+        }
+        return directory.saveCalendar(calendar);
+    };
     const handleDeleteCalendar = (id: string) => directory.deleteCalendar(id);
     /** The backend refuses a strategy tree whose top-level weights do not add up to 100 (and says so). */
     const handleSaveStrategies = async (strategiesToSave: Strategy[]) => {
