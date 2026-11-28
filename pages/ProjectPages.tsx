@@ -415,7 +415,9 @@ export const ProjectDetailsPage = ({ formActions, projectType, users, onNavigate
         return tabs;
     }, [t, projectType, projectSections, language]);
     const backIcon = language === 'fa' ? 'arrow_forward' : 'arrow_back';
-    const isPMOrOwnerOrAdmin = !!(currentUser && (currentUser.role === 'Admin' ||
+    // M7: the same rule as the backend - the manager, the owner, or someone allowed to manage every project (Projects.ManageAll).
+    const { can: canDo } = useAuth();
+    const isPMOrOwnerOrAdmin = !!(currentUser && (currentUser.role === 'Admin' || canDo('Projects.ManageAll') ||
         String(projectData.projectManagerId) === String(currentUser.id) ||
         String(projectData.ownerId || 1) === String(currentUser.id)));
     // The approval state decides what can be done (the same rules the backend enforces).
@@ -818,7 +820,7 @@ export const ProjectPortfolioPage = ({ projects, actions, users, currentUser, on
     const canEditProject = (project: Project) => {
         if (!currentUser)
             return false;
-        if (currentUser.role === 'Admin')
+        if (currentUser.role === 'Admin' || auth.can('Projects.ManageAll'))
             return true;
         if (String(project.projectManagerId) === String(currentUser.id))
             return true;
