@@ -32,6 +32,8 @@ export interface ProjectOutcome extends Outcome {
   code?: string;
   /** The project as the backend now holds it. */
   project?: Project;
+  /** The backend decided the request at once because no approval chain applies to it (nobody was asked to approve). */
+  appliedAtOnce?: boolean;
 }
 
 interface ProjectsState extends PlanningOps, ContractOps {

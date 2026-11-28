@@ -127,7 +127,8 @@ export const ActionsProvider = ({ children }: { children: React.ReactNode }) => 
     requestStatus: async (actionId, status, comment) => {
       const asked = await actionsApi.requestStatus(tenantId ?? '', actionId, backendActionStatusOf(status), comment || null);
       await load();
-      return asked.ok ? { ok: true } : fail(asked.error?.message, asked.error?.code);
+      // NotSubmitted/PendingApproval = 0/1 mean someone was asked; Approved (2) straight away means no chain applied.
+      return asked.ok ? { ok: true, appliedAtOnce: asked.value?.approvalStatus === 2 } : fail(asked.error?.message, asked.error?.code);
     },
 
     decide: async (updateId, approve, comment) => {

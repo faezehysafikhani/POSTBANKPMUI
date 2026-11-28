@@ -403,7 +403,14 @@ const AppContent = () => {
     const handleAddActionStatusUpdate = async (actionId: string, newStatus: WorkStatus, _currentStatus: WorkStatus, comment: string) => {
         const outcome = await actionsState.requestStatus(actionId, newStatus, comment);
         setInfoModal(outcome.ok
-            ? { title: t('submitForApproval'), message: t('progressUpdated') }
+            ? {
+                title: t('submitForApproval'),
+                message: outcome.appliedAtOnce
+                    ? (language === 'fa'
+                        ? 'برای این اقدام مرحله تاییدی تعریف نشده است؛ وضعیت جدید بدون تایید اعمال شد. در تنظیمات گردش کار پروژه، زنجیره «اقدامات» را تعریف کنید.'
+                        : 'No approval chain applies to this action, so the new status was applied without approval. Define the "Actions" chain in the project workflow settings.')
+                    : t('progressUpdated')
+            }
             : { title: t('error'), message: outcome.message || t('error') });
     };
     /** The person responsible for a risk's response reports where the work stands; the backend sends it for verification (or applies it at once). */
